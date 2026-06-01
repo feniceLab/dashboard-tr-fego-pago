@@ -376,32 +376,88 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* INSIGHTS */
-  .insights { display: flex; flex-direction: column; gap: 12px; }
-  .insight {
+  /* ANÚNCIOS EM VEICULAÇÃO */
+  .ads-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 640px) { .ads-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .ads-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .ad-card {
     background: var(--sup-grafite);
     border: 1px solid var(--sup-linha);
-    border-left: 3px solid var(--sup-ok);
-    border-radius: 12px;
-    padding: 14px 18px;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all .18s cubic-bezier(.2,.7,.3,1);
     display: flex;
-    gap: 12px;
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--sup-cinza);
+    flex-direction: column;
   }
-  .insight.warn { border-left-color: var(--sup-aviso); }
-  .insight-mark {
-    font-weight: 800;
-    font-size: 16px;
-    color: var(--sup-ok);
-    flex-shrink: 0;
+  .ad-card:hover {
+    border-color: var(--sup-vermelho);
+    transform: translateY(-2px);
   }
-  .insight.warn .insight-mark { color: var(--sup-aviso); }
-  .insight strong {
-    color: var(--sup-branco);
+  .ad-thumb {
+    aspect-ratio: 9/16;
+    background: var(--sup-carvao);
+    border-bottom: 1px solid var(--sup-linha);
+    position: relative;
+    overflow: hidden;
+  }
+  .ad-thumb img,
+  .ad-thumb iframe,
+  .ad-thumb video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border: none;
+  }
+  .ad-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(214,40,40,.08), rgba(31,31,31,.4));
+    font-size: 64px;
+    color: rgba(255,255,255,.15);
+  }
+  .ad-info { padding: 16px; }
+  .ad-kicker {
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--sup-vermelho);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .ad-title {
     font-weight: 700;
+    font-size: 14px;
+    color: var(--sup-branco);
+    margin-bottom: 12px;
   }
+  .ad-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--sup-linha);
+  }
+  .ad-stat {
+    font-size: 11px;
+    color: var(--sup-cinza);
+    font-weight: 500;
+  }
+  .ad-stat-roas {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--sup-ok);
+    font-variant-numeric: tabular-nums;
+  }
+  .ad-stat-roas.warn { color: var(--sup-aviso); }
 
   /* FOOTER */
   .footer {
@@ -705,31 +761,66 @@
     </div>
   </section>
 
-  <!-- INSIGHTS -->
+  <!-- ANÚNCIOS EM VEICULAÇÃO -->
   <section class="section">
-    <h2 class="section-title">Insights & Recomendações</h2>
-    <div class="insights">
-      <div class="insight">
-        <span class="insight-mark">✓</span>
-        <span><strong>MAIO[01] é a estrela emergente:</strong> ROAS 29,15× com R$ 593,93 e 140 vendas. CPA de apenas R$ 4,24. Recomenda-se escalar +50% pra junho.</span>
+    <h2 class="section-title">Anúncios em Veiculação</h2>
+    <p style="color: var(--sup-cinza); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
+      Criativos que estão rodando atualmente nas campanhas ativas.
+    </p>
+    <div class="ads-grid">
+
+      <div class="ad-card">
+        <div class="ad-thumb">
+          <div class="ad-thumb-placeholder">
+            <span>🍕</span>
+          </div>
+        </div>
+        <div class="ad-info">
+          <div class="ad-kicker">VENDAS · MAIO 01</div>
+          <div class="ad-title">Cardápio Digital</div>
+          <div class="ad-stats">
+            <span class="ad-stat">140 compras</span>
+            <span class="ad-stat-roas">29,15×</span>
+          </div>
+        </div>
       </div>
-      <div class="insight">
-        <span class="insight-mark">✓</span>
-        <span><strong>VENDAS FEV consolidada:</strong> 4 meses no ar com ROAS estável 16,34× e 181 vendas só em maio. É o cavalo de batalha da operação.</span>
+
+      <div class="ad-card">
+        <div class="ad-thumb">
+          <div class="ad-thumb-placeholder">
+            <span>🍕</span>
+          </div>
+        </div>
+        <div class="ad-info">
+          <div class="ad-kicker">VENDAS · FEV</div>
+          <div class="ad-title">Campanha Atemporal</div>
+          <div class="ad-stats">
+            <span class="ad-stat">181 compras</span>
+            <span class="ad-stat-roas">16,34×</span>
+          </div>
+        </div>
       </div>
-      <div class="insight">
-        <span class="insight-mark">✓</span>
-        <span><strong>Funil completo rastreado:</strong> Pixel registra ATC (555), Initiate Checkout (337) e Purchase (324). Conversão final IC→Purchase de 96,1% — excelente.</span>
+
+      <div class="ad-card">
+        <div class="ad-thumb">
+          <div class="ad-thumb-placeholder">
+            <span>🌶️</span>
+          </div>
+        </div>
+        <div class="ad-info">
+          <div class="ad-kicker">FOOD PORN · TESTE</div>
+          <div class="ad-title">Brie + Geleia de Pimenta</div>
+          <div class="ad-stats">
+            <span class="ad-stat">1 compra</span>
+            <span class="ad-stat-roas warn">1,21×</span>
+          </div>
+        </div>
       </div>
-      <div class="insight warn">
-        <span class="insight-mark">!</span>
-        <span><strong>PERFIL SEGUIDORES com ROAS &lt; 1×:</strong> esperado pra campanha de tráfego de perfil (não-vendas). Avaliar redirecionamento de budget.</span>
-      </div>
-      <div class="insight warn">
-        <span class="insight-mark">!</span>
-        <span><strong>FOOD PORN (teste gourmet) sub-converteu:</strong> CTR 2,58% atraiu engajamento, mas só 1 compra. Investigar checkout no cardápio e revisar público gourmet.</span>
-      </div>
+
     </div>
+    <p style="color: var(--sup-cinza-esc); font-size: 12px; margin-top: 16px; line-height: 1.6;">
+      🔄 Os previews dos criativos são atualizados em tempo real conforme os anúncios rodam.
+    </p>
   </section>
 
   <!-- FOOTER -->
