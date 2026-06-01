@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0F0F0F">
+<meta name="description" content="Suprema Pizza · Relatório de Performance · Maio/2026">
+<title>Suprema Pizza · Relatório Maio/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sup-carvao: #0F0F0F;
+    --sup-grafite: #161616;
+    --sup-grafite-2: #1F1F1F;
+    --sup-grafite-3: #2A2A2A;
+    --sup-preto: #000;
+    --sup-vermelho: #D62828;
+    --sup-vermelho-dk: #B71C1C;
+    --sup-vermelho-lt: #E84B4B;
+    --sup-brasa: #C0392B;
+    --sup-branco: #FFF;
+    --sup-cinza: #9A9A9A;
+    --sup-cinza-esc: #6E6E6E;
+    --sup-linha: rgba(255,255,255,.08);
+    --sup-linha-forte: rgba(255,255,255,.16);
+    --sup-ok: #3FB950;
+    --sup-aviso: #E3A008;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--sup-carvao);
+    color: var(--sup-branco);
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .mono { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+
+  .container { width: 100%; max-width: 880px; margin: 0 auto; padding: 16px; }
+  @media (min-width: 768px) { .container { padding: 32px; } }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+    border-bottom: 2px solid var(--sup-vermelho);
+  }
+  .wordmark { display: flex; flex-direction: column; line-height: .9; }
+  .wm-s {
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+    color: var(--sup-branco);
+  }
+  @media (min-width: 640px) { .wm-s { font-size: 40px; } }
+  .wm-p {
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: .42em;
+    text-transform: uppercase;
+    padding-left: .04em;
+    color: var(--sup-vermelho);
+    margin-top: 2px;
+  }
+  @media (min-width: 640px) { .wm-p { font-size: 16px; } }
+  .header-meta { flex: 1; text-align: right; }
+  .kicker {
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-vermelho);
+    margin-bottom: 4px;
+  }
+  .header-title {
+    font-weight: 800;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: -.01em;
+    line-height: 1;
+  }
+  @media (min-width: 640px) { .header-title { font-size: 22px; } }
+  .header-sub { font-size: 11px; color: var(--sup-cinza); margin-top: 4px; }
+
+  /* TAGLINE */
+  .tagline {
+    text-align: center;
+    padding: 32px 20px;
+    background: linear-gradient(180deg, transparent, rgba(214,40,40,.05));
+    border-radius: 16px;
+    margin-bottom: 28px;
+  }
+  .tagline-1 {
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--sup-cinza);
+    margin-bottom: 8px;
+  }
+  @media (min-width: 640px) { .tagline-1 { font-size: 18px; } }
+  .tagline-2 {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--sup-branco);
+  }
+  @media (min-width: 640px) { .tagline-2 { font-size: 24px; } }
+
+  /* HERO REVENUE */
+  .hero {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 24px;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--sup-vermelho);
+  }
+  .hero-kicker {
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-vermelho);
+    margin-bottom: 14px;
+  }
+  .hero-amount {
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--sup-branco);
+    letter-spacing: -.02em;
+    margin-bottom: 10px;
+  }
+  @media (min-width: 480px) { .hero-amount { font-size: 52px; } }
+  @media (min-width: 768px) { .hero-amount { font-size: 64px; } }
+  .hero-meta {
+    font-size: 13px;
+    color: var(--sup-cinza);
+    line-height: 1.6;
+  }
+  .hero-meta strong { color: var(--sup-vermelho); font-weight: 700; }
+  .hero-net {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--sup-linha);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hero-net-label {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+  }
+  .hero-net-amount {
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--sup-ok);
+  }
+  @media (min-width: 480px) { .hero-net-amount { font-size: 26px; } }
+
+  /* KPI GRID */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (min-width: 640px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+  .kpi {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--sup-branco);
+  }
+  .kpi-value.red { color: var(--sup-vermelho); }
+  .kpi-value.green { color: var(--sup-ok); }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (min-width: 640px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+  .stat {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .stat-value {
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--sup-branco);
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: var(--sup-cinza);
+    margin-top: 6px;
+  }
+
+  /* SECTIONS */
+  .section { margin-bottom: 36px; }
+  .section-title {
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: var(--sup-branco);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--sup-linha);
+    position: relative;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: var(--sup-vermelho);
+  }
+
+  /* FUNIL */
+  .funnel { display: flex; flex-direction: column; gap: 6px; }
+  .stage {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-left: 3px solid var(--sup-vermelho);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all .18s cubic-bezier(.2,.7,.3,1);
+  }
+  .stage:hover {
+    background: var(--sup-grafite-2);
+    transform: translateX(4px);
+  }
+  .stage-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sup-cinza);
+  }
+  .stage-value {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--sup-branco);
+  }
+  .stage-arrow {
+    text-align: center;
+    color: var(--sup-cinza-esc);
+    font-size: 12px;
+    padding: 4px 0;
+  }
+  .stage-arrow .pct {
+    font-weight: 600;
+    color: var(--sup-ok);
+    margin-left: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stage.final {
+    background: linear-gradient(135deg, rgba(214,40,40,.12), rgba(214,40,40,.04));
+    border: 1px solid var(--sup-vermelho);
+    border-left-width: 3px;
+    box-shadow: 0 0 0 1px rgba(214,40,40,.35), 0 10px 30px rgba(214,40,40,.18);
+  }
+  .stage.final .stage-name {
+    color: var(--sup-branco);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: 12px;
+  }
+  .stage.final .stage-value { color: var(--sup-vermelho); font-size: 24px; }
+
+  /* RANKING */
+  .ranking { display: flex; flex-direction: column; gap: 12px; }
+  .rank {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 16px;
+    padding: 18px;
+    transition: all .18s cubic-bezier(.2,.7,.3,1);
+  }
+  .rank:hover { background: var(--sup-grafite-2); }
+  .rank.champion {
+    border: 1px solid var(--sup-vermelho);
+    box-shadow: 0 0 0 1px rgba(214,40,40,.20);
+  }
+  .rank-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--sup-linha);
+  }
+  .rank-pos {
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--sup-cinza-esc);
+    min-width: 28px;
+  }
+  .rank.champion .rank-pos { color: var(--sup-vermelho); }
+  .rank-name-wrap { flex: 1; min-width: 0; }
+  .rank-name {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--sup-branco);
+    word-break: break-word;
+  }
+  .rank-tag {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    margin-top: 4px;
+  }
+  .rank-roas {
+    font-weight: 800;
+    font-size: 26px;
+    color: var(--sup-vermelho);
+    font-variant-numeric: tabular-nums;
+  }
+  .rank.warn .rank-roas { color: var(--sup-aviso); }
+  .rank.bad .rank-roas { color: var(--sup-cinza-esc); }
+  .rank-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  @media (min-width: 480px) { .rank-stats { grid-template-columns: repeat(4, 1fr); } }
+  .rank-stat-label {
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    margin-bottom: 4px;
+  }
+  .rank-stat-value {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--sup-branco);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* INSIGHTS */
+  .insights { display: flex; flex-direction: column; gap: 12px; }
+  .insight {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-left: 3px solid var(--sup-ok);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--sup-cinza);
+  }
+  .insight.warn { border-left-color: var(--sup-aviso); }
+  .insight-mark {
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--sup-ok);
+    flex-shrink: 0;
+  }
+  .insight.warn .insight-mark { color: var(--sup-aviso); }
+  .insight strong {
+    color: var(--sup-branco);
+    font-weight: 700;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 2px solid var(--sup-vermelho);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-tagline {
+    font-size: 12px;
+    color: var(--sup-cinza-esc);
+    letter-spacing: .08em;
+    line-height: 1.4;
+  }
+  .footer-tagline strong { color: var(--sup-vermelho); font-weight: 700; }
+  .footer-meta { text-align: right; font-size: 11px; color: var(--sup-cinza-esc); }
+  .footer-meta-label {
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-weight: 600;
+  }
+
+  .share-bar {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    background: rgba(15,15,15,.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--sup-vermelho);
+    border-radius: 999px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    max-width: 360px;
+    margin: 0 auto;
+    box-shadow: 0 0 0 1px rgba(214,40,40,.35), 0 10px 30px rgba(214,40,40,.18);
+  }
+  @media (min-width: 768px) { .share-bar { display: none; } }
+  .share-btn {
+    background: var(--sup-vermelho);
+    border: none;
+    color: var(--sup-branco);
+    padding: 8px 24px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .share-btn:hover { background: var(--sup-vermelho-dk); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="wordmark">
+      <span class="wm-s">SUPREMA</span>
+      <span class="wm-p">Pizza</span>
+    </div>
+    <div class="header-meta">
+      <div class="kicker">Fenice Lab</div>
+      <div class="header-title">Performance</div>
+      <div class="header-sub">Maio/2026 · Mês Fechado</div>
+    </div>
+  </header>
+
+  <!-- TAGLINE -->
+  <div class="tagline">
+    <div class="tagline-1">Quando o queijo escorre…</div>
+    <div class="tagline-2">a pizza tá no ponto.</div>
+  </div>
+
+  <!-- HERO REVENUE -->
+  <div class="hero">
+    <div class="hero-kicker">💰 Valor de Conversão em Compra</div>
+    <div class="hero-amount mono">R$&nbsp;39.789,72</div>
+    <div class="hero-meta">
+      Investido R$ 2.350,84 · <strong>ROAS 16,93×</strong> · 324 compras
+    </div>
+    <div class="hero-net">
+      <span class="hero-net-label">Retorno líquido</span>
+      <span class="hero-net-amount mono">R$&nbsp;37.438,88</span>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Investimento</div>
+      <div class="kpi-value mono">R$&nbsp;2.350,84</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Compras</div>
+      <div class="kpi-value red mono">324</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ticket Médio</div>
+      <div class="kpi-value mono">R$&nbsp;122,81</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">CPA</div>
+      <div class="kpi-value mono">R$&nbsp;7,26</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-label">Impressões</div>
+      <div class="stat-value mono">442.014</div>
+      <div class="stat-sub">CPM R$ 5,32</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Alcance</div>
+      <div class="stat-value mono">103.877</div>
+      <div class="stat-sub">pessoas únicas · freq 4,26</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Adições ao Carrinho</div>
+      <div class="stat-value mono">555</div>
+      <div class="stat-sub">337 iniciaram compra</div>
+    </div>
+  </div>
+
+  <!-- FUNIL -->
+  <section class="section">
+    <h2 class="section-title">Funil de Conversão</h2>
+    <div class="funnel">
+      <div class="stage">
+        <span class="stage-name">Impressões</span>
+        <span class="stage-value mono">442.014</span>
+      </div>
+      <div class="stage-arrow">↓<span class="pct">23,5%</span></div>
+      <div class="stage">
+        <span class="stage-name">Alcance único</span>
+        <span class="stage-value mono">103.877</span>
+      </div>
+      <div class="stage-arrow">↓</div>
+      <div class="stage">
+        <span class="stage-name">Cliques no Anúncio</span>
+        <span class="stage-value mono">3.583</span>
+      </div>
+      <div class="stage-arrow">↓<span class="pct">84,5%</span></div>
+      <div class="stage">
+        <span class="stage-name">Cliques no Link</span>
+        <span class="stage-value mono">3.029</span>
+      </div>
+      <div class="stage-arrow">↓<span class="pct">32,3%</span></div>
+      <div class="stage">
+        <span class="stage-name">Views da Página</span>
+        <span class="stage-value mono">977</span>
+      </div>
+      <div class="stage-arrow">↓<span class="pct">56,8%</span></div>
+      <div class="stage">
+        <span class="stage-name">Adições ao Carrinho</span>
+        <span class="stage-value mono">555</span>
+      </div>
+      <div class="stage-arrow">↓<span class="pct">60,7%</span></div>
+      <div class="stage">
+        <span class="stage-name">Iniciaram Compra</span>
+        <span class="stage-value mono">337</span>
+      </div>
+      <div class="stage-arrow">↓<span class="pct">96,1%</span></div>
+      <div class="stage final">
+        <span class="stage-name">Compras Realizadas</span>
+        <span class="stage-value mono">324</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RANKING -->
+  <section class="section">
+    <h2 class="section-title">Ranking de Campanhas</h2>
+    <div class="ranking">
+
+      <div class="rank champion">
+        <div class="rank-header">
+          <span class="rank-pos">1</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][VENDAS][MAIO][01]</div>
+            <div class="rank-tag">Melhor ROAS · Campanha jovem</div>
+          </div>
+          <span class="rank-roas mono">29,15×</span>
+        </div>
+        <div class="rank-stats">
+          <div>
+            <div class="rank-stat-label">Gasto</div>
+            <div class="rank-stat-value mono">R$&nbsp;593,93</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Vendas</div>
+            <div class="rank-stat-value mono">140</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Ticket</div>
+            <div class="rank-stat-value mono">R$&nbsp;123,67</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">CPA</div>
+            <div class="rank-stat-value mono">R$&nbsp;4,24</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rank">
+        <div class="rank-header">
+          <span class="rank-pos">2</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][VENDAS][FEV]</div>
+            <div class="rank-tag">Cavalo de batalha · 4 meses no ar</div>
+          </div>
+          <span class="rank-roas mono">16,34×</span>
+        </div>
+        <div class="rank-stats">
+          <div>
+            <div class="rank-stat-label">Gasto</div>
+            <div class="rank-stat-value mono">R$&nbsp;1.357,85</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Vendas</div>
+            <div class="rank-stat-value mono">181</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Ticket</div>
+            <div class="rank-stat-value mono">R$&nbsp;122,57</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">CPA</div>
+            <div class="rank-stat-value mono">R$&nbsp;7,50</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rank warn">
+        <div class="rank-header">
+          <span class="rank-pos">3</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][PERFIL][SEGUIDORES]</div>
+            <div class="rank-tag">Tráfego perfil · não-vendas</div>
+          </div>
+          <span class="rank-roas mono">0,63×</span>
+        </div>
+        <div class="rank-stats">
+          <div>
+            <div class="rank-stat-label">Gasto</div>
+            <div class="rank-stat-value mono">R$&nbsp;313,41</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Vendas</div>
+            <div class="rank-stat-value mono">2</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Ticket</div>
+            <div class="rank-stat-value mono">R$&nbsp;98,86</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">CPA</div>
+            <div class="rank-stat-value mono">R$&nbsp;156,71</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rank bad">
+        <div class="rank-header">
+          <span class="rank-pos">4</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[FOOD PORN] SEX-DOM 29-31</div>
+            <div class="rank-tag">Campanha-teste gourmet</div>
+          </div>
+          <span class="rank-roas mono">1,21×</span>
+        </div>
+        <div class="rank-stats">
+          <div>
+            <div class="rank-stat-label">Gasto</div>
+            <div class="rank-stat-value mono">R$&nbsp;85,65</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Vendas</div>
+            <div class="rank-stat-value mono">1</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">Ticket</div>
+            <div class="rank-stat-value mono">R$&nbsp;103,64</div>
+          </div>
+          <div>
+            <div class="rank-stat-label">CPA</div>
+            <div class="rank-stat-value mono">R$&nbsp;85,65</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section class="section">
+    <h2 class="section-title">Insights & Recomendações</h2>
+    <div class="insights">
+      <div class="insight">
+        <span class="insight-mark">✓</span>
+        <span><strong>MAIO[01] é a estrela emergente:</strong> ROAS 29,15× com R$ 593,93 e 140 vendas. CPA de apenas R$ 4,24. Recomenda-se escalar +50% pra junho.</span>
+      </div>
+      <div class="insight">
+        <span class="insight-mark">✓</span>
+        <span><strong>VENDAS FEV consolidada:</strong> 4 meses no ar com ROAS estável 16,34× e 181 vendas só em maio. É o cavalo de batalha da operação.</span>
+      </div>
+      <div class="insight">
+        <span class="insight-mark">✓</span>
+        <span><strong>Funil completo rastreado:</strong> Pixel registra ATC (555), Initiate Checkout (337) e Purchase (324). Conversão final IC→Purchase de 96,1% — excelente.</span>
+      </div>
+      <div class="insight warn">
+        <span class="insight-mark">!</span>
+        <span><strong>PERFIL SEGUIDORES com ROAS &lt; 1×:</strong> esperado pra campanha de tráfego de perfil (não-vendas). Avaliar redirecionamento de budget.</span>
+      </div>
+      <div class="insight warn">
+        <span class="insight-mark">!</span>
+        <span><strong>FOOD PORN (teste gourmet) sub-converteu:</strong> CTR 2,58% atraiu engajamento, mas só 1 compra. Investigar checkout no cardápio e revisar público gourmet.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-tagline">
+      Operação mantida por <strong>Fenice Lab</strong><br>
+      Marketing Digital & Performance · Blumenau/SC
+    </div>
+    <div class="footer-meta">
+      <div class="footer-meta-label">Período</div>
+      <div class="mono">01/05/2026 a 31/05/2026</div>
+    </div>
+  </footer>
+
+</div>
+
+<div class="share-bar">
+  <button class="share-btn" onclick="shareReport()">Compartilhar</button>
+</div>
+
+<script>
+function shareReport() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Suprema Pizza · Relatório Maio/2026',
+      text: 'Faturamento R$ 39.789,72 · ROAS 16,93× · 324 compras',
+      url: window.location.href
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copiado!');
+  }
+}
+</script>
+
+</body>
+</html>

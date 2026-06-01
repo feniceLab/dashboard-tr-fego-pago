@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0F0F0F">
+<meta name="description" content="Suprema Pizza · Área do Cliente · Performance e Relatórios">
+<title>Suprema Pizza · Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sup-carvao: #0F0F0F;
+    --sup-grafite: #161616;
+    --sup-grafite-2: #1F1F1F;
+    --sup-grafite-3: #2A2A2A;
+    --sup-vermelho: #D62828;
+    --sup-vermelho-dk: #B71C1C;
+    --sup-vermelho-lt: #E84B4B;
+    --sup-branco: #FFF;
+    --sup-cinza: #9A9A9A;
+    --sup-cinza-esc: #6E6E6E;
+    --sup-linha: rgba(255,255,255,.08);
+    --sup-linha-forte: rgba(255,255,255,.16);
+    --sup-ok: #3FB950;
+    --sup-aviso: #E3A008;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--sup-carvao);
+    color: var(--sup-branco);
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 80% 0%, rgba(214,40,40,.08), transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(214,40,40,.04), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .mono { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+  @media (min-width: 768px) { .container { padding: 40px 32px 64px; } }
+
+  /* TOP NAV */
+  .topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .wordmark { display: flex; flex-direction: column; line-height: .9; }
+  .wm-s {
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+    color: var(--sup-branco);
+  }
+  @media (min-width: 640px) { .wm-s { font-size: 36px; } }
+  .wm-p {
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: .42em;
+    text-transform: uppercase;
+    color: var(--sup-vermelho);
+    margin-top: 2px;
+  }
+  @media (min-width: 640px) { .wm-p { font-size: 15px; } }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(214,40,40,.10);
+    border: 1px solid var(--sup-vermelho);
+    color: var(--sup-vermelho);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+  }
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sup-vermelho);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+  /* HERO */
+  .hero {
+    margin-bottom: 40px;
+    padding: 36px 28px;
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--sup-vermelho), var(--sup-vermelho-lt));
+  }
+  .hero-kicker {
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-vermelho);
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -.02em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  @media (min-width: 640px) { .hero-title { font-size: 48px; } }
+  @media (min-width: 1024px) { .hero-title { font-size: 64px; } }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--sup-cinza);
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  /* TAGLINE */
+  .tagline {
+    margin: 32px 0;
+    text-align: center;
+  }
+  .tagline-1 {
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--sup-cinza);
+    margin-bottom: 6px;
+  }
+  @media (min-width: 640px) { .tagline-1 { font-size: 20px; } }
+  .tagline-2 {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--sup-branco);
+  }
+  @media (min-width: 640px) { .tagline-2 { font-size: 26px; } }
+
+  /* KPI HIGHLIGHTS */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  @media (min-width: 768px) { .kpi-row { grid-template-columns: repeat(4, 1fr); } }
+  .kpi-card {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all .18s cubic-bezier(.2,.7,.3,1);
+  }
+  .kpi-card:hover {
+    border-color: var(--sup-vermelho);
+    transform: translateY(-2px);
+  }
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .kpi-value {
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--sup-branco);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  @media (min-width: 768px) { .kpi-value { font-size: 28px; } }
+  .kpi-value.red { color: var(--sup-vermelho); }
+  .kpi-trend {
+    font-size: 11px;
+    color: var(--sup-ok);
+    font-weight: 600;
+  }
+
+  /* SECTION */
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .22em;
+    color: var(--sup-branco);
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--sup-linha);
+    position: relative;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--sup-vermelho);
+  }
+  .section-desc {
+    color: var(--sup-cinza);
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  /* RELATÓRIOS GRID */
+  .reports-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) { .reports-grid { grid-template-columns: repeat(2, 1fr); } }
+  .report-card {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: all .18s cubic-bezier(.2,.7,.3,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .report-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--sup-vermelho);
+    opacity: 0;
+    transition: opacity .18s;
+  }
+  .report-card:hover {
+    background: var(--sup-grafite-2);
+    transform: translateY(-2px);
+    border-color: var(--sup-vermelho);
+  }
+  .report-card:hover::before { opacity: 1; }
+  .report-card-kicker {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-vermelho);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .report-card-title {
+    font-weight: 700;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: -.01em;
+    color: var(--sup-branco);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .report-card-desc {
+    font-size: 13px;
+    color: var(--sup-cinza);
+    line-height: 1.6;
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  .report-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--sup-vermelho);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+  }
+  .report-card-cta::after { content: '→'; transition: transform .18s; }
+  .report-card:hover .report-card-cta::after { transform: translateX(4px); }
+
+  /* INFO CARDS */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
+  .info-card {
+    background: var(--sup-grafite);
+    border: 1px solid var(--sup-linha);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .info-card-label {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .info-card-value {
+    color: var(--sup-branco);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .info-card-value strong {
+    color: var(--sup-vermelho);
+    font-weight: 700;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 2px solid var(--sup-vermelho);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-brand {
+    font-size: 12px;
+    color: var(--sup-cinza-esc);
+    line-height: 1.6;
+  }
+  .footer-brand strong { color: var(--sup-vermelho); font-weight: 700; }
+  .footer-link {
+    color: var(--sup-cinza);
+    text-decoration: none;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-weight: 600;
+  }
+  .footer-link:hover { color: var(--sup-vermelho); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- TOP NAV -->
+  <header class="topnav">
+    <div class="wordmark">
+      <span class="wm-s">SUPREMA</span>
+      <span class="wm-p">Pizza</span>
+    </div>
+    <span class="badge">Operação Ativa</span>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-kicker">Área do Cliente · Performance</div>
+    <h1 class="hero-title">Performance da<br>Suprema</h1>
+    <p class="hero-sub">
+      Acompanhamento mensal das campanhas, relatórios consolidados e análise de
+      performance da operação de marketing digital — mantida pela Fenice Lab.
+    </p>
+
+    <div class="tagline">
+      <div class="tagline-1">Quando o queijo escorre…</div>
+      <div class="tagline-2">a pizza tá no ponto.</div>
+    </div>
+  </div>
+
+  <!-- KPIs RESUMO MÊS ATUAL -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Faturamento Maio</div>
+      <div class="kpi-value red mono">R$&nbsp;39.789</div>
+      <div class="kpi-trend">+ ROAS 16,93×</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Compras</div>
+      <div class="kpi-value mono">324</div>
+      <div class="kpi-trend">+ Ticket R$ 122,81</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Investimento</div>
+      <div class="kpi-value mono">R$&nbsp;2.350</div>
+      <div class="kpi-trend">+ CPA R$ 7,26</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Alcance</div>
+      <div class="kpi-value mono">103.877</div>
+      <div class="kpi-trend">+ 442k impressões</div>
+    </div>
+  </div>
+
+  <!-- RELATÓRIOS -->
+  <section class="section">
+    <h2 class="section-title">Relatórios Disponíveis</h2>
+    <p class="section-desc">
+      Análises mensais consolidadas — faturamento, funil de conversão e ranking de campanhas.
+    </p>
+    <div class="reports-grid">
+
+      <a class="report-card" href="relatorio-maio.html">
+        <div class="report-card-kicker">Maio · 2026</div>
+        <div class="report-card-title">Fechamento Mensal</div>
+        <p class="report-card-desc">
+          Performance consolidada de maio: R$ 39.789 em faturamento, ROAS 16,93×,
+          324 compras. Análise das 4 campanhas ativas, funil de conversão e
+          recomendações pra junho.
+        </p>
+        <span class="report-card-cta">Abrir relatório</span>
+      </a>
+
+      <div class="report-card" style="opacity:.5; pointer-events:none;">
+        <div class="report-card-kicker">Junho · 2026</div>
+        <div class="report-card-title">Em andamento</div>
+        <p class="report-card-desc">
+          Relatório de junho será disponibilizado no fechamento do mês. Campanhas
+          renovadas: VENDAS MAIO 01 (R$ 1.500) e VENDAS FEV (R$ 4.400).
+        </p>
+        <span class="report-card-cta" style="color:var(--sup-cinza-esc);">Aguardando fechamento</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- OPERAÇÃO -->
+  <section class="section">
+    <h2 class="section-title">Operação</h2>
+    <div class="info-grid">
+
+      <div class="info-card">
+        <div class="info-card-label">Cardápio Digital</div>
+        <div class="info-card-value">
+          <strong>pedir.delivery/app/asupremapizza</strong><br>
+          Onde a operação de mídia direciona o tráfego dos anúncios.
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-label">Endereço</div>
+        <div class="info-card-value">
+          <strong>Rua General Osório, 3012</strong><br>
+          Velha · Blumenau/SC
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-label">Instagram</div>
+        <div class="info-card-value">
+          <strong>@asupremapizza</strong><br>
+          Conta Business · 764 publicações
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-label">Mantido por</div>
+        <div class="info-card-value">
+          <strong>Fenice Lab</strong><br>
+          Marketing Digital & Performance
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">
+      Operação mantida por <strong>Fenice Lab</strong><br>
+      Marketing Digital & Performance · Blumenau/SC · 2026
+    </div>
+    <a class="footer-link" href="../">← Dashboard principal</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
