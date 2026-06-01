@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🍔 Relatório Arena Gourmet — 28/05/2026</title>
+  <title>🍔 Relatório Arena Gourmet — Maio/2026</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* PAGE — formato vertical único pra WhatsApp */
     @page {
-      size: 210mm 410mm; /* altura ajustada — 1 página garantida */
+      size: 210mm 480mm;
       margin: 0;
     }
 
@@ -30,9 +29,9 @@
     .report {
       width: 210mm;
       background:
-        radial-gradient(circle at 0% 0%, rgba(168,85,247,0.15), transparent 40%),
+        radial-gradient(circle at 0% 0%, rgba(168,85,247,0.18), transparent 40%),
         radial-gradient(circle at 100% 50%, rgba(16,185,129,0.12), transparent 40%),
-        radial-gradient(circle at 50% 100%, rgba(245,158,11,0.08), transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(245,158,11,0.10), transparent 40%),
         #0a0a0a;
       padding: 14mm 12mm;
       box-sizing: border-box;
@@ -57,11 +56,8 @@
       border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .pulse-dot { animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
     .revenue-banner {
-      background: linear-gradient(135deg, rgba(16,185,129,0.18) 0%, rgba(5,150,105,0.06) 100%);
+      background: linear-gradient(135deg, rgba(16,185,129,0.20) 0%, rgba(5,150,105,0.06) 100%);
       border: 1px solid rgba(16,185,129,0.4);
       position: relative;
       overflow: hidden;
@@ -74,35 +70,16 @@
       pointer-events: none;
     }
 
-    .glow-purple { box-shadow: 0 0 40px rgba(168,85,247,0.3); }
-
     .campaign-row {
       transition: background 0.15s ease;
       border-left: 3px solid var(--c-color, #a855f7);
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .badge-winner { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-    .badge-ok { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-    .badge-warn { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-
     .stage {
-      background: linear-gradient(135deg, rgba(168,85,247,0.08) 0%, rgba(16,185,129,0.05) 100%);
+      background: linear-gradient(135deg, rgba(168,85,247,0.10) 0%, rgba(16,185,129,0.06) 100%);
       border-radius: 12px;
       padding: 10px 14px;
-      border: 1px solid rgba(168,85,247,0.2);
+      border: 1px solid rgba(168,85,247,0.22);
     }
 
     .stage-arrow {
@@ -112,10 +89,16 @@
       line-height: 1;
     }
 
-    /* PRINT */
-    @media print {
-      body { background: #0a0a0a; }
-      .no-print { display: none; }
+    .section-divider {
+      background: linear-gradient(90deg, transparent, rgba(168,85,247,0.4), transparent);
+      height: 1px;
+      margin: 20px 0;
+    }
+
+    .hamburger-section {
+      background: linear-gradient(135deg, rgba(239,68,68,0.06) 0%, rgba(245,158,11,0.04) 100%);
+      border: 1px dashed rgba(239,68,68,0.25);
+      border-radius: 16px;
     }
   </style>
 </head>
@@ -129,9 +112,8 @@
       <!-- HEADER -->
       <header class="flex items-center justify-between mb-5">
         <div class="flex items-center gap-4">
-          <!-- LOGO do cliente -->
           <div class="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
-            <img src="/clientes/arena/Materiais/logo/arena-gourmet-logo.png"
+            <img src="/clientes/arena/Arena Gourmet Design System/assets/logo-principal.png"
                  alt="Arena Gourmet"
                  class="w-full h-full object-contain"
                  onerror="this.outerHTML='<div class=\'text-4xl\'>🍔</div>'" />
@@ -139,15 +121,15 @@
           <div>
             <div class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 mb-1">Fenice Lab · Relatório de Performance</div>
             <h1 class="text-3xl font-black tracking-tight leading-none">Arena Gourmet</h1>
-            <p class="text-zinc-500 text-xs mono mt-1">Dia Mundial do Hambúrguer · 28/05/2026</p>
+            <p class="text-zinc-500 text-xs mono mt-1">Maio/2026 · Fechamento Mensal</p>
           </div>
         </div>
         <div class="text-right">
           <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            FECHADO
+            MÊS FECHADO
           </div>
-          <div class="text-[9px] mono text-zinc-600 mt-2">Gerado em 29/05/2026</div>
+          <div class="text-[9px] mono text-zinc-600 mt-2">Gerado em 01/06/2026</div>
         </div>
       </header>
 
@@ -159,14 +141,14 @@
           </div>
           <div class="flex items-end justify-between gap-4">
             <div>
-              <div class="text-6xl font-black mono text-emerald-400 leading-none tracking-tight">R$&nbsp;1.787,78</div>
+              <div class="text-6xl font-black mono text-emerald-400 leading-none tracking-tight">R$&nbsp;7.851,59</div>
               <div class="text-xs text-emerald-300/70 mt-2 mono">
-                Investido R$ 194,42 · <span class="text-emerald-300 font-bold">ROAS 9,20×</span> · 18 compras
+                Investido R$ 1.137,10 · <span class="text-emerald-300 font-bold">ROAS 6,90×</span> · 84 compras
               </div>
             </div>
             <div class="text-right shrink-0">
               <div class="text-[9px] uppercase tracking-widest text-emerald-300/70">Retorno líquido</div>
-              <div class="text-2xl font-black mono text-emerald-400">R$&nbsp;1.593,36</div>
+              <div class="text-2xl font-black mono text-emerald-400">R$&nbsp;6.714,49</div>
             </div>
           </div>
         </div>
@@ -176,19 +158,19 @@
       <section class="grid grid-cols-4 gap-3 mb-4">
         <div class="card rounded-xl p-3">
           <div class="text-[9px] uppercase tracking-wider text-zinc-500 mb-1">Investimento</div>
-          <div class="text-lg font-black mono">R$&nbsp;194,42</div>
+          <div class="text-lg font-black mono">R$&nbsp;1.137,10</div>
         </div>
         <div class="card rounded-xl p-3">
           <div class="text-[9px] uppercase tracking-wider text-zinc-500 mb-1">Compras Realizadas</div>
-          <div class="text-lg font-black mono text-emerald-400">18</div>
+          <div class="text-lg font-black mono text-emerald-400">84</div>
         </div>
         <div class="card rounded-xl p-3">
           <div class="text-[9px] uppercase tracking-wider text-zinc-500 mb-1">Ticket Médio</div>
-          <div class="text-lg font-black mono">R$&nbsp;99,32</div>
+          <div class="text-lg font-black mono">R$&nbsp;93,47</div>
         </div>
         <div class="card rounded-xl p-3">
           <div class="text-[9px] uppercase tracking-wider text-zinc-500 mb-1">CPA</div>
-          <div class="text-lg font-black mono">R$&nbsp;10,80</div>
+          <div class="text-lg font-black mono">R$&nbsp;13,54</div>
         </div>
       </section>
 
@@ -196,22 +178,22 @@
       <section class="grid grid-cols-3 gap-3 mb-4">
         <div class="card rounded-xl p-4">
           <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2">👁️ Impressões</div>
-          <div class="text-2xl font-black mono">47.309</div>
+          <div class="text-2xl font-black mono">188.388</div>
         </div>
         <div class="card rounded-xl p-4">
           <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2">👥 Alcance</div>
-          <div class="text-2xl font-black mono">44.540</div>
+          <div class="text-2xl font-black mono">96.630</div>
           <div class="text-[9px] text-zinc-600 mt-1 mono">pessoas únicas</div>
         </div>
         <div class="card rounded-xl p-4">
           <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2">🛒 Adições ao Carrinho</div>
-          <div class="text-2xl font-black mono">97</div>
-          <div class="text-[9px] text-zinc-600 mt-1 mono">43 iniciaram compra</div>
+          <div class="text-2xl font-black mono">386</div>
+          <div class="text-[9px] text-zinc-600 mt-1 mono">165 iniciaram compra</div>
         </div>
       </section>
 
       <!-- FUNIL VISUAL -->
-      <section class="mb-4">
+      <section class="mb-5">
         <h2 class="text-sm font-bold mb-3 flex items-center gap-2">
           🎯 <span class="uppercase tracking-wider text-zinc-300">Funil de Conversão</span>
         </h2>
@@ -222,56 +204,56 @@
                 <span>👁️</span>
                 <span class="text-xs font-semibold">Impressões</span>
               </div>
-              <span class="text-base font-black mono">47.309</span>
+              <span class="text-base font-black mono">188.388</span>
             </div>
           </div>
-          <div class="stage-arrow">↓ <span class="text-[9px] mono text-emerald-400">94,1%</span></div>
-          <div class="stage" style="width: 95%; margin: 0 auto;">
+          <div class="stage-arrow">↓ <span class="text-[9px] mono text-emerald-400">51,3%</span></div>
+          <div class="stage" style="width: 85%; margin: 0 auto;">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span>👥</span>
                 <span class="text-xs font-semibold">Alcance único</span>
               </div>
-              <span class="text-base font-black mono">44.540</span>
+              <span class="text-base font-black mono">96.630</span>
             </div>
           </div>
           <div class="stage-arrow">↓</div>
-          <div class="stage" style="width: 35%; margin: 0 auto;">
+          <div class="stage" style="width: 50%; margin: 0 auto;">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span>🛒</span>
                 <span class="text-xs font-semibold">Adições ao Carrinho</span>
               </div>
-              <span class="text-base font-black mono">97</span>
+              <span class="text-base font-black mono">386</span>
             </div>
           </div>
-          <div class="stage-arrow">↓ <span class="text-[9px] mono text-emerald-400">44,3%</span></div>
-          <div class="stage" style="width: 30%; margin: 0 auto;">
+          <div class="stage-arrow">↓ <span class="text-[9px] mono text-emerald-400">42,7%</span></div>
+          <div class="stage" style="width: 38%; margin: 0 auto;">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span>💳</span>
                 <span class="text-xs font-semibold">Iniciaram Compra</span>
               </div>
-              <span class="text-base font-black mono">43</span>
+              <span class="text-base font-black mono">165</span>
             </div>
           </div>
-          <div class="stage-arrow">↓ <span class="text-[9px] mono text-emerald-400">41,9%</span></div>
-          <div class="stage" style="width: 28%; margin: 0 auto; background: linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(52,211,153,0.1) 100%); border-color: rgba(16,185,129,0.5); box-shadow: 0 0 30px rgba(16,185,129,0.25);">
+          <div class="stage-arrow">↓ <span class="text-[9px] mono text-emerald-400">50,9%</span></div>
+          <div class="stage" style="width: 30%; margin: 0 auto; background: linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(52,211,153,0.1) 100%); border-color: rgba(16,185,129,0.5); box-shadow: 0 0 30px rgba(16,185,129,0.25);">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span>✅</span>
                 <span class="text-xs font-semibold">Compras Realizadas</span>
               </div>
-              <span class="text-lg font-black mono text-emerald-400">18</span>
+              <span class="text-lg font-black mono text-emerald-400">84</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- RANKING DE CAMPANHAS -->
+      <!-- RANKING DE CAMPANHAS PRINCIPAIS (ATEMPORAIS) -->
       <section class="mb-4">
         <h2 class="text-sm font-bold mb-3 flex items-center gap-2">
-          🏆 <span class="uppercase tracking-wider text-zinc-300">Ranking de Campanhas</span>
+          🏆 <span class="uppercase tracking-wider text-zinc-300">Campanhas Permanentes — Por ROAS</span>
         </h2>
 
         <div class="card rounded-xl overflow-hidden">
@@ -292,64 +274,89 @@
                 <td class="py-2 px-3 mono text-base">🏆</td>
                 <td class="py-2 px-1">
                   <div class="font-bold text-xs">[STARKEN][VENDAS][03]</div>
-                  <div class="text-[9px] text-emerald-400/70 mono">melhor ROAS</div>
+                  <div class="text-[9px] text-emerald-400/70 mono">campeã do mês · escalável</div>
                 </td>
-                <td class="py-2 px-1 text-right mono font-bold">R$ 24,20</td>
-                <td class="py-2 px-1 text-right mono font-black text-emerald-400">5</td>
-                <td class="py-2 px-1 text-right mono">R$ 134,88</td>
-                <td class="py-2 px-1 text-right mono">R$ 4,84</td>
-                <td class="py-2 px-3 text-right mono font-black text-lg text-emerald-400">27,87×</td>
+                <td class="py-2 px-1 text-right mono font-bold">R$ 343,18</td>
+                <td class="py-2 px-1 text-right mono font-black text-emerald-400">35</td>
+                <td class="py-2 px-1 text-right mono">R$ 92,10</td>
+                <td class="py-2 px-1 text-right mono">R$ 9,81</td>
+                <td class="py-2 px-3 text-right mono font-black text-lg text-emerald-400">9,39×</td>
               </tr>
               <tr class="campaign-row" style="--c-color: #34d399;">
                 <td class="py-2 px-3 mono text-base">🥈</td>
                 <td class="py-2 px-1">
                   <div class="font-bold text-xs">[STARKEN][VENDAS][02]</div>
-                  <div class="text-[9px] text-emerald-400/70 mono">alto ROAS</div>
+                  <div class="text-[9px] text-emerald-400/70 mono">performance sólida</div>
                 </td>
-                <td class="py-2 px-1 text-right mono font-bold">R$ 29,70</td>
-                <td class="py-2 px-1 text-right mono font-black text-emerald-400">6</td>
-                <td class="py-2 px-1 text-right mono">R$ 87,88</td>
-                <td class="py-2 px-1 text-right mono">R$ 4,95</td>
-                <td class="py-2 px-3 text-right mono font-black text-lg text-emerald-400">17,75×</td>
+                <td class="py-2 px-1 text-right mono font-bold">R$ 347,66</td>
+                <td class="py-2 px-1 text-right mono font-black text-emerald-400">27</td>
+                <td class="py-2 px-1 text-right mono">R$ 90,75</td>
+                <td class="py-2 px-1 text-right mono">R$ 12,88</td>
+                <td class="py-2 px-3 text-right mono font-black text-lg text-emerald-400">7,05×</td>
               </tr>
-              <tr class="campaign-row" style="--c-color: #fbbf24;">
+              <tr class="campaign-row" style="--c-color: #34d399;">
                 <td class="py-2 px-3 mono text-base">🥉</td>
                 <td class="py-2 px-1">
                   <div class="font-bold text-xs">[STARKEN][VENDAS][01]</div>
-                  <div class="text-[9px] text-yellow-400/70 mono">forte</div>
+                  <div class="text-[9px] text-emerald-400/70 mono">maior ticket médio</div>
                 </td>
-                <td class="py-2 px-1 text-right mono font-bold">R$ 19,48</td>
-                <td class="py-2 px-1 text-right mono font-black text-emerald-400">3</td>
-                <td class="py-2 px-1 text-right mono">R$ 80,97</td>
-                <td class="py-2 px-1 text-right mono">R$ 6,49</td>
-                <td class="py-2 px-3 text-right mono font-black text-lg text-yellow-400">12,47×</td>
-              </tr>
-              <tr class="campaign-row" style="--c-color: #f87171;">
-                <td class="py-2 px-3 mono text-zinc-600">4</td>
-                <td class="py-2 px-1">
-                  <div class="font-bold text-xs">[STARKEN][VENDAS][03] — Cópia</div>
-                  <div class="text-[9px] text-red-400/70 mono">otimizar</div>
-                </td>
-                <td class="py-2 px-1 text-right mono font-bold">R$ 65,86</td>
-                <td class="py-2 px-1 text-right mono font-black">2</td>
-                <td class="py-2 px-1 text-right mono">R$ 95,83</td>
-                <td class="py-2 px-1 text-right mono">R$ 32,93</td>
-                <td class="py-2 px-3 text-right mono font-black text-lg text-red-400">2,91×</td>
-              </tr>
-              <tr class="campaign-row" style="--c-color: #f87171;">
-                <td class="py-2 px-3 mono text-zinc-600">5</td>
-                <td class="py-2 px-1">
-                  <div class="font-bold text-xs">[STARKEN][RECO][28/05]</div>
-                  <div class="text-[9px] text-zinc-500 mono">awareness</div>
-                </td>
-                <td class="py-2 px-1 text-right mono font-bold">R$ 55,18</td>
-                <td class="py-2 px-1 text-right mono font-black">2</td>
-                <td class="py-2 px-1 text-right mono">R$ 75,75</td>
-                <td class="py-2 px-1 text-right mono">R$ 27,59</td>
-                <td class="py-2 px-3 text-right mono font-black text-lg text-red-400">2,75×</td>
+                <td class="py-2 px-1 text-right mono font-bold">R$ 290,02</td>
+                <td class="py-2 px-1 text-right mono font-black text-emerald-400">18</td>
+                <td class="py-2 px-1 text-right mono">R$ 101,93</td>
+                <td class="py-2 px-1 text-right mono">R$ 16,11</td>
+                <td class="py-2 px-3 text-right mono font-black text-lg text-emerald-400">6,33×</td>
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="text-[10px] text-zinc-500 mono mt-2 ml-3">
+          🟢 Subtotal Permanentes: R$ 980,86 · 80 vendas · faturamento R$ 7.508,44 · ROAS médio 7,65×
+        </div>
+      </section>
+
+      <!-- CAMPANHAS DIA DO HAMBÚRGUER (SEPARADAS) -->
+      <section class="hamburger-section p-4 mb-4">
+        <h2 class="text-sm font-bold mb-3 flex items-center gap-2">
+          🍔 <span class="uppercase tracking-wider text-zinc-300">Campanhas Sazonais — Dia do Hambúrguer (28/05)</span>
+        </h2>
+        <p class="text-[10px] text-zinc-500 mb-3 leading-relaxed">
+          Campanhas pontuais ativadas exclusivamente no Dia Mundial do Hambúrguer (28/05). Performance separada das campanhas permanentes pra análise justa do evento sazonal.
+        </p>
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="text-[9px] uppercase tracking-wider text-zinc-500 border-b border-zinc-800">
+              <th class="py-2 px-3 text-left">Campanha</th>
+              <th class="py-2 px-1 text-right">Gasto</th>
+              <th class="py-2 px-1 text-right">Vendas</th>
+              <th class="py-2 px-1 text-right">CPA</th>
+              <th class="py-2 px-3 text-right">ROAS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="campaign-row" style="--c-color: #fbbf24;">
+              <td class="py-2 px-3">
+                <div class="font-bold text-xs">[STARKEN][VENDAS][03] — Cópia</div>
+                <div class="text-[9px] text-yellow-400/70 mono">conversão</div>
+              </td>
+              <td class="py-2 px-1 text-right mono font-bold">R$ 65,86</td>
+              <td class="py-2 px-1 text-right mono font-black">2</td>
+              <td class="py-2 px-1 text-right mono">R$ 32,93</td>
+              <td class="py-2 px-3 text-right mono font-black text-lg text-yellow-400">2,91×</td>
+            </tr>
+            <tr class="campaign-row" style="--c-color: #f87171;">
+              <td class="py-2 px-3">
+                <div class="font-bold text-xs">[STARKEN][RECO][28/05]</div>
+                <div class="text-[9px] text-red-400/70 mono">awareness — não-vendas</div>
+              </td>
+              <td class="py-2 px-1 text-right mono font-bold">R$ 90,38</td>
+              <td class="py-2 px-1 text-right mono font-black">2</td>
+              <td class="py-2 px-1 text-right mono">R$ 45,19</td>
+              <td class="py-2 px-3 text-right mono font-black text-lg text-red-400">1,68×</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-[10px] text-zinc-500 mono mt-3 ml-3">
+          🟡 Subtotal Sazonais: R$ 156,24 · 4 vendas · faturamento R$ 343,15 · ROAS médio 2,20×
         </div>
       </section>
 
@@ -361,19 +368,27 @@
         <div class="space-y-2 text-xs">
           <div class="flex items-start gap-2">
             <span class="text-emerald-400 font-bold shrink-0">✓</span>
-            <span><strong class="text-emerald-300">VENDAS 03 é a estrela:</strong> ROAS 27,87× com apenas R$ 24,20. Ticket médio R$ 134,88 (público qualificado). <strong>Escalar gradualmente.</strong></span>
+            <span><strong class="text-emerald-300">VENDAS 03 lidera com ROAS 9,39×:</strong> 35 vendas com CPA de apenas R$ 9,81. Campanha campeã do mês — recomenda-se manter e considerar escala moderada (+20-30%) pra junho.</span>
           </div>
           <div class="flex items-start gap-2">
             <span class="text-emerald-400 font-bold shrink-0">✓</span>
-            <span><strong class="text-emerald-300">3 campanhas de vendas com ROAS acima de 12×</strong> — base sólida pra escalar.</span>
+            <span><strong class="text-emerald-300">Trio das permanentes performa consolidado:</strong> VENDAS 03, 02 e 01 entregam 80 vendas com ROAS médio de 7,65×, formando o motor da operação Arena.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold shrink-0">✓</span>
+            <span><strong class="text-emerald-300">Ticket médio consistente:</strong> R$ 93,47 médio geral, variando entre R$ 90,75 (VENDAS 02) e R$ 101,93 (VENDAS 01). Indica base de cliente estável.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold shrink-0">✓</span>
+            <span><strong class="text-emerald-300">Funil ATC → IC → Purchase saudável:</strong> 50,9% dos checkouts iniciados convertem em compra final. Indicador de baixo atrito no cardápio digital.</span>
           </div>
           <div class="flex items-start gap-2">
             <span class="text-yellow-400 font-bold shrink-0">⚠</span>
-            <span><strong class="text-yellow-300">Cópia da VENDAS 03 quebrou:</strong> mesmo conceito, ROAS caiu de 27,87× pra 2,91×. <strong>Investigar diferenças no público/criativo.</strong></span>
+            <span><strong class="text-yellow-300">Campanhas do Dia do Hambúrguer abaixo do ROAS 5×:</strong> investir em criativos mais alinhados ao público vendedor (não apenas awareness) pra próximas sazonalidades. ROAS médio de 2,20× indica espaço pra otimização.</span>
           </div>
           <div class="flex items-start gap-2">
             <span class="text-yellow-400 font-bold shrink-0">⚠</span>
-            <span><strong class="text-yellow-300">RECO (awareness) com ROAS 2,75×:</strong> esperado pra top de funil. Manter pra abastecer remarketing.</span>
+            <span><strong class="text-yellow-300">Investimento ainda concentrado em 4 campanhas:</strong> recomenda-se testes A/B em criativos das permanentes pra junho, mantendo estrutura mas explorando novos hooks.</span>
           </div>
         </div>
       </section>
@@ -384,23 +399,16 @@
           <div class="text-2xl">🔥</div>
           <div>
             <div class="text-sm font-black">Fenice Lab</div>
-            <div class="text-[9px] text-zinc-500 mono">contato@fenicelab.com.br</div>
+            <div class="text-[9px] text-zinc-500 mono">Marketing Digital & Performance</div>
           </div>
         </div>
         <div class="text-right">
           <div class="text-[9px] uppercase tracking-wider text-zinc-500">Período</div>
-          <div class="text-xs mono">28/05/2026 · Dia inteiro</div>
+          <div class="text-xs mono">01/05/2026 a 31/05/2026</div>
         </div>
       </footer>
 
     </div>
-  </div>
-
-  <!-- BUTTON DE PRINT (não aparece no PDF) -->
-  <div class="no-print fixed bottom-4 right-4">
-    <button onclick="window.print()" class="bg-emerald-500 hover:bg-emerald-400 text-black font-bold px-4 py-2 rounded-lg shadow-xl">
-      🖨️ Imprimir / Salvar PDF
-    </button>
   </div>
 
 </body>
