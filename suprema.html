@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍕 Suprema Pizza — Dashboard · Fenice Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #e5e5e5; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .card:hover { border-color: rgba(255,255,255,0.15); }
+    .period-btn {
+      transition: all 0.2s ease;
+    }
+    .period-btn.active {
+      background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+      color: white;
+      box-shadow: 0 4px 20px rgba(239,68,68,0.4);
+    }
+    .glow-success { box-shadow: 0 0 40px rgba(16,185,129,0.3); }
+    .table-row { transition: background 0.15s ease; }
+    .table-row:hover { background: rgba(255,255,255,0.03); }
+    .roas-bar {
+      background: linear-gradient(90deg, #10b981, #34d399);
+      transition: width 1s ease-out;
+    }
+
+    /* FUNIL */
+    .funnel-stage {
+      position: relative;
+      margin: 0 auto;
+      padding: 18px 24px;
+      border-radius: 14px;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .funnel-stage:hover {
+      transform: scale(1.02);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+    .funnel-stage::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      pointer-events: none;
+      opacity: 0.15;
+      transition: opacity 0.3s ease;
+    }
+    .funnel-stage:hover::before { opacity: 0.3; }
+
+    .tier-topo::before { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
+    .tier-topo { border-color: rgba(59,130,246,0.3); }
+
+    .tier-engajamento::before { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+    .tier-engajamento { border-color: rgba(139,92,246,0.3); }
+
+    .tier-intencao::before { background: linear-gradient(135deg, #ec4899, #f59e0b); }
+    .tier-intencao { border-color: rgba(236,72,153,0.3); }
+
+    .tier-decisao::before { background: linear-gradient(135deg, #f59e0b, #10b981); }
+    .tier-decisao { border-color: rgba(245,158,11,0.3); }
+
+    .tier-conversao::before { background: linear-gradient(135deg, #10b981, #34d399); }
+    .tier-conversao { border-color: rgba(16,185,129,0.6); box-shadow: 0 0 40px rgba(16,185,129,0.2); }
+    .tier-conversao .stage-value { color: #34d399 !important; }
+
+    .stage-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      transition: color 0.3s ease;
+    }
+
+    .dropoff-connector {
+      position: relative;
+      margin: 0 auto;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dropoff-connector .line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      transform: translateX(-50%);
+    }
+    .dropoff-badge {
+      position: relative;
+      background: #0a0a0a;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .conv-good { color: #34d399; border-color: rgba(52,211,153,0.4); }
+    .conv-warn { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
+    .conv-bad { color: #f87171; border-color: rgba(248,113,113,0.4); }
+    .number-flash { animation: flash 0.6s ease; }
+    @keyframes flash {
+      0% { color: #fff; transform: scale(1); }
+      50% { color: #facc15; transform: scale(1.05); }
+      100% { color: inherit; transform: scale(1); }
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      z-index: 50;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+  </style>
+</head>
+<body class="min-h-screen grid-bg">
+
+  <div class="max-w-[1800px] mx-auto px-6 py-6">
+
+    <!-- HEADER -->
+    <header class="mb-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+        <div>
+          <div class="flex items-center gap-3 mb-1">
+            <a href="/" class="text-zinc-500 hover:text-white text-sm">← Dashboard Geral</a>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-4xl">🍕</span>
+            <h1 class="text-4xl font-black tracking-tight">Suprema Pizza</h1>
+            <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+              ATIVO
+            </span>
+          </div>
+          <p class="text-zinc-500 text-sm mono mt-1">Conta <span id="accountId">—</span> · Pixel <span id="pixelId">—</span></p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="card rounded-xl px-4 py-2.5 text-center">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Hora local</div>
+            <div class="text-lg font-bold mono" id="currentTime">--:--:--</div>
+          </div>
+          <div class="card rounded-xl px-4 py-2.5 text-center">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Última atualização</div>
+            <div class="text-lg font-bold mono" id="lastUpdate">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERIOD SELECTOR -->
+      <div class="flex flex-wrap items-center gap-2 mt-6 p-3 card rounded-xl">
+        <span class="text-xs text-zinc-500 uppercase tracking-wider mr-2">Período:</span>
+        <button data-period="today" class="period-btn px-4 py-2 rounded-lg text-sm font-semibold bg-zinc-900 border border-zinc-800 hover:border-zinc-700">Hoje</button>
+        <button data-period="last_7d" class="period-btn px-4 py-2 rounded-lg text-sm font-semibold bg-zinc-900 border border-zinc-800 hover:border-zinc-700">Últimos 7 dias</button>
+        <button data-period="last_30d" class="period-btn px-4 py-2 rounded-lg text-sm font-semibold bg-zinc-900 border border-zinc-800 hover:border-zinc-700 active">Últimos 30 dias</button>
+        <button data-period="last_90d" class="period-btn px-4 py-2 rounded-lg text-sm font-semibold bg-zinc-900 border border-zinc-800 hover:border-zinc-700">Últimos 90 dias</button>
+        <button onclick="openCustomModal()" class="period-btn px-4 py-2 rounded-lg text-sm font-semibold bg-zinc-900 border border-zinc-800 hover:border-zinc-700">📅 Personalizado</button>
+        <div class="ml-auto text-xs text-zinc-500 mono" id="dateRange">—</div>
+      </div>
+    </header>
+
+    <!-- SUMMARY CARDS -->
+    <section class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">💰 Investimento</div>
+        <div class="text-3xl font-black mono" id="totalSpent">R$ 0,00</div>
+        <div class="text-xs text-zinc-500 mt-1"><span id="campaignCount">0</span> campanhas ativas</div>
+      </div>
+      <div class="card rounded-2xl p-5 glow-success">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">🎯 ROAS Médio</div>
+        <div class="text-3xl font-black mono text-emerald-400" id="avgRoas">—</div>
+        <div class="text-xs text-zinc-500 mt-1">retorno sobre ad spend</div>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">🛒 Compras</div>
+        <div class="text-3xl font-black mono" id="totalPurchases">0</div>
+        <div class="text-xs text-zinc-500 mt-1">CPA médio: <span id="avgCpa">—</span></div>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">👁️ Impressões</div>
+        <div class="text-3xl font-black mono" id="totalImpressions">0</div>
+        <div class="text-xs text-zinc-500 mt-1">Alcance: <span id="totalReach">0</span></div>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">🖱️ Cliques (link)</div>
+        <div class="text-3xl font-black mono" id="totalClicks">0</div>
+        <div class="text-xs text-zinc-500 mt-1">CTR médio: <span id="avgCtr">—</span></div>
+      </div>
+    </section>
+
+    <!-- FUNNEL VISUALIZATION -->
+    <section class="card rounded-2xl p-6 mb-6">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          <span>🎯</span> Funil de Conversão Consolidado
+        </h2>
+        <span class="text-xs text-zinc-500 mono">soma das campanhas ativas</span>
+      </div>
+      <div id="funnelViz">
+        <!-- rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ROAS RANKING -->
+    <section class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+        <span>🏆</span> Ranking de ROAS por Campanha
+      </h2>
+      <div class="space-y-4" id="roasRanking">
+        <!-- rendered by JS -->
+      </div>
+    </section>
+
+    <!-- CAMPAIGNS TABLE -->
+    <section class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+        <span>📊</span> Todas as Campanhas Ativas
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-zinc-500 border-b border-zinc-800">
+              <th class="py-3 pr-4">Campanha</th>
+              <th class="py-3 px-2 text-right">Gasto</th>
+              <th class="py-3 px-2 text-right">Imp.</th>
+              <th class="py-3 px-2 text-right">Alcance</th>
+              <th class="py-3 px-2 text-right">Freq</th>
+              <th class="py-3 px-2 text-right">CTR</th>
+              <th class="py-3 px-2 text-right">CPM</th>
+              <th class="py-3 px-2 text-right">CPC</th>
+              <th class="py-3 px-2 text-right">Cliques</th>
+              <th class="py-3 px-2 text-right">Purchase</th>
+              <th class="py-3 pl-2 text-right">ROAS</th>
+            </tr>
+          </thead>
+          <tbody id="campaignsTable">
+            <!-- rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="card rounded-2xl p-6">
+        <h3 class="text-sm uppercase tracking-wider text-zinc-500 mb-4">Gasto por Campanha</h3>
+        <div class="relative h-72"><canvas id="spentChart"></canvas></div>
+      </div>
+      <div class="card rounded-2xl p-6">
+        <h3 class="text-sm uppercase tracking-wider text-zinc-500 mb-4">CTR & CPM (eixo duplo)</h3>
+        <div class="relative h-72"><canvas id="effChart"></canvas></div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center text-zinc-600 text-xs py-6 border-t border-zinc-800">
+      <p class="mb-1">Suprema Pizza · Dashboard Fenice Lab · <a href="#" onclick="loadData(); return false;" class="text-emerald-400 hover:text-emerald-300">↻ refresh manual</a></p>
+      <p class="mono">Snapshot: data/suprema.json · Meta Ads MCP</p>
+    </footer>
+  </div>
+
+  <!-- MODAL PERÍODO PERSONALIZADO -->
+  <div class="modal-backdrop" id="customModal">
+    <div class="card rounded-2xl p-6 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-1">📅 Período Personalizado</h3>
+      <p class="text-sm text-zinc-500 mb-5">Selecione o intervalo de datas que deseja consultar.</p>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-zinc-500 mb-1">De</label>
+          <input type="date" id="dateFrom" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-zinc-500 mb-1">Até</label>
+          <input type="date" id="dateTo" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white" />
+        </div>
+
+        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-xs text-yellow-200">
+          ⚠️ Períodos personalizados precisam ser solicitados ao Claude pra atualizar o snapshot. Cole o trecho abaixo no chat:
+          <code class="block mt-2 mono text-yellow-100 bg-black/40 p-2 rounded text-[11px]" id="customRequest">"Atualiza Suprema com período personalizado: DD/MM → DD/MM"</code>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-5">
+        <button onclick="closeCustomModal()" class="flex-1 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-sm font-semibold">Fechar</button>
+        <button onclick="copyCustomRequest()" class="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold">📋 Copiar pedido</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let DATA = null;
+    let CURRENT_PERIOD = 'last_30d';
+    let chartSpent, chartEff;
+
+    const fmtBRL = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
+    const fmtInt = v => new Intl.NumberFormat('pt-BR').format(v || 0);
+    const fmtPct = v => (v || 0).toFixed(2) + '%';
+    const fmtRoas = v => v ? (v.toFixed(2) + 'x') : '—';
+
+    function getStatusByCtrAndRoas(c) {
+      if (c.roas && c.roas >= 5) return { class: 'text-emerald-400 bg-emerald-500/10', tag: 'WINNER' };
+      if (c.roas && c.roas >= 2) return { class: 'text-yellow-400 bg-yellow-500/10', tag: 'OK' };
+      if (c.roas && c.roas < 1) return { class: 'text-red-400 bg-red-500/10', tag: 'NEGATIVO' };
+      return { class: 'text-zinc-400 bg-zinc-700/30', tag: c.objective === 'LINK_CLICKS' ? 'TRÁFEGO' : 'S/ DADO' };
+    }
+
+    function renderSummary(campaigns) {
+      const totals = campaigns.reduce((a, c) => ({
+        spent: a.spent + (c.spent || 0),
+        imp: a.imp + (c.impressions || 0),
+        reach: a.reach + (c.reach || 0),
+        clicks: a.clicks + (c.linkClicks || 0),
+        purchases: a.purchases + (c.purchases || 0),
+      }), { spent: 0, imp: 0, reach: 0, clicks: 0, purchases: 0 });
+
+      // ROAS médio ponderado pelo gasto (só campanhas com purchases)
+      const withRoas = campaigns.filter(c => c.roas && c.spent > 0);
+      const weightedRoas = withRoas.length ?
+        withRoas.reduce((sum, c) => sum + c.roas * c.spent, 0) / withRoas.reduce((sum, c) => sum + c.spent, 0)
+        : null;
+
+      const avgCtr = totals.imp ? (campaigns.reduce((s,c) => s + (c.ctr || 0) * c.impressions, 0) / totals.imp) : 0;
+      const avgCpa = totals.purchases > 0 ? (totals.spent / totals.purchases) : null;
+
+      document.getElementById('totalSpent').textContent = fmtBRL(totals.spent);
+      document.getElementById('campaignCount').textContent = campaigns.length;
+      document.getElementById('avgRoas').textContent = weightedRoas ? weightedRoas.toFixed(2) + 'x' : '—';
+      document.getElementById('totalPurchases').textContent = fmtInt(totals.purchases);
+      document.getElementById('avgCpa').textContent = avgCpa ? fmtBRL(avgCpa) : '—';
+      document.getElementById('totalImpressions').textContent = fmtInt(totals.imp);
+      document.getElementById('totalReach').textContent = fmtInt(totals.reach);
+      document.getElementById('totalClicks').textContent = fmtInt(totals.clicks);
+      document.getElementById('avgCtr').textContent = avgCtr.toFixed(2) + '%';
+    }
+
+    function renderFunnel(funnel) {
+      if (!funnel || !funnel.length) {
+        document.getElementById('funnelViz').innerHTML = '<div class="text-zinc-500 text-sm">Sem dados de funil pra este período.</div>';
+        return;
+      }
+
+      const top = funnel[0].value || 1;
+
+      const html = funnel.map((stage, i) => {
+        const prev = i > 0 ? funnel[i-1].value : null;
+        const widthPct = Math.max((stage.value / top) * 100, 18);
+        const conv = prev != null && prev > 0 ? (stage.value / prev) * 100 : null;
+
+        let convClass = 'conv-good';
+        let convIcon = '✓';
+        if (conv !== null) {
+          if (conv >= 40) { convClass = 'conv-good'; convIcon = '↓'; }
+          else if (conv >= 10) { convClass = 'conv-warn'; convIcon = '↓'; }
+          else { convClass = 'conv-bad'; convIcon = '↓'; }
+        }
+
+        const dropoffHtml = i > 0 ? `
+          <div class="dropoff-connector">
+            <div class="line"></div>
+            <div class="dropoff-badge ${convClass}">
+              <span>${convIcon}</span>
+              <span>${conv !== null ? conv.toFixed(1) + '%' : '—'}</span>
+              <span class="text-zinc-600">·</span>
+              <span class="text-zinc-500">perdeu ${fmtInt(prev - stage.value)}</span>
+            </div>
+          </div>
+        ` : '';
+
+        const isCore = ['lpv', 'atc', 'checkout', 'purchase'].includes(stage.key);
+        const valueClass = stage.key === 'purchase' ? 'text-3xl md:text-5xl' : (isCore ? 'text-2xl md:text-4xl' : 'text-xl md:text-3xl');
+
+        return `
+          ${dropoffHtml}
+          <div class="funnel-stage tier-${stage.tier}" style="width: ${widthPct}%; max-width: 720px;">
+            <div class="relative flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="text-3xl shrink-0">${stage.icon}</div>
+                <div class="min-w-0">
+                  <div class="text-[10px] uppercase tracking-wider text-zinc-400 mb-0.5">${stage.tier}</div>
+                  <div class="font-bold text-base md:text-lg truncate">${stage.label}</div>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="stage-value ${valueClass}">${fmtInt(stage.value)}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('funnelViz').innerHTML = `
+        <div class="flex flex-col items-stretch">
+          ${html}
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 pt-6 border-t border-zinc-800">
+          <div class="bg-black/30 rounded-lg p-3 text-center">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">CTR Anúncio</div>
+            <div class="mono font-bold text-base">${calcStageConv(funnel, 'impressions', 'clicks')}</div>
+          </div>
+          <div class="bg-black/30 rounded-lg p-3 text-center">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">Click → LPV</div>
+            <div class="mono font-bold text-base">${calcStageConv(funnel, 'linkClicks', 'lpv')}</div>
+          </div>
+          <div class="bg-black/30 rounded-lg p-3 text-center">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">LPV → ATC</div>
+            <div class="mono font-bold text-base">${calcStageConv(funnel, 'lpv', 'atc')}</div>
+          </div>
+          <div class="bg-black/30 rounded-lg p-3 text-center">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">Imp → Purchase</div>
+            <div class="mono font-bold text-base text-emerald-400">${calcStageConv(funnel, 'impressions', 'purchase')}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function calcStageConv(funnel, fromKey, toKey) {
+      const from = funnel.find(s => s.key === fromKey)?.value || 0;
+      const to = funnel.find(s => s.key === toKey)?.value || 0;
+      if (from === 0) return '—';
+      return ((to / from) * 100).toFixed(2) + '%';
+    }
+
+    function renderRoasRanking(campaigns) {
+      const sorted = [...campaigns].sort((a,b) => (b.roas || 0) - (a.roas || 0));
+      const max = sorted[0]?.roas || 1;
+
+      const html = sorted.map(c => {
+        const pct = c.roas ? Math.min((c.roas / max) * 100, 100) : 0;
+        const status = getStatusByCtrAndRoas(c);
+        return `
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-3 h-3 rounded-full shrink-0" style="background: ${c.color}"></span>
+                <span class="text-sm font-medium truncate">${c.name}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded ${status.class} shrink-0">${status.tag}</span>
+              </div>
+              <div class="flex items-center gap-3 shrink-0 text-sm">
+                <span class="text-zinc-500 mono">${fmtInt(c.purchases || 0)} compras</span>
+                <span class="font-black mono text-emerald-400 text-base">${fmtRoas(c.roas)}</span>
+              </div>
+            </div>
+            <div class="h-2.5 bg-zinc-900 rounded-full overflow-hidden">
+              <div class="roas-bar h-full rounded-full" style="width: ${pct}%; background: linear-gradient(90deg, ${c.color}, ${c.color}aa);"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('roasRanking').innerHTML = html;
+    }
+
+    function renderTable(campaigns) {
+      const html = campaigns.map(c => {
+        const status = getStatusByCtrAndRoas(c);
+        const roasColor = c.roas ? (c.roas >= 5 ? 'text-emerald-400' : c.roas >= 2 ? 'text-yellow-400' : 'text-red-400') : 'text-zinc-500';
+        return `
+          <tr class="table-row border-b border-zinc-900">
+            <td class="py-3 pr-4">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background: ${c.color}"></span>
+                <span class="font-medium truncate" title="${c.name}">${c.name}</span>
+              </div>
+              <span class="text-[10px] mono text-zinc-600 ml-4">${c.objective}</span>
+            </td>
+            <td class="py-3 px-2 text-right mono font-semibold">${fmtBRL(c.spent)}</td>
+            <td class="py-3 px-2 text-right mono">${fmtInt(c.impressions)}</td>
+            <td class="py-3 px-2 text-right mono">${fmtInt(c.reach)}</td>
+            <td class="py-3 px-2 text-right mono">${(c.frequency || 0).toFixed(2)}</td>
+            <td class="py-3 px-2 text-right mono">${fmtPct(c.ctr)}</td>
+            <td class="py-3 px-2 text-right mono">${fmtBRL(c.cpm)}</td>
+            <td class="py-3 px-2 text-right mono">${fmtBRL(c.cpc)}</td>
+            <td class="py-3 px-2 text-right mono">${fmtInt(c.linkClicks || c.clicks)}</td>
+            <td class="py-3 px-2 text-right mono ${c.purchases ? 'text-emerald-400 font-bold' : 'text-zinc-500'}">${c.purchases !== null ? fmtInt(c.purchases) : '—'}</td>
+            <td class="py-3 pl-2 text-right mono font-black text-base ${roasColor}">${fmtRoas(c.roas)}</td>
+          </tr>
+        `;
+      }).join('');
+      document.getElementById('campaignsTable').innerHTML = html;
+    }
+
+    function renderCharts(campaigns) {
+      const labels = campaigns.map(c => c.name.replace('[STARKEN]','').slice(0, 25));
+      const colors = campaigns.map(c => c.color);
+
+      // SPENT
+      if (chartSpent) chartSpent.destroy();
+      chartSpent = new Chart(document.getElementById('spentChart'), {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: campaigns.map(c => c.spent),
+            backgroundColor: colors,
+            borderColor: '#0a0a0a',
+            borderWidth: 4,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#999', padding: 12, font: { size: 11 } } },
+            tooltip: { backgroundColor: '#000', padding: 12, callbacks: { label: ctx => ` ${ctx.label}: ${fmtBRL(ctx.parsed)}` } }
+          }
+        }
+      });
+
+      // EFFICIENCY (CTR + CPM dual axis)
+      if (chartEff) chartEff.destroy();
+      chartEff = new Chart(document.getElementById('effChart'), {
+        data: {
+          labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'CTR (%)',
+              data: campaigns.map(c => c.ctr),
+              backgroundColor: 'rgba(16, 185, 129, 0.7)',
+              borderRadius: 6,
+              yAxisID: 'y'
+            },
+            {
+              type: 'line',
+              label: 'CPM (R$)',
+              data: campaigns.map(c => c.cpm),
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245,158,11,0.1)',
+              borderWidth: 2,
+              pointBackgroundColor: '#f59e0b',
+              pointRadius: 5,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#999' } },
+            tooltip: { backgroundColor: '#000', padding: 12 }
+          },
+          scales: {
+            y: {
+              type: 'linear', position: 'left', beginAtZero: true,
+              ticks: { color: '#10b981', callback: v => v + '%' },
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              title: { display: true, text: 'CTR', color: '#10b981' }
+            },
+            y1: {
+              type: 'linear', position: 'right', beginAtZero: true,
+              ticks: { color: '#f59e0b', callback: v => 'R$' + v },
+              grid: { display: false },
+              title: { display: true, text: 'CPM', color: '#f59e0b' }
+            },
+            x: { ticks: { color: '#999', font: { size: 10 } }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function renderPeriod(periodKey) {
+      CURRENT_PERIOD = periodKey;
+      const period = DATA.periods[periodKey];
+      if (!period) return;
+
+      // Update active button
+      document.querySelectorAll('.period-btn').forEach(b => {
+        if (b.dataset.period === periodKey) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+
+      document.getElementById('dateRange').textContent = period.dateRange;
+
+      // Sort campaigns by spent (desc)
+      const campaigns = [...period.campaigns].sort((a,b) => (b.spent || 0) - (a.spent || 0));
+
+      renderSummary(campaigns);
+      renderFunnel(period.funnel);
+      renderRoasRanking(campaigns);
+      renderTable(campaigns);
+      renderCharts(campaigns);
+    }
+
+    async function loadData() {
+      try {
+        const r = await fetch('./data/suprema.json?ts=' + Date.now());
+        DATA = await r.json();
+        document.getElementById('accountId').textContent = DATA.accountId;
+        document.getElementById('pixelId').textContent = DATA.pixelId;
+        document.getElementById('lastUpdate').textContent = DATA.lastUpdateFormatted || '—';
+        renderPeriod(CURRENT_PERIOD);
+      } catch (err) {
+        console.error('Erro:', err);
+      }
+    }
+
+    function tick() {
+      const opts = { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('currentTime').textContent = new Intl.DateTimeFormat('pt-BR', opts).format(new Date());
+    }
+
+    // Period buttons
+    document.querySelectorAll('.period-btn[data-period]').forEach(btn => {
+      btn.addEventListener('click', () => renderPeriod(btn.dataset.period));
+    });
+
+    // Custom modal
+    function openCustomModal() {
+      const today = new Date();
+      const monthAgo = new Date();
+      monthAgo.setDate(today.getDate() - 30);
+      document.getElementById('dateFrom').value = monthAgo.toISOString().slice(0,10);
+      document.getElementById('dateTo').value = today.toISOString().slice(0,10);
+      updateCustomRequest();
+      document.getElementById('customModal').classList.add('open');
+    }
+    function closeCustomModal() {
+      document.getElementById('customModal').classList.remove('open');
+    }
+    function updateCustomRequest() {
+      const from = document.getElementById('dateFrom').value;
+      const to = document.getElementById('dateTo').value;
+      const fmtDate = d => d ? d.split('-').reverse().join('/') : '__';
+      document.getElementById('customRequest').textContent =
+        `"Atualiza Suprema com período personalizado: ${fmtDate(from)} → ${fmtDate(to)}"`;
+    }
+    function copyCustomRequest() {
+      const text = document.getElementById('customRequest').textContent;
+      navigator.clipboard.writeText(text).then(() => alert('Pedido copiado! Cola no chat do Claude.'));
+    }
+    document.getElementById('dateFrom').addEventListener('change', updateCustomRequest);
+    document.getElementById('dateTo').addEventListener('change', updateCustomRequest);
+
+    // Boot
+    loadData();
+    tick();
+    setInterval(tick, 1000);
+    setInterval(loadData, 60000); // refresh a cada 1 min (cliente, dados não mudam tão rápido)
+  </script>
+
+</body>
+</html>

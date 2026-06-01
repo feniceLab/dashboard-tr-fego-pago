@@ -1,0 +1,5 @@
+{
+  "_doc": "Aliases de slug → pasta de cliente. Usado pra resolver paths como /clientes/<slug>/* nos assets (logos, imagens, etc). Copie para client-aliases.json e preencha com seus clientes.",
+  "cliente-um": "Cliente Um",
+  "cliente-dois": "Cliente Dois - Subpasta"
+}

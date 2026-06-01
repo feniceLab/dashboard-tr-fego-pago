@@ -1,0 +1,21 @@
+{
+  "_doc": "Lista de cron jobs configurados externamente (Claude Code, n8n, GitHub Actions etc). Copie para crons.json e atualize conforme suas automações.",
+  "updated_at": "2026-06-01T00:00:00Z",
+  "crons": [
+    {
+      "id": "exemplo-001",
+      "expression": "30 19 * * 5,6,0",
+      "tz": "BRT",
+      "type": "ig_publish",
+      "client": "Cliente Exemplo",
+      "client_slug": "cliente-um",
+      "description": "Publica Instagram Feed — campanha exemplo",
+      "next_fire_iso": "2026-06-15T22:30:00Z",
+      "ig_business_id": "17841000000000000",
+      "image_url": "https://exemplo.com/imagem.png",
+      "session_dependent": true,
+      "recurring": false,
+      "status": "pending"
+    }
+  ]
+}

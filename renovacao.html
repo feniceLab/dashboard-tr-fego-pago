@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renovação Mensal · Fenice Lab/Starken</title>
+<style>
+  :root {
+    --bg-0: #0a0e1a;
+    --bg-1: #131b2e;
+    --bg-2: #1a2440;
+    --bg-3: #243154;
+    --text-0: #f8fafc;
+    --text-1: #cbd5e1;
+    --text-2: #94a3b8;
+    --text-3: #64748b;
+    --accent: #fbbf24;
+    --accent-dim: rgba(251, 191, 36, 0.15);
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --err: #f87171;
+    --info: #60a5fa;
+    --border: rgba(255, 255, 255, 0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg-0); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    color: var(--text-0);
+    min-height: 100vh;
+    padding: 32px 40px 60px;
+  }
+
+  /* HEADER */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: var(--text-2); font-size: 14px; margin-top: 4px; }
+  .status-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .pill {
+    padding: 7px 14px; border-radius: 999px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    font-size: 13px; font-weight: 500;
+  }
+  .pill.ok { background: rgba(74, 222, 128, 0.12); border-color: rgba(74, 222, 128, 0.35); color: var(--ok); }
+
+  /* PROCESS FLOW */
+  .flow {
+    background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+  }
+  .flow-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .flow-steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    position: relative;
+  }
+  .flow-step {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .flow-step-num {
+    display: inline-flex;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .flow-step-label { font-size: 12px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+  .flow-step-desc { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+  .flow-step.done .flow-step-num { background: rgba(74, 222, 128, 0.15); border-color: var(--ok); color: var(--ok); }
+  .flow-step.done .flow-step-num::after { content: '✓'; }
+  .flow-step.active .flow-step-num { animation: glow 1.5s ease-in-out infinite; }
+  @keyframes glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,0.4); } 50% { box-shadow: 0 0 0 6px rgba(251,191,36,0); } }
+
+  /* SUMMARY */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .summary-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .summary-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--text-2); margin-bottom: 8px; }
+  .summary-value { font-size: 26px; font-weight: 800; color: var(--text-0); }
+  .summary-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  /* SECTION */
+  .section { margin-bottom: 40px; }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-1);
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+  }
+  .section-count { font-size: 13px; color: var(--text-3); }
+
+  /* CAMPAIGN CARDS */
+  .campaigns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .campaign {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .campaign-top {
+    padding: 18px 24px;
+    background: linear-gradient(90deg, var(--bg-2), transparent);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .campaign-id { font-size: 11px; color: var(--text-3); font-family: monospace; margin-top: 4px; }
+  .campaign-name { font-size: 16px; font-weight: 700; }
+  .campaign-client { font-size: 13px; color: var(--text-2); }
+  .badge {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-starken { background: rgba(248,113,113,0.15); color: var(--err); }
+  .badge-fenice { background: rgba(192,132,252,0.15); color: #c084fc; }
+  .badge-status-renovada { background: rgba(74,222,128,0.18); color: var(--ok); }
+  .badge-status-pendente { background: rgba(251,191,36,0.18); color: var(--accent); }
+  .badge-status-manual { background: rgba(148,163,184,0.18); color: var(--text-2); }
+  .campaign-body { padding: 24px; display: grid; grid-template-columns: 1.4fr 1.6fr 1fr; gap: 28px; }
+  @media (max-width: 1100px) { .campaign-body { grid-template-columns: 1fr; } }
+
+  /* MÉTRICAS */
+  .metrics { display: flex; flex-direction: column; gap: 14px; }
+  .metric-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .metric {
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-3); margin-bottom: 4px; }
+  .metric-value { font-size: 18px; font-weight: 800; }
+  .metric-value.big { font-size: 22px; }
+  .metric-value.ok { color: var(--ok); }
+  .metric-value.warn { color: var(--warn); }
+  .metric-section-title { font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 4px; }
+
+  /* CÁLCULO ANTES → DEPOIS */
+  .compare {
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .compare-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent); }
+  .compare-row { display: grid; grid-template-columns: 1fr 32px 1fr; gap: 12px; align-items: center; }
+  .compare-box {
+    background: var(--bg-1);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+  }
+  .compare-box.after { border-color: rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.06); }
+  .compare-box-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-3); margin-bottom: 4px; }
+  .compare-box-value { font-size: 16px; font-weight: 700; }
+  .compare-arrow {
+    text-align: center;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .calc {
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 13px;
+    color: var(--text-1);
+    line-height: 1.7;
+  }
+  .calc .op { color: var(--text-3); }
+  .calc .result { color: var(--ok); font-weight: 700; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 6px; }
+
+  /* AÇÕES */
+  .actions { display: flex; flex-direction: column; gap: 12px; }
+  .action-decision {
+    background: var(--accent-dim);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .action-decision .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 4px; }
+  .action-decision .value { font-size: 14px; font-weight: 600; color: var(--text-0); }
+  .action-decision .just { font-size: 12px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+  .btn {
+    padding: 9px 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+  }
+  .btn-ghost { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-1); }
+  .empty-action { color: var(--text-3); font-size: 13px; font-style: italic; padding: 12px; }
+
+  /* MANUAL CARD */
+  .campaign.manual { opacity: 0.6; }
+  .campaign.manual .campaign-body { grid-template-columns: 1fr; }
+  .manual-warn {
+    background: rgba(148, 163, 184, 0.1);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    color: var(--text-2);
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .loading { text-align: center; color: var(--text-2); padding: 80px 0; font-size: 14px; }
+
+  .footer { text-align: center; margin-top: 50px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-3); font-size: 12px; }
+  .footer a { color: var(--text-2); text-decoration: none; margin: 0 8px; }
+  .footer a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>🔄 Renovação Mensal · Gastronomia</h1>
+    <div class="subtitle">Processo de gestão de tráfego · Visualização do fluxo de renovação de campanhas</div>
+  </div>
+  <div class="status-row">
+    <span class="pill" id="mes-label">—</span>
+    <span class="pill" id="token-status">⏳</span>
+    <button class="btn" onclick="loadData(true)">↻ Atualizar</button>
+  </div>
+</header>
+
+<!-- PROCESS FLOW -->
+<div class="flow">
+  <div class="flow-title">📋 Fluxo do Processo de Renovação</div>
+  <div class="flow-steps">
+    <div class="flow-step done">
+      <div class="flow-step-num">1</div>
+      <div class="flow-step-label">Coleta</div>
+      <div class="flow-step-desc">Puxar gasto histórico (maximum) + gasto mês anterior (last_month) via Graph API</div>
+    </div>
+    <div class="flow-step done">
+      <div class="flow-step-num">2</div>
+      <div class="flow-step-label">Análise</div>
+      <div class="flow-step-desc">ROAS histórico e do mês · Comparar com benchmark · Identificar tendência</div>
+    </div>
+    <div class="flow-step active">
+      <div class="flow-step-num">3</div>
+      <div class="flow-step-label">Decisão</div>
+      <div class="flow-step-desc">Manter / Subir % / Reduzir · Definir budget pretendido pro novo mês</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">4</div>
+      <div class="flow-step-label">Execução</div>
+      <div class="flow-step-desc">AdSet end_time PRIMEIRO · Campaign stop_time + lifetime DEPOIS · Reativar</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">5</div>
+      <div class="flow-step-label">Verificação</div>
+      <div class="flow-step-desc">Confirmar via GET · Monitorar pacing diário · Ajustes finos no decorrer do mês</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary" id="summary"></div>
+
+<div id="content"><div class="loading">Carregando campanhas...</div></div>
+
+<div class="footer">
+  Auto-refresh a cada 60s ·
+  <a href="/">Dashboard principal</a> ·
+  <a href="/agendamentos.html">Agendamentos</a>
+</div>
+
+<script>
+const REFRESH_MS = 60000;
+let cachedData = null;
+
+function fmtBRL(cents) {
+  if (cents == null) return '—';
+  const v = cents / 100;
+  return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtBRLNum(v) {
+  if (v == null) return '—';
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+function escape(s) {
+  return (s || '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+
+function agencyBadge(ag) {
+  if (ag === 'Starken') return '<span class="badge badge-starken">⚡ Starken</span>';
+  if (ag === 'Fenice Lab') return '<span class="badge badge-fenice">🔥 Fenice</span>';
+  return '<span class="badge">—</span>';
+}
+function statusBadge(s) {
+  if (s === 'renovada') return '<span class="badge badge-status-renovada">✓ Renovada</span>';
+  if (s === 'pendente') return '<span class="badge badge-status-pendente">⏳ Pendente</span>';
+  if (s === 'manual') return '<span class="badge badge-status-manual">🔧 Manual</span>';
+  return `<span class="badge">${s}</span>`;
+}
+
+function renderManualCampaign(c) {
+  return `
+    <div class="campaign manual">
+      <div class="campaign-top">
+        <div>
+          <div class="campaign-name">${escape(c.client_name)} ${agencyBadge(c.agencia)}</div>
+          <div class="campaign-id">${escape(c.campaign_name)}</div>
+        </div>
+        ${statusBadge('manual')}
+      </div>
+      <div class="campaign-body">
+        <div class="manual-warn">⚠️ Conta de anúncios <strong>${escape(c.ad_account_id)}</strong> está bloqueada no rollout MCP da Meta.<br>Renovação 100% manual via Gerenciador de Anúncios.</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCampaign(c) {
+  if (c.budget_type === 'manual' || c.status === 'manual') return renderManualCampaign(c);
+
+  const h = c.metrics?.historico;
+  const m = c.metrics?.mes_anterior;
+
+  // Cálculo do novo lifetime
+  const gastoHistCents = h ? Math.round(h.spend * 100) : null;
+  const budgetMesCents = c.budget_novo_mes_cents;
+  const novoLifetimeCalc = (gastoHistCents != null && budgetMesCents != null) ? gastoHistCents + budgetMesCents : null;
+
+  return `
+    <div class="campaign">
+      <div class="campaign-top">
+        <div>
+          <div class="campaign-name">${escape(c.campaign_name)}</div>
+          <div class="campaign-client">${escape(c.client_name)} ${agencyBadge(c.agencia)} · ${c.budget_type}</div>
+          <div class="campaign-id">campaign_id: ${c.campaign_id}</div>
+        </div>
+        ${statusBadge(c.status)}
+      </div>
+      <div class="campaign-body">
+        <!-- COLUNA 1: MÉTRICAS -->
+        <div class="metrics">
+          <div class="metric-section-title">📊 Histórico (Desde o início)</div>
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-label">Gasto total</div>
+              <div class="metric-value big">${fmtBRLNum(h?.spend)}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">ROAS</div>
+              <div class="metric-value big ${h?.roas >= 3 ? 'ok' : 'warn'}">${h?.roas?.toFixed(2) || '—'}×</div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-label">Compras</div>
+              <div class="metric-value">${h?.purchases ?? '—'}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Impressões</div>
+              <div class="metric-value" style="font-size:14px;">${h?.impressions?.toLocaleString('pt-BR') || '—'}</div>
+            </div>
+          </div>
+
+          <div class="metric-section-title" style="margin-top:8px;">📅 Mês Anterior</div>
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-label">Gasto mês</div>
+              <div class="metric-value big">${fmtBRLNum(m?.spend)}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">ROAS</div>
+              <div class="metric-value big ${m?.roas >= 3 ? 'ok' : 'warn'}">${m?.roas?.toFixed(2) || '—'}×</div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric">
+              <div class="metric-label">Compras</div>
+              <div class="metric-value">${m?.purchases ?? '—'}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Faturamento (~)</div>
+              <div class="metric-value" style="font-size:14px;">${m ? fmtBRLNum(m.spend * m.roas) : '—'}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUNA 2: ANTES → DEPOIS -->
+        <div class="compare">
+          <div class="compare-title">🔄 Renovação Aplicada</div>
+          <div class="compare-row">
+            <div class="compare-box">
+              <div class="compare-box-label">Lifetime ANTES</div>
+              <div class="compare-box-value">${fmtBRL(c.lifetime_budget_antes_cents)}</div>
+            </div>
+            <div class="compare-arrow">→</div>
+            <div class="compare-box after">
+              <div class="compare-box-label">Lifetime DEPOIS</div>
+              <div class="compare-box-value">${fmtBRL(c.lifetime_budget_depois_cents)}</div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-box">
+              <div class="compare-box-label">Fim ANTES</div>
+              <div class="compare-box-value">${fmtDate(c.stop_time_antes)}</div>
+            </div>
+            <div class="compare-arrow">→</div>
+            <div class="compare-box after">
+              <div class="compare-box-label">Fim DEPOIS</div>
+              <div class="compare-box-value">${fmtDate(c.stop_time_depois)}</div>
+            </div>
+          </div>
+          ${c.status === 'renovada' ? `
+            <div class="calc">
+              <span class="op">Gasto histórico:</span> ${fmtBRLNum(h?.spend)}<br>
+              <span class="op">+ Budget pretendido junho:</span> ${fmtBRL(c.budget_novo_mes_cents)}<br>
+              <span class="result">= Novo lifetime: ${fmtBRL(c.lifetime_budget_depois_cents)}</span>
+            </div>
+          ` : `
+            <div class="calc">
+              <span class="op">Gasto histórico:</span> ${fmtBRLNum(h?.spend)}<br>
+              <span class="op">+ Budget novo mês:</span> _a decidir_<br>
+              <span class="result">= Novo lifetime: _a calcular_</span>
+            </div>
+          `}
+        </div>
+
+        <!-- COLUNA 3: AÇÕES -->
+        <div class="actions">
+          ${c.status === 'renovada' && c.decisao ? `
+            <div class="action-decision">
+              <div class="label">✓ Decisão tomada</div>
+              <div class="value">${escape(c.decisao)}</div>
+              <div class="just">${escape(c.justificativa || '')}</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-3);text-align:center;">
+              Renovada em ${c.renovada_em ? new Date(c.renovada_em).toLocaleString('pt-BR') : '—'}
+            </div>
+          ` : `
+            <div class="empty-action">⏳ Aguardando decisão de budget pra junho</div>
+            <a class="btn" href="https://business.facebook.com/adsmanager/manage/campaigns/edit?act=${c.ad_account_id}&selected_campaign_ids=${c.campaign_id}" target="_blank">Abrir no Gerenciador ↗</a>
+          `}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function render() {
+  if (!cachedData) return;
+  const data = cachedData;
+
+  // Summary
+  const r = data.resumo;
+  const sumEl = document.getElementById('summary');
+  sumEl.innerHTML = `
+    <div class="summary-card">
+      <div class="summary-label">📋 Campanhas no mês</div>
+      <div class="summary-value">${r.total}</div>
+      <div class="summary-sub">${data.mes_label}</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">✅ Renovadas</div>
+      <div class="summary-value" style="color:var(--ok)">${r.renovadas}</div>
+      <div class="summary-sub">de ${r.total}</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">⏳ Pendentes</div>
+      <div class="summary-value" style="color:var(--accent)">${r.pendentes}</div>
+      <div class="summary-sub">precisa decisão</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">🔧 Manuais</div>
+      <div class="summary-value" style="color:var(--text-2)">${r.manuais}</div>
+      <div class="summary-sub">via Gerenciador</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">💰 Investimento total junho</div>
+      <div class="summary-value">${fmtBRL(r.investimento_total_mes_cents)}</div>
+      <div class="summary-sub">budgets decididos</div>
+    </div>
+  `;
+
+  // Atualizar pills
+  document.getElementById('mes-label').textContent = `📅 ${data.mes_label}`;
+
+  let html = '';
+  html += `<div class="section">
+    <div class="section-header">
+      <div class="section-title">🏢 Campanhas em renovação</div>
+      <div class="section-count">${data.campanhas.length} campanha${data.campanhas.length!==1?'s':''}</div>
+    </div>`;
+  html += '<div class="campaigns">';
+  data.campanhas.forEach(c => { html += renderCampaign(c); });
+  html += '</div></div>';
+
+  document.getElementById('content').innerHTML = html;
+}
+
+async function loadData(force = false) {
+  try {
+    const res = await fetch('/api/renovacao' + (force ? '?force=1' : ''));
+    const data = await res.json();
+    cachedData = data;
+
+    const t = document.getElementById('token-status');
+    if (data.error === 'token_not_found') {
+      t.className = 'pill';
+      t.textContent = '✗ Token';
+    } else {
+      t.className = 'pill ok';
+      t.textContent = '✓ Token OK';
+    }
+
+    render();
+  } catch (err) {
+    document.getElementById('content').innerHTML = `<div class="loading">Erro: ${err.message}</div>`;
+  }
+}
+
+loadData();
+setInterval(() => loadData(false), REFRESH_MS);
+</script>
+
+</body>
+</html>

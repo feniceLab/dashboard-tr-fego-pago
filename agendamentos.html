@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agendamentos · Fenice Lab/Starken</title>
+<style>
+  :root {
+    --bg-0: #0a0e1a;
+    --bg-1: #131b2e;
+    --bg-2: #1a2440;
+    --bg-3: #243154;
+    --text-0: #f8fafc;
+    --text-1: #cbd5e1;
+    --text-2: #94a3b8;
+    --text-3: #64748b;
+    --accent: #fbbf24;
+    --accent-dim: rgba(251, 191, 36, 0.15);
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --err: #f87171;
+    --info: #60a5fa;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(251, 191, 36, 0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg-0); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    color: var(--text-0);
+    min-height: 100vh;
+    padding: 32px 40px 60px;
+  }
+  /* HEADER */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle {
+    color: var(--text-2);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .status-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pill {
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pill.ok { background: rgba(74, 222, 128, 0.12); border-color: rgba(74, 222, 128, 0.35); color: var(--ok); }
+  .pill.warn { background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.35); color: var(--warn); }
+  .pill.err { background: rgba(248, 113, 113, 0.12); border-color: rgba(248, 113, 113, 0.35); color: var(--err); }
+  .btn {
+    padding: 9px 18px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-ghost { background: rgba(255,255,255,0.06); border: 1px solid var(--border); }
+
+  /* FILTERS */
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    padding: 12px;
+    background: var(--bg-1);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .filter-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-1);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .filter-btn:hover { border-color: var(--accent); }
+  .toggle {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-1);
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle input { width: 16px; height: 16px; cursor: pointer; }
+
+  /* SECTION */
+  .section { margin-bottom: 40px; }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-1);
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+  }
+  .section-count {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  /* HERO — Próximo post */
+  .hero {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 28px;
+    background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-image {
+    position: relative;
+    z-index: 1;
+  }
+  .hero-image img {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    aspect-ratio: 4/5;
+    object-fit: cover;
+  }
+  .hero-info { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; }
+  .hero-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .hero-title { font-size: 24px; font-weight: 800; line-height: 1.2; }
+  .hero-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--text-2); }
+  .hero-countdown {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 16px;
+    padding: 18px 24px;
+    text-align: center;
+    margin: 8px 0;
+  }
+  .hero-countdown-label {
+    font-size: 11px;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .hero-countdown-time {
+    font-family: 'SF Mono', Monaco, 'Cascadia Mono', monospace;
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+  .hero-countdown.imminent .hero-countdown-time { color: var(--err); animation: pulse 1s ease-in-out infinite; }
+  .hero-caption {
+    background: rgba(0,0,0,0.35);
+    border-radius: 12px;
+    padding: 18px 20px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-1);
+    white-space: pre-wrap;
+    max-height: 480px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    flex: 1;
+  }
+  .hero-caption::-webkit-scrollbar { width: 6px; }
+  .hero-caption::-webkit-scrollbar-track { background: transparent; }
+  .hero-caption::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .hero-caption::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+  .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* CARDS GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+  .card.published { opacity: 0.5; }
+  .card-top {
+    padding: 18px 20px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-client {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .card-handle {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 2px;
+    font-family: monospace;
+  }
+  .badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .badge-starken { background: rgba(248, 113, 113, 0.15); color: var(--err); }
+  .badge-fenice { background: rgba(192, 132, 252, 0.15); color: #c084fc; }
+  .badge-other { background: rgba(148, 163, 184, 0.15); color: var(--text-2); }
+  .card-image {
+    width: 100%;
+    aspect-ratio: 4/5;
+    background: var(--bg-0);
+    object-fit: cover;
+    display: block;
+  }
+  .card-body { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .countdown-box {
+    background: var(--accent-dim);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+  }
+  .countdown-box.imminent {
+    background: rgba(248, 113, 113, 0.12);
+    border-color: rgba(248, 113, 113, 0.4);
+    animation: pulse 1s ease-in-out infinite;
+  }
+  .countdown-box.published {
+    background: rgba(74, 222, 128, 0.12);
+    border-color: rgba(74, 222, 128, 0.3);
+  }
+  .countdown-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-2);
+    margin-bottom: 4px;
+  }
+  .countdown-time {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .countdown-box.imminent .countdown-time { color: var(--err); }
+  .countdown-box.published .countdown-time { color: var(--ok); }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 14px;
+    font-size: 13px;
+  }
+  .meta-grid dt { color: var(--text-3); font-weight: 500; }
+  .meta-grid dd { color: var(--text-1); }
+  .caption {
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-1);
+    white-space: pre-wrap;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .caption.collapsed {
+    max-height: 100px;
+    position: relative;
+  }
+  .caption.collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, var(--bg-0));
+    pointer-events: none;
+  }
+  .caption-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    cursor: pointer;
+    align-self: flex-start;
+  }
+  .caption-toggle:hover { color: var(--accent); border-color: var(--accent); }
+  .card-actions { display: flex; gap: 8px; }
+  .channel-tag {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .fb-tag { background: #1877f2; }
+  .ig-tag { background: linear-gradient(45deg, #fdc832, #ee2a7b, #6228d7); }
+  .monitor-tag { background: #6366f1; }
+  .postmortem-tag { background: #a855f7; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-3);
+    font-size: 13px;
+    background: var(--bg-1);
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+  }
+
+  /* CRON LIST */
+  .cron-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .cron-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cron-card.completed { border-left-color: var(--ok); opacity: 0.6; }
+  .cron-card.imminent { border-left-color: var(--err); }
+  .cron-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .cron-client { font-size: 14px; font-weight: 700; }
+  .cron-desc { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+  .cron-countdown {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+  }
+  .cron-countdown.imminent { color: var(--err); animation: pulse 1s ease-in-out infinite; }
+  .cron-countdown.completed { color: var(--ok); background: rgba(74, 222, 128, 0.1); }
+  .cron-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-3);
+    font-family: monospace;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-3);
+    font-size: 12px;
+  }
+  .footer a { color: var(--text-2); text-decoration: none; }
+  .footer a:hover { color: var(--accent); }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+  @media (max-width: 900px) {
+    body { padding: 20px 16px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-image { max-width: 320px; margin: 0 auto; }
+  }
+
+  .loading {
+    text-align: center;
+    color: var(--text-2);
+    padding: 80px 0;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>📅 Agendamentos · Tempo Real</h1>
+    <div class="subtitle">Posts Facebook (Graph API) + Cron Claude (Instagram & Monitoramento)</div>
+  </div>
+  <div class="status-row">
+    <span class="pill" id="token-status">⏳ Verificando...</span>
+    <span class="pill" id="updated-at">—</span>
+    <button class="btn" onclick="loadData(true)">↻ Atualizar</button>
+  </div>
+</header>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">Todos</button>
+  <button class="filter-btn" data-filter="Starken">⚡ Starken</button>
+  <button class="filter-btn" data-filter="Fenice Lab">🔥 Fenice Lab</button>
+  <label class="toggle">
+    <input type="checkbox" id="show-old"> Mostrar posts antigos/publicados
+  </label>
+</div>
+
+<div id="content">
+  <div class="loading">Carregando...</div>
+</div>
+
+<div class="footer">
+  Auto-refresh a cada 30s · Última verificação: <span id="last-check">—</span><br>
+  <a href="/">← Dashboard principal</a>
+</div>
+
+<script>
+const REFRESH_MS = 30000;
+let currentFilter = 'all';
+let showOld = false;
+let cachedData = null;
+
+function fmtCountdown(seconds) {
+  if (seconds <= 0) return 'PUBLICADO ✓';
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (d > 0) return `${d}d ${h}h ${m}m`;
+  if (h > 0) return `${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+  if (m > 0) return `${m}m ${String(s).padStart(2,'0')}s`;
+  return `${s}s`;
+}
+
+function fmtBRT(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day:'2-digit', month:'2-digit', year:'numeric',
+    hour:'2-digit', minute:'2-digit'
+  });
+}
+
+function agencyBadge(ag) {
+  if (ag === 'Starken') return '<span class="badge badge-starken">⚡ Starken</span>';
+  if (ag === 'Fenice Lab') return '<span class="badge badge-fenice">🔥 Fenice</span>';
+  return `<span class="badge badge-other">${ag||'—'}</span>`;
+}
+
+function escape(str) {
+  return (str || '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+
+// Renderiza HERO — o próximo post a publicar
+function renderHero(post, client) {
+  const remaining = post.scheduled_publish_time - Math.floor(Date.now() / 1000);
+  const imminent = remaining > 0 && remaining < 600;
+  return `
+    <div class="hero">
+      <div class="hero-image">
+        <img src="${escape(post.image_url || '')}" alt="preview">
+      </div>
+      <div class="hero-info">
+        <div>
+          <div class="hero-label">📍 Próxima publicação · ${client.name}</div>
+          <div class="hero-title">${escape(client.name)}</div>
+          <div class="hero-meta">
+            ${agencyBadge(client.agencia)}
+            <span>${client.ig_username ? '@' + client.ig_username : 'Page ' + client.page_id}</span>
+            <span>📅 ${fmtBRT(post.scheduled_publish_iso)} BRT</span>
+          </div>
+        </div>
+        <div class="hero-countdown ${imminent?'imminent':''}">
+          <div class="hero-countdown-label">Tempo até publicação</div>
+          <div class="hero-countdown-time" data-target="${post.scheduled_publish_time}">${fmtCountdown(remaining)}</div>
+        </div>
+        <div class="hero-caption">${escape(post.message_preview)}</div>
+        <div class="hero-actions">
+          <a class="btn btn-ghost" href="${escape(post.permalink || '#')}" target="_blank">Ver no Facebook ↗</a>
+          <span class="channel-tag fb-tag">📘 Facebook</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPostCard(post, client, isPast) {
+  const remaining = post.scheduled_publish_time - Math.floor(Date.now() / 1000);
+  const imminent = remaining > 0 && remaining < 600;
+  const published = remaining <= 0;
+  let cdClass = '';
+  if (published) cdClass = 'published';
+  else if (imminent) cdClass = 'imminent';
+
+  return `
+    <div class="card ${isPast?'published':''}">
+      <div class="card-top">
+        <div>
+          <div class="card-client">${escape(client.name)}</div>
+          <div class="card-handle">${client.ig_username ? '@' + client.ig_username : 'page ' + client.page_id}</div>
+        </div>
+        ${agencyBadge(client.agencia)}
+      </div>
+      ${post.image_url ? `<img class="card-image" src="${escape(post.image_url)}" alt="preview">` : ''}
+      <div class="card-body">
+        <div class="countdown-box ${cdClass}">
+          <div class="countdown-label">${published ? 'Publicado em' : 'Tempo até publicação'}</div>
+          <div class="countdown-time" data-target="${post.scheduled_publish_time}">${fmtCountdown(remaining)}</div>
+        </div>
+        <dl class="meta-grid">
+          <dt>📅 Quando</dt><dd>${fmtBRT(post.scheduled_publish_iso)} BRT</dd>
+          <dt>🆔 Post ID</dt><dd style="font-family:monospace;font-size:11px">${escape(post.id.split('_').pop())}</dd>
+        </dl>
+        <div class="caption collapsed" id="cap-${post.id}">${escape(post.message_preview)}</div>
+        <button class="caption-toggle" onclick="toggleCaption('${post.id}', this)">Ver copy completa ↓</button>
+        <div class="card-actions">
+          <a class="btn btn-ghost" style="font-size:12px;padding:7px 12px;" href="${escape(post.permalink || '#')}" target="_blank">Ver no Facebook ↗</a>
+          <span class="channel-tag fb-tag">📘 Facebook</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderEmptyClientCard(client) {
+  return `
+    <div class="card published">
+      <div class="card-top">
+        <div>
+          <div class="card-client">${escape(client.name)}</div>
+          <div class="card-handle">${client.ig_username ? '@' + client.ig_username : 'page ' + client.page_id}</div>
+        </div>
+        ${agencyBadge(client.agencia)}
+      </div>
+      <div class="card-body">
+        <div class="empty-state">Nenhum post agendado</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCron(cron) {
+  const isCompleted = cron.status === 'completed';
+  let countdownHtml = '';
+  let imminent = false;
+  if (cron.next_fire_iso && !isCompleted) {
+    const target = Math.floor(new Date(cron.next_fire_iso).getTime() / 1000);
+    const remaining = target - Math.floor(Date.now() / 1000);
+    imminent = remaining > 0 && remaining < 600;
+    const fired = remaining <= 0;
+    const cls = isCompleted ? 'completed' : imminent ? 'imminent' : '';
+    countdownHtml = `<div class="cron-countdown ${cls}" data-target="${target}">${fmtCountdown(remaining)}</div>`;
+  } else if (cron.recurring) {
+    countdownHtml = `<div class="cron-countdown" style="background:transparent;font-size:13px;color:var(--text-2);font-weight:500;">${cron.expression}</div>`;
+  }
+
+  const channelTag = cron.type === 'ig_publish' ? '<span class="channel-tag ig-tag">📸 Instagram</span>'
+    : cron.type === 'campaign_monitor' ? '<span class="channel-tag monitor-tag">📊 Monitor</span>'
+    : '<span class="channel-tag postmortem-tag">📋 Postmortem</span>';
+
+  return `
+    <div class="cron-card ${isCompleted?'completed':''} ${imminent?'imminent':''}">
+      <div class="cron-top">
+        <div>
+          <div class="cron-client">${escape(cron.client)}</div>
+          <div class="cron-desc">${escape(cron.description)}</div>
+        </div>
+        ${channelTag}
+      </div>
+      ${countdownHtml}
+      <div class="cron-meta">
+        <span>${cron.id}</span>
+        <span>${cron.tz} ${cron.recurring ? '↻ Recorrente' : 'One-shot'}${cron.session_dependent?' · Claude': ''}</span>
+      </div>
+    </div>
+  `;
+}
+
+function toggleCaption(postId, btn) {
+  const el = document.getElementById('cap-' + postId);
+  if (el.classList.contains('collapsed')) {
+    el.classList.remove('collapsed');
+    btn.textContent = 'Recolher copy ↑';
+  } else {
+    el.classList.add('collapsed');
+    btn.textContent = 'Ver copy completa ↓';
+  }
+}
+
+function updateCountdowns() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const remaining = target - Math.floor(Date.now() / 1000);
+    el.textContent = fmtCountdown(remaining);
+    const box = el.closest('.countdown-box, .hero-countdown, .cron-countdown');
+    if (box) {
+      box.classList.toggle('imminent', remaining > 0 && remaining < 600);
+      box.classList.toggle('published', remaining <= 0);
+    }
+  });
+}
+
+function render() {
+  if (!cachedData) return;
+  const data = cachedData;
+
+  // Aplica filtro de agência
+  let clients = data.clients;
+  if (currentFilter !== 'all') {
+    clients = clients.filter(c => c.agencia === currentFilter);
+  }
+
+  // Coleta todos os posts agendados (futuros) + descobre o próximo
+  const now = Math.floor(Date.now() / 1000);
+  const upcomingPosts = [];
+  const pastPosts = [];
+
+  clients.forEach(client => {
+    (client.fb_scheduled_posts || []).forEach(post => {
+      if (post.scheduled_publish_time > now) {
+        upcomingPosts.push({ post, client });
+      } else {
+        pastPosts.push({ post, client });
+      }
+    });
+  });
+
+  upcomingPosts.sort((a, b) => a.post.scheduled_publish_time - b.post.scheduled_publish_time);
+
+  let html = '';
+
+  // HERO — próximo post
+  if (upcomingPosts.length > 0) {
+    html += renderHero(upcomingPosts[0].post, upcomingPosts[0].client);
+  }
+
+  // Seção: Posts futuros
+  html += '<div class="section">';
+  html += `<div class="section-header">
+    <div class="section-title">📘 Próximos Posts Agendados</div>
+    <div class="section-count">${upcomingPosts.length} agendado${upcomingPosts.length!==1?'s':''}</div>
+  </div>`;
+
+  if (upcomingPosts.length > 0) {
+    html += '<div class="grid">';
+    upcomingPosts.forEach(({ post, client }) => {
+      html += renderPostCard(post, client, false);
+    });
+    html += '</div>';
+  } else {
+    html += '<div class="empty-state">Nenhum post agendado no momento</div>';
+  }
+  html += '</div>';
+
+  // Seção: Posts antigos (se toggle ativo)
+  if (showOld && pastPosts.length > 0) {
+    html += '<div class="section">';
+    html += `<div class="section-header">
+      <div class="section-title">📜 Posts Antigos/Publicados</div>
+      <div class="section-count">${pastPosts.length} item${pastPosts.length!==1?'s':''}</div>
+    </div>`;
+    html += '<div class="grid">';
+    pastPosts.forEach(({ post, client }) => {
+      html += renderPostCard(post, client, true);
+    });
+    html += '</div>';
+    html += '</div>';
+  }
+
+  // Seção: Cron Jobs
+  html += '<div class="section">';
+  let crons = data.crons || [];
+  // Filtra crons completos quando showOld for false
+  const activeCrons = showOld ? crons : crons.filter(c => c.status !== 'completed');
+  html += `<div class="section-header">
+    <div class="section-title">🤖 Cron Jobs Claude</div>
+    <div class="section-count">${activeCrons.length} ${showOld?'total':'ativo'}${activeCrons.length!==1?'s':''}</div>
+  </div>`;
+  if (activeCrons.length > 0) {
+    html += '<div class="cron-grid">';
+    activeCrons.forEach(c => { html += renderCron(c); });
+    html += '</div>';
+  } else {
+    html += '<div class="empty-state">Nenhum cron ativo</div>';
+  }
+  html += '</div>';
+
+  document.getElementById('content').innerHTML = html;
+  updateCountdowns();
+}
+
+async function loadData(force = false) {
+  try {
+    const url = force ? '/api/agendamentos?force=1' : '/api/agendamentos';
+    const res = await fetch(url);
+    const data = await res.json();
+    cachedData = data;
+
+    // Token status
+    const t = document.getElementById('token-status');
+    if (data.token_status === 'valid') {
+      t.className = 'pill ok';
+      t.textContent = `✓ Token OK · ${data.token_info?.name || 'user'}`;
+    } else if (data.error === 'token_not_found') {
+      t.className = 'pill err';
+      t.textContent = '✗ Token não preenchido';
+    } else {
+      t.className = 'pill err';
+      t.textContent = '✗ Token expirado';
+    }
+
+    document.getElementById('updated-at').textContent = `🕐 ${fmtBRT(data.updated_at)}`;
+    document.getElementById('last-check').textContent = new Date().toLocaleTimeString('pt-BR');
+
+    render();
+  } catch (err) {
+    document.getElementById('content').innerHTML = `<div class="loading">Erro: ${err.message}</div>`;
+    console.error(err);
+  }
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentFilter = b.dataset.filter;
+    render();
+  });
+});
+
+// Show old toggle
+document.getElementById('show-old').addEventListener('change', (e) => {
+  showOld = e.target.checked;
+  render();
+});
+
+loadData();
+setInterval(() => loadData(false), REFRESH_MS);
+setInterval(updateCountdowns, 1000);
+</script>
+
+</body>
+</html>

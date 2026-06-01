@@ -1,0 +1,12 @@
+{
+  "name": "fenice-lab-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard ao vivo das campanhas Meta Ads — Fenice Lab",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs"
+  },
+  "author": "Fenice Lab",
+  "license": "UNLICENSED"
+}

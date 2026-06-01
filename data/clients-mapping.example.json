@@ -1,0 +1,25 @@
+{
+  "_doc": "Lista de clientes pro endpoint /api/agendamentos. Copie para clients-mapping.json e preencha com IDs reais.",
+  "updated_at": "2026-06-01T00:00:00Z",
+  "business_manager": "Seu Business Manager",
+  "clients": [
+    {
+      "name": "Cliente Exemplo Um",
+      "slug": "cliente-um",
+      "agencia": "Sua Agência",
+      "page_id": "100000000000000",
+      "ig_business_id": "17841000000000000",
+      "ig_username": "cliente_um",
+      "validated": false
+    },
+    {
+      "name": "Cliente Exemplo Dois",
+      "slug": "cliente-dois",
+      "agencia": "Outra Agência",
+      "page_id": "200000000000000",
+      "ig_business_id": "17841000000000001",
+      "ig_username": "cliente_dois",
+      "validated": false
+    }
+  ]
+}

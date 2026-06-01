@@ -1,0 +1,55 @@
+# Dependências
+node_modules/
+package-lock.json
+yarn.lock
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Arquivos com dados reais de cliente (somente .example vai pro Git)
+data/clients-mapping.json
+data/renovacao-mes.json
+data/client-aliases.json
+data/crons.json
+data/snapshot.json
+data/suprema.json
+data/*.local.json
+
+# Logs e cache
+*.log
+logs/
+.cache/
+.tmp/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Tokens e credenciais (NUNCA committar)
+*token*.md
+*token*.txt
+*.token
+*.key
+*.pem
+secrets/
+credentials/
+
+# Builds
+dist/
+build/
+out/
+
+# Arquivos pessoais do desenvolvedor
+.scratch/
+playground/

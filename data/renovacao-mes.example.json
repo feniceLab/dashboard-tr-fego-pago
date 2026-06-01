@@ -1,0 +1,28 @@
+{
+  "_doc": "Config mensal de renovação de campanhas. Copie para renovacao-mes.json e atualize com decisões reais.",
+  "mes": "2026-06",
+  "mes_label": "Junho 2026",
+  "data_fim_padrao": "2026-06-30T23:59:00-03:00",
+  "atualizado_em": "2026-06-01T00:00:00Z",
+  "campanhas": [
+    {
+      "client_slug": "cliente-um",
+      "client_name": "Cliente Exemplo Um",
+      "agencia": "Sua Agência",
+      "ad_account_id": "100000000000000",
+      "campaign_id": "120000000000000000",
+      "campaign_name": "[CAMPANHA EXEMPLO]",
+      "adset_ids": ["120000000000000001"],
+      "budget_type": "CBO",
+      "lifetime_budget_antes_cents": 800000,
+      "lifetime_budget_depois_cents": 950000,
+      "stop_time_antes": "2026-05-31T23:59:00-03:00",
+      "stop_time_depois": "2026-06-30T23:59:00-03:00",
+      "budget_novo_mes_cents": 150000,
+      "decisao": "Manter ritmo do mês anterior",
+      "justificativa": "ROAS estável, performance consolidada.",
+      "status": "renovada",
+      "renovada_em": "2026-06-01T11:00:00-03:00"
+    }
+  ]
+}
