@@ -21,12 +21,11 @@
     --sup-cinza: #9A9A9A;
     --sup-cinza-esc: #6E6E6E;
     --sup-linha: rgba(255,255,255,.08);
-    --sup-linha-forte: rgba(255,255,255,.16);
     --sup-ok: #3FB950;
     --sup-aviso: #E3A008;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body {
     background: var(--sup-carvao);
     color: var(--sup-branco);
@@ -35,57 +34,32 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
-    position: relative;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(circle at 80% 0%, rgba(214,40,40,.08), transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(214,40,40,.04), transparent 50%);
-    pointer-events: none;
-    z-index: 0;
   }
   .mono { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 1024px;
-    margin: 0 auto;
-    padding: 24px 16px 48px;
-  }
-  @media (min-width: 768px) { .container { padding: 40px 32px 64px; } }
+  .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 768px) { .container { padding: 0 32px; } }
 
   /* TOP NAV */
   .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(15,15,15,.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sup-linha);
+  }
+  .topnav-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-    gap: 16px;
+    padding: 14px 0;
   }
-  .wordmark { display: flex; flex-direction: column; line-height: .9; }
-  .wm-s {
-    font-weight: 800;
-    font-size: 28px;
-    letter-spacing: .01em;
-    text-transform: uppercase;
-    color: var(--sup-branco);
+  .nav-logo img {
+    height: 38px;
+    width: auto;
+    display: block;
   }
-  @media (min-width: 640px) { .wm-s { font-size: 36px; } }
-  .wm-p {
-    font-weight: 300;
-    font-size: 11px;
-    letter-spacing: .42em;
-    text-transform: uppercase;
-    color: var(--sup-vermelho);
-    margin-top: 2px;
-  }
-  @media (min-width: 640px) { .wm-p { font-size: 15px; } }
+  @media (min-width: 640px) { .nav-logo img { height: 46px; } }
   .badge {
     display: inline-flex;
     align-items: center;
@@ -110,75 +84,140 @@
   }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
 
-  /* HERO */
-  .hero {
-    margin-bottom: 40px;
-    padding: 36px 28px;
+  /* HERO IMAGEM */
+  .hero-wrap {
+    position: relative;
+    margin: 20px 0 40px;
+    border-radius: 24px;
+    overflow: hidden;
     background: var(--sup-grafite);
     border: 1px solid var(--sup-linha);
-    border-radius: 24px;
+  }
+  @media (min-width: 768px) {
+    .hero-wrap {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      min-height: 480px;
+    }
+  }
+  .hero-content {
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     position: relative;
-    overflow: hidden;
+    z-index: 2;
   }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--sup-vermelho), var(--sup-vermelho-lt));
-  }
+  @media (min-width: 768px) { .hero-content { padding: 48px 40px; } }
   .hero-kicker {
     font-weight: 600;
     font-size: 11px;
     letter-spacing: .22em;
     text-transform: uppercase;
     color: var(--sup-vermelho);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .hero-title {
     font-weight: 800;
-    font-size: 32px;
-    line-height: 1;
+    font-size: 36px;
+    line-height: .96;
     letter-spacing: -.02em;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
   @media (min-width: 640px) { .hero-title { font-size: 48px; } }
-  @media (min-width: 1024px) { .hero-title { font-size: 64px; } }
+  @media (min-width: 1024px) { .hero-title { font-size: 56px; } }
   .hero-sub {
     font-size: 15px;
     color: var(--sup-cinza);
-    line-height: 1.6;
-    max-width: 600px;
+    line-height: 1.65;
+    max-width: 460px;
+    margin-bottom: 24px;
   }
-
-  /* TAGLINE */
-  .tagline {
-    margin: 32px 0;
-    text-align: center;
+  .hero-tagline {
+    border-left: 2px solid var(--sup-vermelho);
+    padding-left: 16px;
   }
-  .tagline-1 {
-    font-weight: 400;
-    font-size: 16px;
+  .hero-tagline-1 {
+    font-size: 14px;
     color: var(--sup-cinza);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
-  @media (min-width: 640px) { .tagline-1 { font-size: 20px; } }
-  .tagline-2 {
+  .hero-tagline-2 {
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
     color: var(--sup-branco);
   }
-  @media (min-width: 640px) { .tagline-2 { font-size: 26px; } }
+  @media (min-width: 640px) { .hero-tagline-2 { font-size: 20px; } }
+  .hero-image {
+    position: relative;
+    min-height: 320px;
+    overflow: hidden;
+  }
+  @media (min-width: 768px) { .hero-image { min-height: 100%; } }
+  .hero-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--sup-grafite) 0%, transparent 30%);
+    z-index: 1;
+  }
+  @media (max-width: 767px) {
+    .hero-image::before {
+      background: linear-gradient(180deg, transparent 50%, var(--sup-grafite) 100%);
+    }
+  }
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
-  /* KPI HIGHLIGHTS */
+  /* SECTION */
+  .section { margin-bottom: 56px; }
+  .section-head {
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--sup-linha);
+    position: relative;
+  }
+  .section-head::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--sup-vermelho);
+  }
+  .section-kicker {
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--sup-vermelho);
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-weight: 800;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: -.01em;
+    color: var(--sup-branco);
+  }
+  @media (min-width: 640px) { .section-title { font-size: 28px; } }
+  .section-desc {
+    color: var(--sup-cinza);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  /* KPI ROW */
   .kpi-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    margin-bottom: 40px;
   }
   @media (min-width: 768px) { .kpi-row { grid-template-columns: repeat(4, 1fr); } }
   .kpi-card {
@@ -215,35 +254,7 @@
     font-weight: 600;
   }
 
-  /* SECTION */
-  .section { margin-bottom: 48px; }
-  .section-title {
-    font-weight: 800;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: .22em;
-    color: var(--sup-branco);
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--sup-linha);
-    position: relative;
-  }
-  .section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 60px;
-    height: 2px;
-    background: var(--sup-vermelho);
-  }
-  .section-desc {
-    color: var(--sup-cinza);
-    font-size: 14px;
-    margin-bottom: 20px;
-  }
-
-  /* RELATÓRIOS GRID */
+  /* REPORTS GRID */
   .reports-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -286,7 +297,7 @@
     text-transform: uppercase;
     color: var(--sup-vermelho);
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .report-card-title {
     font-weight: 700;
@@ -317,7 +328,45 @@
   .report-card-cta::after { content: '→'; transition: transform .18s; }
   .report-card:hover .report-card-cta::after { transform: translateX(4px); }
 
-  /* INFO CARDS */
+  /* GALERIA */
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 640px) { .gallery { grid-template-columns: repeat(3, 1fr); } }
+  .gallery-item {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 9/14;
+    background: var(--sup-grafite);
+    position: relative;
+    transition: transform .25s cubic-bezier(.2,.7,.3,1);
+  }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .gallery-item::after {
+    content: attr(data-caption);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    color: var(--sup-branco);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,.85));
+    pointer-events: none;
+  }
+
+  /* INFO GRID */
   .info-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -343,15 +392,12 @@
     font-size: 14px;
     line-height: 1.6;
   }
-  .info-card-value strong {
-    color: var(--sup-vermelho);
-    font-weight: 700;
-  }
+  .info-card-value strong { color: var(--sup-vermelho); font-weight: 700; }
 
   /* FOOTER */
   .footer {
-    margin-top: 56px;
-    padding-top: 28px;
+    margin-top: 48px;
+    padding: 32px 0;
     border-top: 2px solid var(--sup-vermelho);
     display: flex;
     justify-content: space-between;
@@ -374,66 +420,93 @@
     font-weight: 600;
   }
   .footer-link:hover { color: var(--sup-vermelho); }
+
+  /* DECORATIVE GLOW */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(214,40,40,.05), transparent 40%),
+      radial-gradient(circle at 0% 90%, rgba(214,40,40,.03), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { position: relative; z-index: 1; }
 </style>
 </head>
 <body>
 
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="container">
+    <div class="topnav-inner">
+      <a class="nav-logo" href="">
+        <img src="assets/logos/logo-branco.png" alt="Suprema Pizza" />
+      </a>
+      <span class="badge">Operação Ativa</span>
+    </div>
+  </div>
+</nav>
+
 <div class="container">
 
-  <!-- TOP NAV -->
-  <header class="topnav">
-    <div class="wordmark">
-      <span class="wm-s">SUPREMA</span>
-      <span class="wm-p">Pizza</span>
+  <!-- HERO COM IMAGEM -->
+  <div class="hero-wrap">
+    <div class="hero-content">
+      <div class="hero-kicker">Área do Cliente · Performance</div>
+      <h1 class="hero-title">Performance<br>da Suprema</h1>
+      <p class="hero-sub">
+        Acompanhamento mensal das campanhas, relatórios consolidados e análise
+        de performance da operação de marketing digital — mantida pela Fenice Lab.
+      </p>
+      <div class="hero-tagline">
+        <div class="hero-tagline-1">Quando o queijo escorre…</div>
+        <div class="hero-tagline-2">a pizza tá no ponto.</div>
+      </div>
     </div>
-    <span class="badge">Operação Ativa</span>
-  </header>
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-kicker">Área do Cliente · Performance</div>
-    <h1 class="hero-title">Performance da<br>Suprema</h1>
-    <p class="hero-sub">
-      Acompanhamento mensal das campanhas, relatórios consolidados e análise de
-      performance da operação de marketing digital — mantida pela Fenice Lab.
-    </p>
-
-    <div class="tagline">
-      <div class="tagline-1">Quando o queijo escorre…</div>
-      <div class="tagline-2">a pizza tá no ponto.</div>
+    <div class="hero-image">
+      <img src="assets/photos/foto-hero.jpg" alt="Pizza da Suprema na caixa de delivery" loading="eager" />
     </div>
   </div>
 
-  <!-- KPIs RESUMO MÊS ATUAL -->
-  <div class="kpi-row">
-    <div class="kpi-card">
-      <div class="kpi-label">Faturamento Maio</div>
-      <div class="kpi-value red mono">R$&nbsp;39.789</div>
-      <div class="kpi-trend">+ ROAS 16,93×</div>
+  <!-- KPIs DO MÊS -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-kicker">Resumo · Maio 2026</div>
+      <h2 class="section-title">Mês Fechado</h2>
     </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Compras</div>
-      <div class="kpi-value mono">324</div>
-      <div class="kpi-trend">+ Ticket R$ 122,81</div>
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Faturamento</div>
+        <div class="kpi-value red mono">R$&nbsp;39.789</div>
+        <div class="kpi-trend">+ ROAS 16,93×</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Compras</div>
+        <div class="kpi-value mono">324</div>
+        <div class="kpi-trend">+ Ticket R$ 122,81</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Investimento</div>
+        <div class="kpi-value mono">R$&nbsp;2.350</div>
+        <div class="kpi-trend">+ CPA R$ 7,26</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Alcance</div>
+        <div class="kpi-value mono">103.877</div>
+        <div class="kpi-trend">+ 442k impressões</div>
+      </div>
     </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Investimento</div>
-      <div class="kpi-value mono">R$&nbsp;2.350</div>
-      <div class="kpi-trend">+ CPA R$ 7,26</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Alcance</div>
-      <div class="kpi-value mono">103.877</div>
-      <div class="kpi-trend">+ 442k impressões</div>
-    </div>
-  </div>
+  </section>
 
   <!-- RELATÓRIOS -->
   <section class="section">
-    <h2 class="section-title">Relatórios Disponíveis</h2>
-    <p class="section-desc">
-      Análises mensais consolidadas — faturamento, funil de conversão e ranking de campanhas.
-    </p>
+    <div class="section-head">
+      <div class="section-kicker">Acervo</div>
+      <h2 class="section-title">Relatórios Disponíveis</h2>
+      <p class="section-desc">Análises mensais — faturamento, funil de conversão e ranking de campanhas.</p>
+    </div>
     <div class="reports-grid">
 
       <a class="report-card" href="relatorio-maio.html">
@@ -447,7 +520,7 @@
         <span class="report-card-cta">Abrir relatório</span>
       </a>
 
-      <div class="report-card" style="opacity:.5; pointer-events:none;">
+      <div class="report-card" style="opacity:.55; pointer-events:none;">
         <div class="report-card-kicker">Junho · 2026</div>
         <div class="report-card-title">Em andamento</div>
         <p class="report-card-desc">
@@ -460,11 +533,33 @@
     </div>
   </section>
 
+  <!-- GALERIA -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-kicker">Produto</div>
+      <h2 class="section-title">A Marca em Ação</h2>
+      <p class="section-desc">Algumas das peças que circulam nas campanhas e Stories.</p>
+    </div>
+    <div class="gallery">
+      <div class="gallery-item" data-caption="Massa fresca · borda alta">
+        <img src="assets/photos/pizza-margherita.jpg" alt="Pizza Margherita Suprema" loading="lazy">
+      </div>
+      <div class="gallery-item" data-caption="Combos · queijo que estica">
+        <img src="assets/photos/combo-pizzas.jpg" alt="Combo de Pizzas Suprema" loading="lazy">
+      </div>
+      <div class="gallery-item" data-caption="Sabores · 4 quadrantes">
+        <img src="assets/photos/pizza-4-sabores.jpg" alt="Pizza 4 Sabores Suprema" loading="lazy">
+      </div>
+    </div>
+  </section>
+
   <!-- OPERAÇÃO -->
   <section class="section">
-    <h2 class="section-title">Operação</h2>
+    <div class="section-head">
+      <div class="section-kicker">Detalhes</div>
+      <h2 class="section-title">Operação</h2>
+    </div>
     <div class="info-grid">
-
       <div class="info-card">
         <div class="info-card-label">Cardápio Digital</div>
         <div class="info-card-value">
@@ -472,7 +567,6 @@
           Onde a operação de mídia direciona o tráfego dos anúncios.
         </div>
       </div>
-
       <div class="info-card">
         <div class="info-card-label">Endereço</div>
         <div class="info-card-value">
@@ -480,15 +574,13 @@
           Velha · Blumenau/SC
         </div>
       </div>
-
       <div class="info-card">
         <div class="info-card-label">Instagram</div>
         <div class="info-card-value">
           <strong>@asupremapizza</strong><br>
-          Conta Business · 764 publicações
+          Conta Business · 764+ publicações
         </div>
       </div>
-
       <div class="info-card">
         <div class="info-card-label">Mantido por</div>
         <div class="info-card-value">
@@ -496,7 +588,6 @@
           Marketing Digital & Performance
         </div>
       </div>
-
     </div>
   </section>
 

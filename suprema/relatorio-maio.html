@@ -52,25 +52,12 @@
     margin-bottom: 28px;
     border-bottom: 2px solid var(--sup-vermelho);
   }
-  .wordmark { display: flex; flex-direction: column; line-height: .9; }
-  .wm-s {
-    font-weight: 800;
-    font-size: 32px;
-    letter-spacing: .01em;
-    text-transform: uppercase;
-    color: var(--sup-branco);
+  .header-logo {
+    height: 56px;
+    width: auto;
+    display: block;
   }
-  @media (min-width: 640px) { .wm-s { font-size: 40px; } }
-  .wm-p {
-    font-weight: 300;
-    font-size: 13px;
-    letter-spacing: .42em;
-    text-transform: uppercase;
-    padding-left: .04em;
-    color: var(--sup-vermelho);
-    margin-top: 2px;
-  }
-  @media (min-width: 640px) { .wm-p { font-size: 16px; } }
+  @media (min-width: 640px) { .header-logo { height: 72px; } }
   .header-meta { flex: 1; text-align: right; }
   .kicker {
     font-weight: 600;
@@ -114,7 +101,9 @@
 
   /* HERO REVENUE */
   .hero {
-    background: var(--sup-grafite);
+    background:
+      linear-gradient(135deg, rgba(22,22,22,.92), rgba(22,22,22,.98)),
+      url('assets/photos/pizza-margherita.jpg') center/cover;
     border: 1px solid var(--sup-linha);
     border-radius: 24px;
     padding: 28px 24px;
@@ -480,10 +469,7 @@
 
   <!-- HEADER -->
   <header class="header">
-    <div class="wordmark">
-      <span class="wm-s">SUPREMA</span>
-      <span class="wm-p">Pizza</span>
-    </div>
+    <img src="assets/logos/logo-branco.png" alt="Suprema Pizza" class="header-logo" />
     <div class="header-meta">
       <div class="kicker">Fenice Lab</div>
       <div class="header-title">Performance</div>
