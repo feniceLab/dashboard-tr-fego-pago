@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="description" content="Relatório de Performance — Hamburgueria Feio · Maio/2026">
+  <title>Hamburgueria Feio · Relatório Maio/2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: rgba(255,255,255,0.04);
+      --bg-card-2: rgba(255,255,255,0.01);
+      --text: #e5e5e5;
+      --text-dim: #94a3b8;
+      --text-mute: #64748b;
+      --border: rgba(255,255,255,0.08);
+      --accent-emerald: #34d399;
+      --accent-emerald-2: #4ade80;
+      --accent-red: #f87171;
+      --accent-yellow: #fbbf24;
+      --accent-orange: #fb923c;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(239,68,68,0.18), transparent 40%),
+        radial-gradient(circle at 100% 50%, rgba(16,185,129,0.12), transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(245,158,11,0.10), transparent 40%),
+        #0a0a0a;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .container { width: 100%; max-width: 720px; margin: 0 auto; padding: 16px; }
+    @media (min-width: 768px) { .container { padding: 28px; max-width: 880px; } }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none; z-index: 0;
+    }
+    .container { position: relative; z-index: 1; }
+
+    .header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .header-logo {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .header-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .header-meta { flex: 1; min-width: 0; }
+    .header-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-mute); margin-bottom: 4px; }
+    .header-title { font-size: 22px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+    @media (min-width: 640px) { .header-title { font-size: 28px; } }
+    .header-subtitle { font-size: 12px; color: var(--text-mute); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.35);
+      color: var(--accent-emerald-2); font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+    }
+    .pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-emerald-2); }
+
+    .revenue {
+      background: linear-gradient(135deg, rgba(16,185,129,0.20), rgba(5,150,105,0.06));
+      border: 1px solid rgba(16,185,129,0.4);
+      border-radius: 20px; padding: 22px; margin-bottom: 16px;
+      position: relative; overflow: hidden;
+    }
+    .revenue::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 90% 50%, rgba(52,211,153,0.25), transparent 60%);
+      pointer-events: none;
+    }
+    .revenue-label { position: relative; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-emerald-2); margin-bottom: 10px; }
+    .revenue-amount { position: relative; font-family: 'JetBrains Mono', monospace; font-size: 38px; font-weight: 900; color: var(--accent-emerald-2); line-height: 1; letter-spacing: -0.02em; }
+    @media (min-width: 480px) { .revenue-amount { font-size: 46px; } }
+    @media (min-width: 768px) { .revenue-amount { font-size: 56px; } }
+    .revenue-meta { position: relative; font-size: 12px; color: rgba(74,222,128,0.7); margin-top: 10px; font-family: 'JetBrains Mono', monospace; }
+    .revenue-meta strong { color: var(--accent-emerald-2); font-weight: 700; }
+    .revenue-net { position: relative; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(74,222,128,0.2); display: flex; justify-content: space-between; align-items: baseline; }
+    .revenue-net-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(74,222,128,0.7); }
+    .revenue-net-amount { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 800; color: var(--accent-emerald-2); }
+    @media (min-width: 480px) { .revenue-net-amount { font-size: 24px; } }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media (min-width: 640px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; } }
+    .kpi { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .kpi-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-mute); margin-bottom: 6px; }
+    .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 900; letter-spacing: -0.02em; }
+    .kpi-value.green { color: var(--accent-emerald-2); }
+
+    .stats-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 16px; }
+    @media (min-width: 640px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .stat-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-mute); margin-bottom: 8px; }
+    .stat-card-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; }
+    .stat-card-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-mute); margin-top: 4px; }
+
+    .section { margin-bottom: 24px; }
+    .section-title { font-size: 12px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+    .funnel-stages { display: flex; flex-direction: column; gap: 4px; }
+    .stage {
+      background: linear-gradient(135deg, rgba(239,68,68,0.10), rgba(16,185,129,0.06));
+      border: 1px solid rgba(239,68,68,0.22);
+      border-radius: 12px; padding: 12px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: transform 0.15s;
+    }
+    .stage:hover { transform: translateX(3px); }
+    .stage-name { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .stage-value { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 800; }
+    @media (min-width: 640px) { .stage { padding: 14px 18px; } .stage-name { font-size: 13px; } .stage-value { font-size: 16px; } }
+    .stage-arrow { color: var(--text-mute); font-size: 14px; text-align: center; padding: 2px 0; }
+    .stage-arrow .pct { color: var(--accent-emerald-2); font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-left: 4px; }
+    .stage.final { background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(52,211,153,0.1)); border-color: rgba(16,185,129,0.5); box-shadow: 0 0 30px rgba(16,185,129,0.25); }
+    .stage.final .stage-value { color: var(--accent-emerald-2); font-size: 18px; }
+    @media (min-width: 640px) { .stage.final .stage-value { font-size: 20px; } }
+
+    .ranking-cards { display: flex; flex-direction: column; gap: 10px; }
+    .rank {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--c-color, var(--accent-emerald-2));
+      border-radius: 12px; padding: 14px;
+    }
+    .rank-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .rank-medal { font-size: 22px; flex-shrink: 0; }
+    .rank-name { font-size: 13px; font-weight: 700; flex: 1; min-width: 0; word-break: break-word; }
+    .rank-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-mute); margin-top: 2px; }
+    .rank-roas { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 900; color: var(--accent-emerald-2); flex-shrink: 0; }
+    .rank-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (min-width: 480px) { .rank-stats { grid-template-columns: repeat(4, 1fr); } }
+    .rank-stat { background: rgba(0,0,0,0.25); border-radius: 8px; padding: 8px 10px; }
+    .rank-stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-mute); margin-bottom: 2px; }
+    .rank-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+    .rank.warn { border-left-color: var(--accent-yellow); }
+    .rank.warn .rank-roas { color: var(--accent-yellow); }
+    .rank.bad { border-left-color: var(--accent-red); }
+    .rank.bad .rank-roas { color: var(--accent-red); }
+    .rank.neutral { border-left-color: var(--text-mute); opacity: 0.7; }
+    .rank.neutral .rank-roas { color: var(--text-mute); font-size: 14px; }
+
+    .hamburger-section {
+      background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(245,158,11,0.04));
+      border: 1px dashed rgba(239,68,68,0.25);
+      border-radius: 16px; padding: 16px; margin-bottom: 24px;
+    }
+    .hamburger-section .section-title { color: var(--accent-orange); }
+    .hamburger-section .section-desc { font-size: 11px; color: var(--text-mute); line-height: 1.6; margin-bottom: 12px; }
+
+    .insights { display: flex; flex-direction: column; gap: 10px; }
+    .insight { display: flex; gap: 10px; font-size: 13px; line-height: 1.5; color: var(--text-dim); padding: 10px 12px; background: rgba(0,0,0,0.2); border-radius: 10px; }
+    .insight-icon { flex-shrink: 0; font-weight: 800; font-size: 14px; }
+    .insight.ok .insight-icon { color: var(--accent-emerald-2); }
+    .insight.warn .insight-icon { color: var(--accent-yellow); }
+    .insight strong { color: #fff; font-weight: 700; }
+
+    .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .footer-brand { display: flex; align-items: center; gap: 8px; }
+    .footer-brand-icon { font-size: 22px; }
+    .footer-brand-name { font-size: 13px; font-weight: 800; }
+    .footer-brand-tag { font-size: 9px; color: var(--text-mute); font-family: 'JetBrains Mono', monospace; }
+    .footer-period { text-align: right; font-size: 11px; color: var(--text-mute); font-family: 'JetBrains Mono', monospace; }
+    .footer-period-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
+
+    .share-bar {
+      position: fixed; bottom: 16px; left: 16px; right: 16px;
+      background: rgba(20,20,20,0.95); backdrop-filter: blur(20px);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 10px 14px; display: flex; gap: 8px; align-items: center; justify-content: center;
+      z-index: 100; max-width: 360px; margin: 0 auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    @media (min-width: 768px) { .share-bar { display: none; } }
+    .share-btn {
+      background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.4);
+      color: var(--accent-emerald-2); padding: 8px 16px; border-radius: 999px;
+      font-size: 12px; font-weight: 700; cursor: pointer; flex: 1; max-width: 180px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="header-logo">
+      <img src="assets/logos/feio.png" alt="Hamburgueria Feio"
+           onerror="this.outerHTML='<div style=\'font-size:28px\'>🍔</div>'" />
+    </div>
+    <div class="header-meta">
+      <div class="header-eyebrow">Starken Tecnologia · Performance</div>
+      <h1 class="header-title">Hamburgueria Feio</h1>
+      <div class="header-subtitle">Maio/2026 · Fechamento Mensal</div>
+    </div>
+    <div><span class="pill">MÊS FECHADO</span></div>
+  </header>
+
+  <div class="revenue">
+    <div class="revenue-label">💰 Valor de Conversão em Compra (Faturamento)</div>
+    <div class="revenue-amount mono">R$&nbsp;9.851,52</div>
+    <div class="revenue-meta">
+      Investido R$ 2.031,24 · <strong>ROAS 4,85×</strong> · 99 compras
+    </div>
+    <div class="revenue-net">
+      <span class="revenue-net-label">Retorno líquido</span>
+      <span class="revenue-net-amount mono">R$&nbsp;7.820,28</span>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Investimento</div><div class="kpi-value mono">R$&nbsp;2.031,24</div></div>
+    <div class="kpi"><div class="kpi-label">Compras</div><div class="kpi-value mono green">99</div></div>
+    <div class="kpi"><div class="kpi-label">Ticket Médio</div><div class="kpi-value mono">R$&nbsp;99,51</div></div>
+    <div class="kpi"><div class="kpi-label">CPA</div><div class="kpi-value mono">R$&nbsp;20,52</div></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card-label">👁️ Impressões</div>
+      <div class="stat-card-value mono">321.849</div>
+      <div class="stat-card-sub">CPM R$ 6,31</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">👥 Alcance</div>
+      <div class="stat-card-value mono">129.495</div>
+      <div class="stat-card-sub">pessoas únicas · freq 2,49</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">🛒 Adições ao Carrinho</div>
+      <div class="stat-card-value mono">409</div>
+      <div class="stat-card-sub">194 iniciaram compra</div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="section-title">🎯 Funil de Conversão</div>
+    <div class="funnel-stages">
+      <div class="stage"><span class="stage-name">👁️ Impressões</span><span class="stage-value mono">321.849</span></div>
+      <div class="stage-arrow">↓<span class="pct">40,2%</span></div>
+      <div class="stage"><span class="stage-name">👥 Alcance único</span><span class="stage-value mono">129.495</span></div>
+      <div class="stage-arrow">↓</div>
+      <div class="stage"><span class="stage-name">🖱️ Cliques no Anúncio</span><span class="stage-value mono">4.184</span></div>
+      <div class="stage-arrow">↓<span class="pct">75,6%</span></div>
+      <div class="stage"><span class="stage-name">🔗 Cliques no Link</span><span class="stage-value mono">3.165</span></div>
+      <div class="stage-arrow">↓</div>
+      <div class="stage"><span class="stage-name">🛒 Adições ao Carrinho</span><span class="stage-value mono">409</span></div>
+      <div class="stage-arrow">↓<span class="pct">47,4%</span></div>
+      <div class="stage"><span class="stage-name">💳 Iniciaram Compra</span><span class="stage-value mono">194</span></div>
+      <div class="stage-arrow">↓<span class="pct">51,0%</span></div>
+      <div class="stage final"><span class="stage-name">✅ Compras Realizadas</span><span class="stage-value mono">99</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">🏆 Campanhas Permanentes — Por ROAS</div>
+    <div class="ranking-cards">
+
+      <div class="rank">
+        <div class="rank-header">
+          <span class="rank-medal">🏆</span>
+          <div class="rank-name">
+            [STARKEN][VENDAS][01]
+            <div class="rank-tag">motor da operação · 10 meses no ar</div>
+          </div>
+          <span class="rank-roas mono">5,74×</span>
+        </div>
+        <div class="rank-stats">
+          <div class="rank-stat"><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;1.548,98</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">89</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;99,90</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;17,40</div></div>
+        </div>
+      </div>
+
+      <div class="rank neutral">
+        <div class="rank-header">
+          <span class="rank-medal" style="opacity:0.5">2</span>
+          <div class="rank-name">
+            [MESO][TRAFEGO][PERFIL][ONTIME]
+            <div class="rank-tag">tráfego perfil · não-vendas</div>
+          </div>
+          <span class="rank-roas mono">—</span>
+        </div>
+        <div class="rank-stats">
+          <div class="rank-stat"><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;186,56</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Cliques</div><div class="rank-stat-value mono">733</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">CTR</div><div class="rank-stat-value mono">2,93%</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">—</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="hamburger-section">
+    <div class="section-title">🍔 Campanhas Sazonais — Dia do Hambúrguer (28/05)</div>
+    <div class="section-desc">Campanhas pontuais ativadas exclusivamente no Dia Mundial do Hambúrguer. Performance separada das campanhas permanentes pra análise justa do evento sazonal.</div>
+    <div class="ranking-cards">
+
+      <div class="rank">
+        <div class="rank-header">
+          <span class="rank-medal">🏆</span>
+          <div class="rank-name">
+            [STARKEN][VENDAS][QUINTA][28/05]
+            <div class="rank-tag">vendas direcionadas · day-parting</div>
+          </div>
+          <span class="rank-roas mono">7,33×</span>
+        </div>
+        <div class="rank-stats">
+          <div class="rank-stat"><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;96,10</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">7</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;100,64</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;13,73</div></div>
+        </div>
+      </div>
+
+      <div class="rank warn">
+        <div class="rank-header">
+          <span class="rank-medal" style="opacity:0.6">2</span>
+          <div class="rank-name">
+            [STARKEN][RECO][28/05][02]
+            <div class="rank-tag">awareness · alcance</div>
+          </div>
+          <span class="rank-roas mono">1,61×</span>
+        </div>
+        <div class="rank-stats">
+          <div class="rank-stat"><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;99,78</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">2</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Alcance</div><div class="rank-stat-value mono">58.311</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;49,89</div></div>
+        </div>
+      </div>
+
+      <div class="rank warn">
+        <div class="rank-header">
+          <span class="rank-medal" style="opacity:0.5">3</span>
+          <div class="rank-name">
+            [STARKEN][RECO][28/05][01]
+            <div class="rank-tag">awareness · alcance</div>
+          </div>
+          <span class="rank-roas mono">1,10×</span>
+        </div>
+        <div class="rank-stats">
+          <div class="rank-stat"><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;99,82</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">1</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">Alcance</div><div class="rank-stat-value mono">59.732</div></div>
+          <div class="rank-stat"><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;99,82</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">💡 Insights & Recomendações</div>
+    <div class="insights">
+      <div class="insight ok">
+        <span class="insight-icon">✓</span>
+        <span><strong>VENDAS 01 é o motor consolidado:</strong> 10 meses no ar, gerou 89 vendas com ROAS 5,74× e R$ 1.548,98 investidos. Ticket médio de R$ 99,90 indica público fiel e ticket alto. Recomenda-se manter ritmo + considerar +20-30% pra junho.</span>
+      </div>
+      <div class="insight ok">
+        <span class="insight-icon">✓</span>
+        <span><strong>Funil top-funnel forte:</strong> CTR de 2,93% no tráfego de perfil e CTR geral de 1,30% indicam criativos atrativos. Frequência de 2,49 ainda saudável (sem fadiga).</span>
+      </div>
+      <div class="insight ok">
+        <span class="insight-icon">✓</span>
+        <span><strong>Conversão IC → Purchase de 51%:</strong> taxa excelente do checkout do site Hamburgueria Feio. Indica baixo atrito na finalização da compra.</span>
+      </div>
+      <div class="insight ok">
+        <span class="insight-icon">✓</span>
+        <span><strong>Dia do Hambúrguer impulsionado:</strong> a campanha VENDAS QUINTA 28/05 atingiu ROAS de 7,33× com R$ 96,10 e 7 vendas, comprovando eficiência de day-parting em eventos sazonais.</span>
+      </div>
+      <div class="insight warn">
+        <span class="insight-icon">⚠</span>
+        <span><strong>Campanhas RECO de awareness com ROAS &lt; 2×:</strong> esperado pra topo de funil, mas avaliar se compensa o investimento ou se reaproveitar verba em remarketing.</span>
+      </div>
+      <div class="insight warn">
+        <span class="insight-icon">⚠</span>
+        <span><strong>Tráfego de perfil sem vendas atribuídas:</strong> 733 cliques no perfil gerados pela campanha ONTIME mas sem conversão de compra direta. Avaliar redirecionamento de budget pra vendas ou manter como construção de marca.</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      <span class="footer-brand-icon">⚡</span>
+      <div>
+        <div class="footer-brand-name">Starken Tecnologia Ltda</div>
+        <div class="footer-brand-tag">Marketing Digital & Performance</div>
+      </div>
+    </div>
+    <div class="footer-period">
+      <div class="footer-period-label">Período</div>
+      <div>01/05/2026 a 31/05/2026</div>
+    </div>
+  </footer>
+
+</div>
+
+<div class="share-bar">
+  <button class="share-btn" onclick="shareReport()">📤 Compartilhar relatório</button>
+</div>
+
+<script>
+function shareReport() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Relatório Hamburgueria Feio · Maio/2026',
+      text: 'Faturamento R$ 9.851,52 · ROAS 4,85× · 99 compras',
+      url: window.location.href
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copiado!');
+  }
+}
+</script>
+
+</body>
+</html>
