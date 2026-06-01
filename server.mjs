@@ -234,7 +234,10 @@ async function fetchRenovacao() {
 
 function resolveFilePath(reqUrl) {
   let urlPath = decodeURIComponent(reqUrl.split('?')[0]);
+  // Diretório raiz vira index.html
   if (urlPath === '/') urlPath = '/index.html';
+  // Qualquer URL terminando em / também aponta pro index.html da pasta
+  if (urlPath.endsWith('/')) urlPath = urlPath + 'index.html';
 
   const clientMatch = urlPath.match(/^\/clientes\/([^\/]+)\/(.+)$/);
   if (clientMatch) {
