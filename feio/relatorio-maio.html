@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1A0F08">
+<title>Hamburgueria Feio · Relatório Maio/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --feio-bg: #1A0F08;
+    --feio-card: #261810;
+    --feio-card-2: #321F14;
+    --feio-amarelo: #F4B400;
+    --feio-amarelo-dk: #C99500;
+    --feio-vermelho: #DC2626;
+    --feio-branco: #FAF7F2;
+    --feio-cinza: #8C7B6E;
+    --feio-cinza-esc: #5C4D42;
+    --feio-linha: rgba(244,180,0,.12);
+    --feio-ok: #4ADE80;
+    --feio-aviso: #FBBF24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--feio-bg);
+    color: var(--feio-branco);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .mono { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+  .display { font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; }
+  .container { width: 100%; max-width: 880px; margin: 0 auto; padding: 16px; }
+  @media (min-width: 768px) { .container { padding: 32px; } }
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+    border-bottom: 2px solid var(--feio-amarelo);
+  }
+  .header-logo { height: 56px; width: auto; }
+  @media (min-width: 640px) { .header-logo { height: 72px; } }
+  .header-meta { flex: 1; text-align: right; }
+  .kicker { font-weight: 700; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--feio-amarelo); margin-bottom: 4px; }
+  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .04em; line-height: 1; text-transform: uppercase; }
+  @media (min-width: 640px) { .header-title { font-size: 32px; } }
+  .header-sub { font-size: 11px; color: var(--feio-cinza); margin-top: 4px; }
+
+  /* HERO REVENUE */
+  .hero {
+    background:
+      linear-gradient(135deg, rgba(38,24,16,.94), rgba(38,24,16,.98)),
+      url('assets/photos/promo-quinta.png') center/cover;
+    border: 1px solid var(--feio-linha);
+    border-radius: 24px;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--feio-amarelo);
+  }
+  .hero-kicker { font-weight: 700; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--feio-amarelo); margin-bottom: 14px; }
+  .hero-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--feio-amarelo);
+    line-height: 1;
+    letter-spacing: .02em;
+    margin-bottom: 10px;
+  }
+  @media (min-width: 480px) { .hero-amount { font-size: 72px; } }
+  @media (min-width: 768px) { .hero-amount { font-size: 88px; } }
+  .hero-meta { font-size: 13px; color: var(--feio-cinza); line-height: 1.6; }
+  .hero-meta strong { color: var(--feio-amarelo); font-weight: 700; }
+  .hero-net {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--feio-linha);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hero-net-label { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--feio-cinza-esc); }
+  .hero-net-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: .02em;
+    color: var(--feio-ok);
+  }
+
+  /* KPIs */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (min-width: 640px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+  .kpi {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .kpi-label { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--feio-cinza); font-weight: 600; margin-bottom: 8px; }
+  .kpi-value { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--feio-branco); letter-spacing: .02em; line-height: 1; }
+  .kpi-value.amarelo { color: var(--feio-amarelo); }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (min-width: 640px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+  .stat {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .stat-label { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--feio-cinza); font-weight: 600; margin-bottom: 10px; }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--feio-branco); letter-spacing: .02em; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--feio-cinza-esc); margin-top: 6px; }
+
+  /* SECTION */
+  .section { margin-bottom: 36px; }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--feio-branco);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--feio-linha);
+    position: relative;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: var(--feio-amarelo);
+  }
+
+  /* FUNIL */
+  .funnel { display: flex; flex-direction: column; gap: 6px; }
+  .stage {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-left: 3px solid var(--feio-amarelo);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all .18s;
+  }
+  .stage:hover { background: var(--feio-card-2); transform: translateX(4px); }
+  .stage-name { font-size: 13px; font-weight: 500; color: var(--feio-cinza); }
+  .stage-value { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--feio-branco); letter-spacing: .02em; }
+  .stage-arrow { text-align: center; color: var(--feio-cinza-esc); font-size: 12px; padding: 4px 0; }
+  .stage-arrow .pct { font-weight: 700; color: var(--feio-ok); margin-left: 8px; font-variant-numeric: tabular-nums; }
+  .stage.final {
+    background: linear-gradient(135deg, rgba(244,180,0,.12), rgba(244,180,0,.04));
+    border: 1px solid var(--feio-amarelo);
+    box-shadow: 0 0 0 1px rgba(244,180,0,.35), 0 10px 30px rgba(244,180,0,.18);
+  }
+  .stage.final .stage-name { color: var(--feio-branco); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+  .stage.final .stage-value { color: var(--feio-amarelo); font-size: 28px; }
+
+  /* RANKING */
+  .ranking { display: flex; flex-direction: column; gap: 12px; }
+  .rank {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .rank.champion {
+    border: 1px solid var(--feio-amarelo);
+    box-shadow: 0 0 0 1px rgba(244,180,0,.20);
+  }
+  .rank-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--feio-linha); }
+  .rank-pos { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--feio-cinza-esc); min-width: 32px; letter-spacing: .02em; }
+  .rank.champion .rank-pos { color: var(--feio-amarelo); }
+  .rank-name-wrap { flex: 1; min-width: 0; }
+  .rank-name { font-weight: 700; font-size: 13px; color: var(--feio-branco); word-break: break-word; }
+  .rank-tag { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--feio-cinza-esc); margin-top: 4px; }
+  .rank-roas { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--feio-ok); letter-spacing: .02em; }
+  .rank.warn .rank-roas { color: var(--feio-aviso); }
+  .rank.bad .rank-roas { color: var(--feio-cinza-esc); }
+  .rank-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (min-width: 480px) { .rank-stats { grid-template-columns: repeat(4, 1fr); } }
+  .rank-stat-label { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--feio-cinza-esc); margin-bottom: 4px; }
+  .rank-stat-value { font-weight: 700; font-size: 13px; color: var(--feio-branco); font-variant-numeric: tabular-nums; }
+
+  /* HAMBURGER DAY SECTION */
+  .hamburger-section {
+    background: linear-gradient(135deg, rgba(220,38,38,.06), rgba(244,180,0,.04));
+    border: 1px dashed rgba(220,38,38,.30);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 36px;
+  }
+  .hamburger-section .section-title { color: var(--feio-vermelho); }
+  .hamburger-section .section-desc {
+    font-size: 12px;
+    color: var(--feio-cinza);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  /* ADS PREVIEW */
+  .ads-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 640px) { .ads-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .ads-grid { grid-template-columns: repeat(3, 1fr); } }
+  .ad-card {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all .18s;
+  }
+  .ad-card:hover { border-color: var(--feio-amarelo); transform: translateY(-2px); }
+  .ad-thumb { aspect-ratio: 9/16; background: var(--feio-bg); position: relative; overflow: hidden; }
+  .ad-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ad-info { padding: 16px; }
+  .ad-kicker { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--feio-amarelo); font-weight: 700; margin-bottom: 6px; }
+  .ad-title { font-weight: 700; font-size: 14px; color: var(--feio-branco); margin-bottom: 12px; }
+  .ad-stats { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--feio-linha); }
+  .ad-stat { font-size: 11px; color: var(--feio-cinza); }
+  .ad-stat-roas { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--feio-ok); letter-spacing: .02em; }
+  .ad-stat-roas.warn { color: var(--feio-aviso); }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 2px solid var(--feio-amarelo);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-tagline { font-size: 12px; color: var(--feio-cinza-esc); letter-spacing: .08em; line-height: 1.4; }
+  .footer-tagline strong { color: var(--feio-amarelo); font-weight: 800; }
+  .footer-meta { text-align: right; font-size: 11px; color: var(--feio-cinza-esc); }
+  .footer-meta-label { text-transform: uppercase; letter-spacing: .14em; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <img src="assets/logos/logo.png" alt="Hamburgueria Feio" class="header-logo" />
+    <div class="header-meta">
+      <div class="kicker">Starken Tecnologia</div>
+      <div class="header-title">Performance</div>
+      <div class="header-sub">Maio/2026 · Mês Fechado</div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-kicker">💰 Valor de Conversão em Compra</div>
+    <div class="hero-amount mono">R$&nbsp;9.851,52</div>
+    <div class="hero-meta">
+      Investido R$ 2.031,24 · <strong>ROAS 4,85×</strong> · 99 compras
+    </div>
+    <div class="hero-net">
+      <span class="hero-net-label">Retorno líquido</span>
+      <span class="hero-net-amount mono">R$&nbsp;7.820,28</span>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Investimento</div><div class="kpi-value mono">R$&nbsp;2.031</div></div>
+    <div class="kpi"><div class="kpi-label">Compras</div><div class="kpi-value amarelo mono">99</div></div>
+    <div class="kpi"><div class="kpi-label">Ticket Médio</div><div class="kpi-value mono">R$&nbsp;99,51</div></div>
+    <div class="kpi"><div class="kpi-label">CPA</div><div class="kpi-value mono">R$&nbsp;20,52</div></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-label">Impressões</div>
+      <div class="stat-value mono">321.849</div>
+      <div class="stat-sub">CPM R$ 6,31</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Alcance</div>
+      <div class="stat-value mono">129.495</div>
+      <div class="stat-sub">pessoas únicas · freq 2,49</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Adições ao Carrinho</div>
+      <div class="stat-value mono">409</div>
+      <div class="stat-sub">194 iniciaram compra</div>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2 class="section-title">Funil de Conversão</h2>
+    <div class="funnel">
+      <div class="stage"><span class="stage-name">Impressões</span><span class="stage-value mono">321.849</span></div>
+      <div class="stage-arrow">↓<span class="pct">40,2%</span></div>
+      <div class="stage"><span class="stage-name">Alcance único</span><span class="stage-value mono">129.495</span></div>
+      <div class="stage-arrow">↓</div>
+      <div class="stage"><span class="stage-name">Cliques no Anúncio</span><span class="stage-value mono">4.184</span></div>
+      <div class="stage-arrow">↓<span class="pct">75,6%</span></div>
+      <div class="stage"><span class="stage-name">Cliques no Link</span><span class="stage-value mono">3.165</span></div>
+      <div class="stage-arrow">↓</div>
+      <div class="stage"><span class="stage-name">Adições ao Carrinho</span><span class="stage-value mono">409</span></div>
+      <div class="stage-arrow">↓<span class="pct">47,4%</span></div>
+      <div class="stage"><span class="stage-name">Iniciaram Compra</span><span class="stage-value mono">194</span></div>
+      <div class="stage-arrow">↓<span class="pct">51,0%</span></div>
+      <div class="stage final"><span class="stage-name">Compras Realizadas</span><span class="stage-value mono">99</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Campanhas Permanentes</h2>
+    <div class="ranking">
+      <div class="rank champion">
+        <div class="rank-header">
+          <span class="rank-pos">1</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][VENDAS][01]</div>
+            <div class="rank-tag">Motor da operação · 10 meses no ar</div>
+          </div>
+          <span class="rank-roas mono">5,74×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;1.548,98</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">89</div></div>
+          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;99,90</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;17,40</div></div>
+        </div>
+      </div>
+
+      <div class="rank bad">
+        <div class="rank-header">
+          <span class="rank-pos">2</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[MESO][TRAFEGO][PERFIL][ONTIME]</div>
+            <div class="rank-tag">Tráfego perfil · não-vendas</div>
+          </div>
+          <span class="rank-roas mono">—</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;186,56</div></div>
+          <div><div class="rank-stat-label">Cliques</div><div class="rank-stat-value mono">733</div></div>
+          <div><div class="rank-stat-label">CTR</div><div class="rank-stat-value mono">2,93%</div></div>
+          <div><div class="rank-stat-label">Foco</div><div class="rank-stat-value mono">Perfil</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hamburger-section">
+    <h2 class="section-title">🍔 Sazonais · Dia do Hambúrguer (28/05)</h2>
+    <p class="section-desc">
+      Campanhas pontuais ativadas exclusivamente no Dia Mundial do Hambúrguer.
+      Performance separada das permanentes pra análise justa do evento.
+    </p>
+    <div class="ranking">
+      <div class="rank">
+        <div class="rank-header">
+          <span class="rank-pos">1</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][VENDAS][QUINTA][28/05]</div>
+            <div class="rank-tag">Vendas direcionadas · day-parting</div>
+          </div>
+          <span class="rank-roas mono">7,33×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;96,10</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">7</div></div>
+          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;100,64</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;13,73</div></div>
+        </div>
+      </div>
+      <div class="rank warn">
+        <div class="rank-header">
+          <span class="rank-pos">2</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][RECO][28/05][02]</div>
+            <div class="rank-tag">Awareness · alcance</div>
+          </div>
+          <span class="rank-roas mono">1,61×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;99,78</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">2</div></div>
+          <div><div class="rank-stat-label">Alcance</div><div class="rank-stat-value mono">58.311</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;49,89</div></div>
+        </div>
+      </div>
+      <div class="rank warn">
+        <div class="rank-header">
+          <span class="rank-pos">3</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][RECO][28/05][01]</div>
+            <div class="rank-tag">Awareness · alcance</div>
+          </div>
+          <span class="rank-roas mono">1,10×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;99,82</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">1</div></div>
+          <div><div class="rank-stat-label">Alcance</div><div class="rank-stat-value mono">59.732</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;99,82</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Anúncios em Veiculação</h2>
+    <p style="color: var(--feio-cinza); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
+      Criativos rodando nas Stories diárias da operação.
+    </p>
+    <div class="ads-grid">
+      <div class="ad-card">
+        <div class="ad-thumb"><img src="assets/photos/promo-segunda.png" alt="Promo Segunda"></div>
+        <div class="ad-info">
+          <div class="ad-kicker">SEGUNDA · STORIES</div>
+          <div class="ad-title">Cheese Egg · Promo do Dia</div>
+          <div class="ad-stats">
+            <span class="ad-stat">Story recorrente</span>
+            <span class="ad-stat-roas">5,7×</span>
+          </div>
+        </div>
+      </div>
+      <div class="ad-card">
+        <div class="ad-thumb"><img src="assets/photos/promo-quinta.png" alt="Promo Quinta"></div>
+        <div class="ad-info">
+          <div class="ad-kicker">QUINTA · DIA DO HAMBÚRGUER</div>
+          <div class="ad-title">Quinta com Vendas</div>
+          <div class="ad-stats">
+            <span class="ad-stat">7 vendas</span>
+            <span class="ad-stat-roas">7,3×</span>
+          </div>
+        </div>
+      </div>
+      <div class="ad-card">
+        <div class="ad-thumb"><img src="assets/photos/promo-sexta.png" alt="Promo Sexta"></div>
+        <div class="ad-info">
+          <div class="ad-kicker">SEXTA · COMBO</div>
+          <div class="ad-title">Combo Sexta</div>
+          <div class="ad-stats">
+            <span class="ad-stat">Story recorrente</span>
+            <span class="ad-stat-roas">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-tagline">
+      Operação mantida por <strong>Starken Tecnologia</strong><br>
+      Marketing Digital & Performance · Blumenau/SC
+    </div>
+    <div class="footer-meta">
+      <div class="footer-meta-label">Período</div>
+      <div class="mono">01/05/2026 a 31/05/2026</div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

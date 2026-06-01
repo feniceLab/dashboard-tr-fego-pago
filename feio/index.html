@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1A0F08">
+<meta name="description" content="Hamburgueria Feio · Área do Cliente · Performance">
+<title>Hamburgueria Feio · Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --feio-bg: #1A0F08;
+    --feio-card: #261810;
+    --feio-card-2: #321F14;
+    --feio-amarelo: #F4B400;
+    --feio-amarelo-dk: #C99500;
+    --feio-vermelho: #DC2626;
+    --feio-branco: #FAF7F2;
+    --feio-creme: #C8A77B;
+    --feio-cinza: #8C7B6E;
+    --feio-cinza-esc: #5C4D42;
+    --feio-linha: rgba(244,180,0,.12);
+    --feio-ok: #4ADE80;
+    --feio-aviso: #FBBF24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--feio-bg);
+    color: var(--feio-branco);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(244,180,0,.06), transparent 40%),
+      radial-gradient(circle at 0% 90%, rgba(220,38,38,.04), transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .mono { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+  .display { font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; }
+  .container { position: relative; z-index: 1; width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 768px) { .container { padding: 0 32px; } }
+
+  /* NAV */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(26,15,8,.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--feio-linha);
+  }
+  .topnav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+  }
+  .nav-logo img { height: 44px; width: auto; display: block; }
+  @media (min-width: 640px) { .nav-logo img { height: 54px; } }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(244,180,0,.10);
+    border: 1px solid var(--feio-amarelo);
+    color: var(--feio-amarelo);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+  }
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--feio-amarelo);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+  /* HERO */
+  .hero-wrap {
+    position: relative;
+    margin: 20px 0 40px;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+  }
+  @media (min-width: 768px) {
+    .hero-wrap { display: grid; grid-template-columns: 1.2fr 1fr; min-height: 480px; }
+  }
+  .hero-content { padding: 36px 28px; position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; }
+  @media (min-width: 768px) { .hero-content { padding: 48px 40px; } }
+  .hero-kicker {
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--feio-amarelo);
+    margin-bottom: 14px;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    line-height: .92;
+    color: var(--feio-branco);
+    letter-spacing: .02em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  @media (min-width: 640px) { .hero-title { font-size: 72px; } }
+  @media (min-width: 1024px) { .hero-title { font-size: 96px; } }
+  .hero-title em { font-style: normal; color: var(--feio-amarelo); }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--feio-cinza);
+    line-height: 1.65;
+    max-width: 460px;
+    margin-bottom: 24px;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    background: var(--feio-amarelo);
+    color: var(--feio-bg);
+    font-weight: 800;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    border-radius: 8px;
+    text-decoration: none;
+    align-self: flex-start;
+    transition: all .2s;
+  }
+  .hero-cta:hover { background: var(--feio-amarelo-dk); transform: translateY(-2px); }
+  .hero-image { position: relative; min-height: 280px; overflow: hidden; }
+  @media (min-width: 768px) { .hero-image { min-height: 100%; } }
+  .hero-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--feio-card) 0%, transparent 25%);
+    z-index: 1;
+  }
+  @media (max-width: 767px) {
+    .hero-image::before {
+      background: linear-gradient(180deg, transparent 50%, var(--feio-card) 100%);
+    }
+  }
+  .hero-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* SECTION */
+  .section { margin-bottom: 56px; }
+  .section-head {
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--feio-linha);
+    position: relative;
+  }
+  .section-head::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--feio-amarelo);
+  }
+  .section-kicker {
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--feio-amarelo);
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--feio-branco);
+  }
+  @media (min-width: 640px) { .section-title { font-size: 44px; } }
+  .section-desc {
+    color: var(--feio-cinza);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  /* KPIs */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 768px) { .kpi-row { grid-template-columns: repeat(4, 1fr); } }
+  .kpi {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all .18s;
+  }
+  .kpi:hover {
+    border-color: var(--feio-amarelo);
+    transform: translateY(-2px);
+  }
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--feio-cinza);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .kpi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--feio-branco);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: .02em;
+  }
+  .kpi-value.amarelo { color: var(--feio-amarelo); }
+  .kpi-trend {
+    font-size: 11px;
+    color: var(--feio-ok);
+    font-weight: 600;
+  }
+
+  /* RELATÓRIOS */
+  .reports-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) { .reports-grid { grid-template-columns: repeat(2, 1fr); } }
+  .report-card {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: all .18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .report-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--feio-amarelo);
+    opacity: 0;
+    transition: opacity .18s;
+  }
+  .report-card:hover {
+    background: var(--feio-card-2);
+    transform: translateY(-2px);
+    border-color: var(--feio-amarelo);
+  }
+  .report-card:hover::before { opacity: 1; }
+  .report-card-kicker {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--feio-amarelo);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .report-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--feio-branco);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .report-card-desc {
+    font-size: 13px;
+    color: var(--feio-cinza);
+    line-height: 1.6;
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  .report-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--feio-amarelo);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+  }
+  .report-card-cta::after { content: '→'; transition: transform .18s; }
+  .report-card:hover .report-card-cta::after { transform: translateX(4px); }
+
+  /* GALERIA */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 768px) { .gallery { grid-template-columns: repeat(4, 1fr); } }
+  .gallery-item {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 9/16;
+    background: var(--feio-card);
+    position: relative;
+    transition: transform .25s;
+  }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-item::after {
+    content: attr(data-caption);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 14px;
+    color: var(--feio-amarelo);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,.85));
+    pointer-events: none;
+  }
+
+  /* INFO */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
+  .info-card {
+    background: var(--feio-card);
+    border: 1px solid var(--feio-linha);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .info-card-label {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--feio-cinza);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .info-card-value {
+    color: var(--feio-branco);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .info-card-value strong { color: var(--feio-amarelo); font-weight: 700; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 48px;
+    padding: 32px 0;
+    border-top: 2px solid var(--feio-amarelo);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-brand {
+    font-size: 12px;
+    color: var(--feio-cinza);
+    line-height: 1.6;
+  }
+  .footer-brand strong { color: var(--feio-amarelo); font-weight: 800; }
+  .footer-link {
+    color: var(--feio-cinza);
+    text-decoration: none;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-weight: 700;
+  }
+  .footer-link:hover { color: var(--feio-amarelo); }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <div class="topnav-inner">
+      <a class="nav-logo" href=""><img src="assets/logos/logo.png" alt="Hamburgueria Feio" /></a>
+      <span class="badge">Operação Ativa</span>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="hero-wrap">
+    <div class="hero-content">
+      <div class="hero-kicker">Área do Cliente · Performance</div>
+      <h1 class="hero-title">FEIO<br><em>POR FORA,</em><br>BOM POR DENTRO.</h1>
+      <p class="hero-sub">
+        Acompanhamento da operação de tráfego pago, relatórios mensais e análise
+        de performance dos hambúrgueres que vendem.
+      </p>
+      <a class="hero-cta" href="relatorio-maio.html">Ver Relatório Maio →</a>
+    </div>
+    <div class="hero-image">
+      <img src="assets/photos/promo-quinta.png" alt="Hamburgueria Feio Promoção" loading="eager" />
+    </div>
+  </div>
+
+  <!-- KPIs DO MÊS -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-kicker">Resumo · Maio 2026</div>
+      <h2 class="section-title">Mês Fechado</h2>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label">Faturamento</div>
+        <div class="kpi-value amarelo mono">R$&nbsp;9.851</div>
+        <div class="kpi-trend">+ ROAS 4,85×</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Compras</div>
+        <div class="kpi-value mono">99</div>
+        <div class="kpi-trend">+ Ticket R$ 99,51</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Investimento</div>
+        <div class="kpi-value mono">R$&nbsp;2.031</div>
+        <div class="kpi-trend">+ CPA R$ 20,52</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Alcance</div>
+        <div class="kpi-value mono">129.495</div>
+        <div class="kpi-trend">+ 321k impressões</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RELATÓRIOS -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-kicker">Acervo</div>
+      <h2 class="section-title">Relatórios Disponíveis</h2>
+      <p class="section-desc">Análises mensais — faturamento, funil de conversão e ranking de campanhas.</p>
+    </div>
+    <div class="reports-grid">
+      <a class="report-card" href="relatorio-maio.html">
+        <div class="report-card-kicker">Maio · 2026</div>
+        <div class="report-card-title">Fechamento Mensal</div>
+        <p class="report-card-desc">
+          Performance consolidada de maio: R$ 9.851 em faturamento, ROAS 4,85×,
+          99 compras. Análise das campanhas permanentes + Hamburger Day separado.
+        </p>
+        <span class="report-card-cta">Abrir relatório</span>
+      </a>
+      <div class="report-card" style="opacity:.55; pointer-events:none;">
+        <div class="report-card-kicker">Junho · 2026</div>
+        <div class="report-card-title">Em andamento</div>
+        <p class="report-card-desc">
+          Relatório de junho será disponibilizado no fechamento do mês. Campanha
+          VENDAS 01 renovada com R$ 9.500 lifetime.
+        </p>
+        <span class="report-card-cta" style="color:var(--feio-cinza);">Aguardando fechamento</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIA DE PROMOÇÕES -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-kicker">Stories Recorrentes</div>
+      <h2 class="section-title">Promoções da Semana</h2>
+      <p class="section-desc">Criativos diários publicados em Stories.</p>
+    </div>
+    <div class="gallery">
+      <div class="gallery-item" data-caption="Segunda · Cheese Egg">
+        <img src="assets/photos/promo-segunda.png" alt="Promoção Segunda" loading="lazy">
+      </div>
+      <div class="gallery-item" data-caption="Quinta · Promo">
+        <img src="assets/photos/promo-quinta.png" alt="Promoção Quinta" loading="lazy">
+      </div>
+      <div class="gallery-item" data-caption="Sexta · Combo">
+        <img src="assets/photos/promo-sexta.png" alt="Promoção Sexta" loading="lazy">
+      </div>
+      <div class="gallery-item" data-caption="Sábado · Especial">
+        <img src="assets/photos/promo-sabado.png" alt="Promoção Sábado" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- OPERAÇÃO -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-kicker">Detalhes</div>
+      <h2 class="section-title">Operação</h2>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-label">Cardápio Digital</div>
+        <div class="info-card-value">
+          <strong>hamburgueriafeio.com.br</strong><br>
+          Onde a operação de mídia direciona o tráfego.
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Instagram</div>
+        <div class="info-card-value">
+          <strong>@hamburgueria.feio</strong><br>
+          Conta Business · Conteúdo diário
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Cidade</div>
+        <div class="info-card-value">
+          <strong>Blumenau / SC</strong><br>
+          Delivery + Salão
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Mantido por</div>
+        <div class="info-card-value">
+          <strong>⚡ Starken Tecnologia</strong><br>
+          Marketing Digital & Performance
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      Operação mantida por <strong>Starken Tecnologia</strong><br>
+      Marketing Digital & Performance · 2026
+    </div>
+    <a class="footer-link" href="../">← Dashboard principal</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
