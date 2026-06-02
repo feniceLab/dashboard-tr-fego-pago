@@ -778,11 +778,11 @@
             <stop offset="100%" stop-color="#d62828"/>
           </linearGradient>
           <linearGradient id="funnelFinalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#c92020"/>
-            <stop offset="100%" stop-color="#5a0000"/>
+            <stop offset="0%" stop-color="#3ec569"/>
+            <stop offset="100%" stop-color="#15692f"/>
           </linearGradient>
-          <filter id="finalGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="2" result="blur"/>
+          <filter id="finalGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
             <feMerge>
               <feMergeNode in="blur"/>
               <feMergeNode in="SourceGraphic"/>
@@ -829,8 +829,8 @@
         <text class="stage-value" x="360" y="255">337</text>
         <text class="stage-drop ok" x="510" y="255">↓ 39,3%</text>
 
-        <!-- Stage 7: COMPRAS 324 (FINAL - vermelho cheio) -->
-        <polygon class="stage-shape" points="250,280 470,280 440,345 280,345" fill="url(#funnelFinalGrad)" stroke="#d62828" stroke-width="1.5" filter="url(#finalGlow)"/>
+        <!-- Stage 7: COMPRAS 324 (FINAL - verde de conversão concluída) -->
+        <polygon class="stage-shape" points="250,280 470,280 440,345 280,345" fill="url(#funnelFinalGrad)" stroke="#3ec569" stroke-width="1.8" filter="url(#finalGlow)"/>
         <text class="stage-final-label" x="245" y="313">Compras</text>
         <text class="stage-final-value" x="360" y="313">324</text>
         <text class="stage-drop ok" x="485" y="313">↓ 3,9%</text>
