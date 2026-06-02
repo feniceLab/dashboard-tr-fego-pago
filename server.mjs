@@ -144,28 +144,75 @@ async function fetchAdminStatus() {
     else debug = j.data;
   } catch (e) { debugErr = { message: e.message }; }
 
-  // 3. Páginas (Facebook + Instagram vinculado) — pega tudo de uma vez
+  // 2b. Carrega mapping de clientes (pra enriquecer com agencia + buscar páginas não-listadas via page_id direto)
+  let clientsMapping = { clients: [] };
+  try {
+    const mappingRaw = await fs.readFile(path.join(__dirname, 'data', 'clients-mapping.json'), 'utf-8');
+    clientsMapping = JSON.parse(mappingRaw);
+  } catch {}
+  const pageIdToClient = {};
+  const adAccountIdToClient = {};
+  clientsMapping.clients.forEach(c => {
+    if (c.page_id) pageIdToClient[c.page_id] = c;
+    if (c.ad_account_id) adAccountIdToClient[c.ad_account_id] = c;
+  });
+
+  const mapPageData = (p, source) => ({
+    id: p.id,
+    name: p.name,
+    category: p.category,
+    tasks: p.tasks || [],
+    has_page_token: !!p.access_token,
+    source,
+    agencia: pageIdToClient[p.id]?.agencia || null,
+    cliente_slug: pageIdToClient[p.id]?.slug || null,
+    instagram: p.instagram_business_account ? {
+      id: p.instagram_business_account.id,
+      username: p.instagram_business_account.username,
+      name: p.instagram_business_account.name,
+      followers: p.instagram_business_account.followers_count,
+      avatar: p.instagram_business_account.profile_picture_url,
+    } : null,
+  });
+
+  // 3. Páginas via /me/accounts (rota natural)
   let pages = [];
   let pagesErr = null;
   try {
     const r = await fetch(`https://graph.facebook.com/v23.0/me/accounts?fields=id,name,access_token,category,tasks,instagram_business_account{id,username,name,followers_count,profile_picture_url}&limit=100&access_token=${token}`);
     const j = await r.json();
     if (j.error) pagesErr = j.error;
-    else pages = (j.data || []).map(p => ({
-      id: p.id,
-      name: p.name,
-      category: p.category,
-      tasks: p.tasks || [],
-      has_page_token: !!p.access_token,
-      instagram: p.instagram_business_account ? {
-        id: p.instagram_business_account.id,
-        username: p.instagram_business_account.username,
-        name: p.instagram_business_account.name,
-        followers: p.instagram_business_account.followers_count,
-        avatar: p.instagram_business_account.profile_picture_url,
-      } : null,
-    }));
+    else pages = (j.data || []).map(p => mapPageData(p, 'me/accounts'));
   } catch (e) { pagesErr = { message: e.message }; }
+
+  // 3b. Páginas mapeadas mas NÃO retornadas por /me/accounts → buscar via page_id direto
+  // (caso Suprema: acesso via BM, não via /me/accounts)
+  const foundIds = new Set(pages.map(p => p.id));
+  const missingMapped = clientsMapping.clients.filter(c => c.page_id && !foundIds.has(c.page_id));
+  if (missingMapped.length) {
+    const extras = await Promise.all(missingMapped.map(async (c) => {
+      try {
+        const r = await fetch(`https://graph.facebook.com/v23.0/${c.page_id}?fields=id,name,access_token,category,instagram_business_account{id,username,name,followers_count,profile_picture_url}&access_token=${token}`);
+        const j = await r.json();
+        if (j.error || !j.id) return null;
+        return mapPageData(j, 'direct');
+      } catch { return null; }
+    }));
+    extras.filter(Boolean).forEach(p => pages.push(p));
+  }
+
+  // Pendentes (clientes Fenice Lab sem page_id ainda)
+  const pendingClients = clientsMapping.clients
+    .filter(c => !c.page_id && c.agencia === 'Fenice Lab')
+    .map(c => ({
+      id: null,
+      name: c.name,
+      pending: true,
+      status: c.status || 'Aguardando setup',
+      agencia: c.agencia,
+      cliente_slug: c.slug,
+      ad_account_id: c.ad_account_id || null,
+    }));
 
   // 4. Ad accounts
   let adAccounts = [];
@@ -186,6 +233,9 @@ async function fetchAdminStatus() {
       amount_spent_cents: a.amount_spent ? parseInt(a.amount_spent) : null,
       spend_cap_cents: a.spend_cap ? parseInt(a.spend_cap) : null,
       business: a.business ? { id: a.business.id, name: a.business.name } : null,
+      agencia: adAccountIdToClient[a.account_id]?.agencia || null,
+      cliente_slug: adAccountIdToClient[a.account_id]?.slug || null,
+      cliente_nome: adAccountIdToClient[a.account_id]?.name || null,
     }));
   } catch (e) { adAccountsErr = { message: e.message }; }
 
@@ -248,6 +298,7 @@ async function fetchAdminStatus() {
     pages_error: pagesErr,
     pages_count: pages.length,
     pages_with_ig: pages.filter(p => p.instagram).length,
+    pending_clients: pendingClients,
     ad_accounts: adAccounts,
     ad_accounts_error: adAccountsErr,
     ad_accounts_count: adAccounts.length,

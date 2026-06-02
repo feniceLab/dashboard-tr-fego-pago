@@ -579,8 +579,8 @@ function render(data) {
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-panel="paginas">📘 Páginas & Instagram <span class="count">${data.pages_count || 0}</span></button>
-      <button class="tab" data-panel="contas">💰 Ad Accounts <span class="count">${data.ad_accounts_count || 0}</span></button>
+      <button class="tab active" data-panel="paginas">📘 Páginas & Instagram <span class="count" id="count-pages">${data.pages_count || 0}</span></button>
+      <button class="tab" data-panel="contas">💰 Ad Accounts <span class="count" id="count-aa">${data.ad_accounts_count || 0}</span></button>
       <button class="tab" data-panel="token">🔑 Detalhes do Token</button>
       <button class="tab" data-panel="bm">🏢 Business Managers <span class="count">${(data.businesses || []).length}</span></button>
     </div>
@@ -588,15 +588,27 @@ function render(data) {
     <div class="panel active" id="panel-paginas">
       <div class="filter-bar">
         <input type="text" id="filter-pages" placeholder="🔎 Filtrar páginas por nome…" oninput="filterCards('panel-paginas', this.value)">
+        <select id="agencia-pages" onchange="filterByAgencia('panel-paginas', this.value); window._agenciaPages = this.value;">
+          <option value="Fenice Lab" selected>🔥 Apenas Fenice Lab</option>
+          <option value="Starken">⚡ Apenas Starken</option>
+          <option value="">Todas (incluindo não-mapeadas)</option>
+        </select>
       </div>
       <div class="grid">
-        ${(data.pages || []).map(p => renderPageCard(p)).join('') || '<div class="empty">Nenhuma página acessível</div>'}
+        ${(data.pending_clients || []).map(c => renderPendingCard(c)).join('')}
+        ${(data.pages || []).map(p => renderPageCard(p)).join('') || ''}
+        ${!(data.pages || []).length && !(data.pending_clients || []).length ? '<div class="empty">Nenhuma página acessível</div>' : ''}
       </div>
     </div>
 
     <div class="panel" id="panel-contas">
       <div class="filter-bar">
         <input type="text" id="filter-aa" placeholder="🔎 Filtrar contas por nome ou ID…" oninput="filterCards('panel-contas', this.value)">
+        <select id="agencia-aa" onchange="filterByAgencia('panel-contas', this.value); window._agenciaAa = this.value;">
+          <option value="Fenice Lab" selected>🔥 Apenas Fenice Lab</option>
+          <option value="Starken">⚡ Apenas Starken</option>
+          <option value="">Todas as contas (78)</option>
+        </select>
         <select onchange="filterCardsByStatus('panel-contas', this.value)">
           <option value="">Todos status</option>
           <option value="1">Apenas Ativas</option>
@@ -648,6 +660,10 @@ function render(data) {
     </div>
   `;
 
+  // Aplica filtro default "Fenice Lab" em ambas as tabs ao renderizar
+  filterByAgencia('panel-paginas', 'Fenice Lab');
+  filterByAgencia('panel-contas', 'Fenice Lab');
+
   // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -661,11 +677,17 @@ function render(data) {
   });
 }
 
+function agenciaBadge(agencia) {
+  if (agencia === 'Fenice Lab') return '<span class="card-tag" style="background:rgba(251,113,133,0.15);color:#fb7185;">🔥 Fenice Lab</span>';
+  if (agencia === 'Starken') return '<span class="card-tag" style="background:rgba(96,165,250,0.15);color:var(--info);">⚡ Starken</span>';
+  return '';
+}
+
 function renderPageCard(p) {
   const initial = (p.name || '?').trim().charAt(0).toUpperCase();
   const ig = p.instagram;
   return `
-    <div class="card" data-name="${p.name.toLowerCase()}" data-status="1">
+    <div class="card" data-name="${p.name.toLowerCase()}" data-status="1" data-agencia="${p.agencia || ''}">
       <div class="card-head">
         <div class="card-avatar">${initial}</div>
         <div style="min-width:0;">
@@ -674,6 +696,7 @@ function renderPageCard(p) {
         </div>
       </div>
       <div class="card-tags">
+        ${agenciaBadge(p.agencia)}
         <span class="card-tag fb">Facebook</span>
         ${ig ? '<span class="card-tag ig">Instagram</span>' : ''}
         ${p.has_page_token ? '<span class="card-tag ok">PAT ✓</span>' : '<span class="card-tag err">Sem PAT</span>'}
@@ -693,20 +716,44 @@ function renderPageCard(p) {
   `;
 }
 
+function renderPendingCard(c) {
+  const initial = (c.name || '?').trim().charAt(0).toUpperCase();
+  return `
+    <div class="card" data-name="${(c.name||'').toLowerCase()}" data-status="1" data-agencia="${c.agencia || ''}" style="border-style:dashed; opacity:0.85;">
+      <div class="card-head">
+        <div class="card-avatar" style="background:rgba(251,191,36,0.12);color:var(--warn);">${initial}</div>
+        <div style="min-width:0;">
+          <div class="card-name">${c.name}</div>
+          <div class="card-meta" style="color:var(--warn);">⏳ Pendente</div>
+        </div>
+      </div>
+      <div class="card-tags">
+        ${agenciaBadge(c.agencia)}
+        <span class="card-tag warn">Sem página FB</span>
+        ${c.ad_account_id ? '<span class="card-tag ok">Ad Account ✓</span>' : '<span class="card-tag err">Sem Ad Account</span>'}
+      </div>
+      <div style="margin-top:10px; color:var(--text-3); font-size:12px; line-height:1.4;">${c.status || 'Aguardando setup'}</div>
+      ${c.ad_account_id ? `<div class="card-meta" style="margin-top:8px;">act_${c.ad_account_id}</div>` : ''}
+    </div>
+  `;
+}
+
 function renderAdAccountCard(a) {
   const [statusCls, statusLabel] = STATUS_MAP[a.status] || ['warn', `Status ${a.status}`];
   const spent = fmtMoney(a.amount_spent_cents, a.currency || 'BRL');
   const balance = fmtMoney(a.balance_cents, a.currency || 'BRL');
+  const displayName = a.cliente_nome || a.name || '(sem nome)';
   return `
-    <div class="card" data-name="${(a.name||'').toLowerCase()} ${a.account_id}" data-status="${a.status}">
+    <div class="card" data-name="${(a.name||'').toLowerCase()} ${(a.cliente_nome||'').toLowerCase()} ${a.account_id}" data-status="${a.status}" data-agencia="${a.agencia || ''}">
       <div class="card-head">
         <div class="card-avatar">💰</div>
         <div style="min-width:0;">
-          <div class="card-name">${a.name || '(sem nome)'}</div>
+          <div class="card-name">${displayName}</div>
           <div class="card-meta">act_${a.account_id}</div>
         </div>
       </div>
       <div class="card-tags">
+        ${agenciaBadge(a.agencia)}
         <span class="card-tag ${statusCls}">${statusLabel}</span>
         ${a.currency ? `<span class="card-tag">${a.currency}</span>` : ''}
         ${a.disable_reason ? `<span class="card-tag err">Disable: ${a.disable_reason}</span>` : ''}
@@ -719,6 +766,20 @@ function renderAdAccountCard(a) {
       </div>
     </div>
   `;
+}
+
+function filterByAgencia(panelId, agencia) {
+  document.querySelectorAll(`#${panelId} .card`).forEach(card => {
+    const ag = card.dataset.agencia || '';
+    card.style.display = (!agencia || ag === agencia) ? '' : 'none';
+  });
+  // Atualiza contador da tab
+  const visibles = document.querySelectorAll(`#${panelId} .card:not([style*="display: none"])`).length;
+  if (panelId === 'panel-paginas') {
+    const c = document.getElementById('count-pages'); if (c) c.textContent = visibles;
+  } else if (panelId === 'panel-contas') {
+    const c = document.getElementById('count-aa'); if (c) c.textContent = visibles;
+  }
 }
 
 function filterCards(panelId, query) {
