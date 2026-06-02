@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍔 Hamburger Day 2026 — Fenice Lab</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #e5e5e5; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .pulse-dot {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .card:hover {
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+    .glow-green { box-shadow: 0 0 30px rgba(16,185,129,0.3); }
+    .glow-yellow { box-shadow: 0 0 30px rgba(245,158,11,0.3); }
+    .glow-red { box-shadow: 0 0 30px rgba(239,68,68,0.3); }
+    .number-flash {
+      animation: flash 0.6s ease;
+    }
+    @keyframes flash {
+      0% { color: #fff; transform: scale(1); }
+      50% { color: #facc15; transform: scale(1.05); }
+      100% { color: inherit; transform: scale(1); }
+    }
+    .progress-bar {
+      transition: width 1s ease-out;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen grid-bg">
+
+  <div class="max-w-[1800px] mx-auto px-6 py-6">
+
+    <!-- TOP NAV -->
+    <nav class="mb-4 flex flex-wrap items-center gap-2 text-sm">
+      <a href="/" class="px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/40 text-red-300 font-semibold">🍔 Hamburger Day</a>
+      <a href="/suprema.html" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-colors">🍕 Suprema Pizza</a>
+      <span class="text-zinc-700 mx-2">|</span>
+      <span class="text-xs text-zinc-600 mono">+ clientes em breve</span>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-1">
+          <span class="text-4xl">🍔</span>
+          <h1 class="text-3xl font-black tracking-tight">Dia 28/05 — Resultado Consolidado</h1>
+          <span class="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-500/10 border border-zinc-500/30 text-zinc-300 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-zinc-500"></span>
+            FECHADO
+          </span>
+          <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+            CONTA INTEIRA
+          </span>
+        </div>
+        <p class="text-zinc-500 text-sm mono">28 maio 2026 · Todas as campanhas que rodaram no dia · Fenice Lab</p>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- CLOCK -->
+        <div class="card rounded-xl px-4 py-3 text-center">
+          <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Hora local</div>
+          <div class="text-2xl font-bold mono" id="currentTime">--:--:--</div>
+        </div>
+
+        <!-- COUNTDOWN -->
+        <div class="card rounded-xl px-4 py-3 text-center" id="countdownCard">
+          <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Encerra em</div>
+          <div class="text-2xl font-bold mono text-emerald-400" id="countdown">--:--:--</div>
+        </div>
+
+        <!-- LAST UPDATE -->
+        <div class="card rounded-xl px-4 py-3 text-center">
+          <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Último update</div>
+          <div class="text-sm font-semibold mono" id="lastUpdate">--:--</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- BIG REVENUE BANNER -->
+    <section class="mb-6">
+      <div class="rounded-2xl p-6 relative overflow-hidden border border-emerald-500/30"
+           style="background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(5,150,105,0.05) 100%);">
+        <div class="absolute inset-0 pointer-events-none opacity-30"
+             style="background: radial-gradient(circle at 20% 50%, rgba(52,211,153,0.4) 0%, transparent 50%);"></div>
+        <div class="relative flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="text-xs uppercase tracking-widest text-emerald-300 mb-2 flex items-center gap-2">
+              💰 Valor de Conversão em Compra (Faturamento)
+            </div>
+            <div class="text-5xl md:text-6xl font-black mono text-emerald-400" id="totalRevenue">R$ 0,00</div>
+            <div class="text-sm text-emerald-300/70 mt-1 mono">
+              Investido: <span id="bannerSpent">R$ 0</span> · ROAS médio <span id="bannerRoas">—</span> · <span id="bannerPurchases">0</span> compras
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs uppercase tracking-widest text-emerald-300/70 mb-1">Retorno líquido</div>
+            <div class="text-3xl font-black mono text-emerald-400" id="totalProfit">R$ 0,00</div>
+            <div class="text-[10px] text-emerald-300/60 mt-1">(receita - investimento)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY ROW -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Total Investido</div>
+        <div class="text-3xl font-black mono" id="totalSpent">R$ 0,00</div>
+        <div class="text-xs text-zinc-500 mt-1">em <span id="campaignCount">0</span> contas</div>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Impressões</div>
+        <div class="text-3xl font-black mono" id="totalImpressions">0</div>
+        <div class="text-xs text-zinc-500 mt-1">soma das contas</div>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Alcance Total</div>
+        <div class="text-3xl font-black mono" id="totalReach">0</div>
+        <div class="text-xs text-zinc-500 mt-1">pessoas únicas</div>
+      </div>
+      <div class="card rounded-2xl p-5">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Compras (Purchase)</div>
+        <div class="text-3xl font-black mono text-emerald-400" id="totalPurchases">0</div>
+        <div class="text-xs text-zinc-500 mt-1">CPA médio: <span id="avgCpa">—</span></div>
+      </div>
+    </section>
+
+    <!-- CAMPAIGN CARDS -->
+    <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8" id="campaignGrid">
+      <!-- Cards rendered by JS -->
+    </section>
+
+    <!-- CRIATIVOS NO AR -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold flex items-center gap-2">
+          <span>🎨</span> Criativos no Ar
+        </h2>
+        <span class="text-xs text-zinc-500 mono">previews por cliente</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6" id="creativesGrid">
+        <!-- rendered by JS -->
+      </div>
+    </section>
+
+    <!-- FUNIL DE CONVERSÃO -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold flex items-center gap-2">
+          <span>🎯</span> Funil de Conversão por Cliente
+        </h2>
+        <span class="text-xs text-zinc-500 mono">do clique à compra</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6" id="funnelGrid">
+        <!-- Funis rendered by JS -->
+      </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="card rounded-2xl p-6">
+        <h3 class="text-sm uppercase tracking-wider text-zinc-500 mb-4">CTR % por cliente</h3>
+        <div class="relative h-64">
+          <canvas id="ctrChart"></canvas>
+        </div>
+      </div>
+      <div class="card rounded-2xl p-6">
+        <h3 class="text-sm uppercase tracking-wider text-zinc-500 mb-4">Gasto vs Budget</h3>
+        <div class="relative h-64">
+          <canvas id="budgetChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center text-zinc-600 text-xs py-6 border-t border-zinc-800">
+      <p class="mb-1">Fenice Lab · Auto-refresh a cada 30s · <a href="#" onclick="loadData(); return false;" class="text-emerald-400 hover:text-emerald-300">↻ refresh manual</a></p>
+      <p class="mono">snapshot.json · Meta Ads MCP</p>
+    </footer>
+
+  </div>
+
+  <script>
+    let chartCTR, chartBudget;
+    let lastData = null;
+
+    function formatBRL(v) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+    }
+    function formatInt(v) {
+      return new Intl.NumberFormat('pt-BR').format(v || 0);
+    }
+    function formatPct(v) {
+      return (v || 0).toFixed(2) + '%';
+    }
+
+    function getStatusColor(ctr) {
+      if (ctr >= 1.0) return { tag: 'EXCELENTE', class: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30', glow: 'glow-green' };
+      if (ctr >= 0.5) return { tag: 'OK', class: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30', glow: 'glow-yellow' };
+      return { tag: 'ATENÇÃO', class: 'text-red-400 bg-red-500/10 border-red-500/30', glow: 'glow-red' };
+    }
+
+    function renderCampaignCard(c) {
+      const pct = c.budget > 0 ? (c.spent / c.budget * 100) : 0;
+      const status = getStatusColor(c.ctr);
+      const roasColor = c.roas >= 5 ? 'text-emerald-400' : c.roas >= 2 ? 'text-yellow-400' : 'text-red-400';
+      return `
+        <div class="card rounded-2xl p-6 ${c.roas >= 5 ? 'glow-red' : (c.roas >= 2 ? 'glow-green' : 'glow-yellow')}">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="w-3 h-3 rounded-full" style="background: ${c.color}"></span>
+                <h3 class="text-lg font-bold">${c.client}</h3>
+              </div>
+              <p class="text-xs text-zinc-500 mono truncate" title="${c.campaign}">${c.campaign}</p>
+            </div>
+            <span class="px-2 py-1 rounded-md text-[10px] font-bold border ${status.class}">${c.verdict || status.tag}</span>
+          </div>
+
+          <!-- REVENUE HIGHLIGHT (big) -->
+          <div class="rounded-xl p-4 mb-3 border border-emerald-500/40 relative overflow-hidden"
+               style="background: linear-gradient(135deg, rgba(16,185,129,0.18) 0%, rgba(5,150,105,0.05) 100%);">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background: radial-gradient(circle at 90% 50%, rgba(52,211,153,0.2), transparent 60%);"></div>
+            <div class="relative">
+              <div class="text-[10px] uppercase tracking-widest text-emerald-300 mb-1 flex items-center gap-1">
+                💰 Valor de Conversão (Faturamento)
+              </div>
+              <div class="text-3xl md:text-4xl font-black mono text-emerald-400">${formatBRL(c.revenue || 0)}</div>
+              ${c.revenueSource ? `<div class="text-[9px] text-emerald-300/60 mt-1 mono">${c.revenueSource}</div>` : ''}
+            </div>
+          </div>
+
+          <!-- ROAS + PURCHASES -->
+          <div class="grid grid-cols-2 gap-2 mb-4">
+            <div class="bg-black/40 rounded-lg p-3 border border-zinc-800">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500">ROAS</div>
+              <div class="text-2xl font-black mono ${roasColor}">${c.roas ? c.roas.toFixed(2) + 'x' : '—'}</div>
+            </div>
+            <div class="bg-black/40 rounded-lg p-3 border border-zinc-800">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500">Purchases</div>
+              <div class="text-2xl font-black mono">${c.purchases || 0}</div>
+            </div>
+          </div>
+
+          <!-- Spent + Avg ticket + CPA -->
+          <div class="grid grid-cols-3 gap-2 mb-4">
+            <div class="bg-black/30 rounded-lg p-2 text-center">
+              <div class="text-[9px] uppercase tracking-wider text-zinc-500">Gasto</div>
+              <div class="text-sm font-bold mono">${formatBRL(c.spent || 0)}</div>
+            </div>
+            <div class="bg-black/30 rounded-lg p-2 text-center">
+              <div class="text-[9px] uppercase tracking-wider text-zinc-500">Ticket</div>
+              <div class="text-sm font-bold mono">${c.avgTicket ? formatBRL(c.avgTicket) : '—'}</div>
+            </div>
+            <div class="bg-black/30 rounded-lg p-2 text-center">
+              <div class="text-[9px] uppercase tracking-wider text-zinc-500">CPA</div>
+              <div class="text-sm font-bold mono">${c.cpa ? formatBRL(c.cpa) : '—'}</div>
+            </div>
+          </div>
+
+          <!-- BUDGET BAR -->
+          <div class="mb-4">
+            <div class="flex justify-between items-baseline mb-2">
+              <span class="text-2xl font-black mono">${formatBRL(c.spent)}</span>
+              <span class="text-xs text-zinc-500">/ ${formatBRL(c.budget)}</span>
+            </div>
+            <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+              <div class="progress-bar h-full rounded-full" style="width: ${Math.min(pct, 100)}%; background: ${c.color}"></div>
+            </div>
+            <div class="text-right text-[10px] mono text-zinc-500 mt-1">${pct.toFixed(1)}% gasto</div>
+          </div>
+
+          <!-- KPI GRID -->
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-black/30 rounded-lg p-3">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500">CTR</div>
+              <div class="text-xl font-bold mono ${c.ctr >= 1 ? 'text-emerald-400' : (c.ctr >= 0.5 ? 'text-yellow-400' : 'text-red-400')}">${formatPct(c.ctr)}</div>
+            </div>
+            <div class="bg-black/30 rounded-lg p-3">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500">CPM</div>
+              <div class="text-xl font-bold mono">${formatBRL(c.cpm)}</div>
+            </div>
+            <div class="bg-black/30 rounded-lg p-3">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500">CPC</div>
+              <div class="text-xl font-bold mono">${formatBRL(c.cpc)}</div>
+            </div>
+            <div class="bg-black/30 rounded-lg p-3">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500">Freq</div>
+              <div class="text-xl font-bold mono">${(c.frequency || 0).toFixed(2)}</div>
+            </div>
+          </div>
+
+          <!-- METRICS LIST -->
+          <div class="space-y-1.5 text-sm mb-4">
+            <div class="flex justify-between"><span class="text-zinc-500">Impressões</span><span class="mono font-semibold">${formatInt(c.impressions)}</span></div>
+            <div class="flex justify-between"><span class="text-zinc-500">Alcance</span><span class="mono font-semibold">${formatInt(c.reach)}</span></div>
+            <div class="flex justify-between"><span class="text-zinc-500">Cliques</span><span class="mono font-semibold text-emerald-400">${formatInt(c.clicks)}</span></div>
+            <div class="flex justify-between"><span class="text-zinc-500">Link clicks</span><span class="mono font-semibold">${formatInt(c.linkClicks)}</span></div>
+          </div>
+
+          ${c.campaignBreakdown && c.campaignBreakdown.length ? `
+            <div class="pt-4 border-t border-zinc-800">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2 flex items-center justify-between">
+                <span>📋 ${c.campaignBreakdown.length} campanhas que geraram venda</span>
+                <span class="text-zinc-600">Spent · Purchases · ROAS</span>
+              </div>
+              <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                ${c.campaignBreakdown.map(cb => `
+                  <div class="flex items-center justify-between gap-2 text-[11px] py-1 px-2 rounded bg-black/20 hover:bg-black/40">
+                    <div class="min-w-0 flex-1">
+                      <div class="font-medium truncate" title="${cb.name}">${cb.name}</div>
+                      <div class="text-[10px] text-zinc-600">${cb.tag}</div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 mono">
+                      <span class="text-zinc-400">${formatBRL(cb.spent)}</span>
+                      <span class="text-zinc-700">·</span>
+                      <span class="text-emerald-400 font-bold">${cb.purchases}</span>
+                      <span class="text-zinc-700">·</span>
+                      <span class="${cb.roas >= 5 ? 'text-emerald-400' : cb.roas >= 2 ? 'text-yellow-400' : 'text-zinc-500'} font-bold w-12 text-right">${cb.roas ? cb.roas.toFixed(2) + 'x' : '—'}</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderCreatives(c) {
+      const creatives = c.creatives || [];
+      const hasVideo = creatives.some(cr => cr.type === 'video');
+
+      function detectAspect(cr) {
+        const fmt = (cr.format || '').toLowerCase();
+        const name = (cr.name || '').toUpperCase();
+        if (fmt.includes('9:16') || name.includes('STORIES') || name.includes('STORIE') || name.includes('REELS')) return '9/16';
+        if (fmt.includes('4:5') || name.includes('FEED')) return '4/5';
+        if (fmt.includes('1:1')) return '1/1';
+        if (fmt.includes('vídeo') || cr.type === 'video') return '9/16';
+        return '1/1';
+      }
+
+      const items = creatives.map(cr => {
+        const aspect = detectAspect(cr);
+        const aspectClass = `aspect-[${aspect}]`;
+        // Vídeo ganha mais espaço (col-span maior)
+        const colClass = cr.type === 'video' ? 'col-span-2 md:col-span-2' : 'col-span-1';
+
+        if (cr.type === 'video' && cr.src) {
+          return `
+            <div class="${colClass} min-w-0">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2 flex items-center justify-between">
+                <span class="flex items-center gap-1">🎥 ${cr.name}</span>
+                <span class="mono text-zinc-600">${cr.format}</span>
+              </div>
+              <div class="relative ${aspectClass} rounded-lg overflow-hidden bg-zinc-950 border border-zinc-800 group">
+                <video src="${cr.src}" class="w-full h-full object-contain" controls preload="metadata" playsinline></video>
+                <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-md px-2 py-1 text-[10px] mono text-white pointer-events-none flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-500 pulse-dot"></span> VIDEO
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        if (cr.type === 'image' && cr.src) {
+          // FEED 4:5 → object-contain (mostra tudo sem cortar)
+          // STORIES 9:16 → object-cover (preenche, é o formato nativo)
+          const fitClass = aspect === '9/16' ? 'object-cover' : 'object-contain';
+          return `
+            <div class="${colClass} min-w-0">
+              <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2 flex items-center justify-between">
+                <span>${cr.name}</span>
+                <span class="mono text-zinc-600">${cr.format}</span>
+              </div>
+              <div class="relative ${aspectClass} rounded-lg overflow-hidden bg-zinc-950 border border-zinc-800 group">
+                <img src="${cr.src}" alt="${cr.name}" class="w-full h-full ${fitClass} transition-transform duration-500 group-hover:scale-[1.02]" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+              </div>
+            </div>
+          `;
+        }
+        // Placeholder
+        const icon = (cr.format || '').toLowerCase().includes('vídeo') ? '🎥' : '🖼️';
+        return `
+          <div class="${colClass} min-w-0">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2 flex items-center justify-between">
+              <span>${cr.name}</span>
+              <span class="mono text-zinc-600">${cr.format}</span>
+            </div>
+            <div class="relative ${aspectClass} rounded-lg overflow-hidden bg-zinc-900 border border-zinc-800 border-dashed flex flex-col items-center justify-center p-4">
+              <div class="text-4xl mb-2 opacity-30">${icon}</div>
+              <div class="text-[10px] text-zinc-600 text-center mono">${cr.note || 'sem preview'}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Layout dinâmico: 3 colunas com vídeo span-2 = total 4 cols
+      const gridCols = creatives.length === 3 && hasVideo ? 'grid-cols-2 md:grid-cols-4' :
+                       creatives.length === 3 ? 'grid-cols-3' :
+                       creatives.length === 2 ? 'grid-cols-2' : 'grid-cols-1';
+
+      return `
+        <div class="card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full" style="background: ${c.color}"></span>
+              <h3 class="font-bold">${c.client}</h3>
+            </div>
+            <span class="text-[10px] mono text-zinc-500">${creatives.length} criativo${creatives.length !== 1 ? 's' : ''}</span>
+          </div>
+          <div class="grid ${gridCols} gap-3 items-start">
+            ${items}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFunnel(c) {
+      const f = c.funnel || [];
+      if (!f.length) return '';
+      const max = f[0].value || 1;
+
+      const rows = f.map((step, i) => {
+        const widthPct = max > 0 ? Math.max((step.value / max) * 100, step.value > 0 ? 4 : 1) : 1;
+        const prevValue = i > 0 ? f[i-1].value : null;
+        const dropoff = (prevValue && prevValue > 0) ? ((step.value / prevValue) * 100).toFixed(1) : null;
+        const dropoffColor = dropoff
+          ? (parseFloat(dropoff) >= 50 ? 'text-emerald-400' : parseFloat(dropoff) >= 20 ? 'text-yellow-400' : 'text-red-400')
+          : '';
+
+        const isCritical = step.key === 'purchase';
+        const valueColor = isCritical && step.value > 0 ? 'text-emerald-400 font-black' : 'font-bold';
+        const zeroState = step.value === 0 ? 'opacity-40' : '';
+
+        return `
+          <div class="${zeroState}">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-sm">${step.icon}</span>
+                <span class="text-xs text-zinc-400 truncate">${step.label}</span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                ${dropoff !== null ? `<span class="text-[10px] mono ${dropoffColor}">${dropoff}%</span>` : ''}
+                <span class="text-base mono ${valueColor}">${formatInt(step.value)}</span>
+              </div>
+            </div>
+            <div class="h-2 bg-zinc-900 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-700" style="width: ${widthPct}%; background: linear-gradient(90deg, ${c.color}, ${c.color}aa);"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Métricas-chave de eficiência
+      const linkClicks = f.find(s => s.key === 'linkClicks')?.value || 0;
+      const lpv = f.find(s => s.key === 'lpv')?.value || 0;
+      const atc = f.find(s => s.key === 'atc')?.value || 0;
+      const checkout = f.find(s => s.key === 'checkout')?.value || 0;
+      const purchase = f.find(s => s.key === 'purchase')?.value || 0;
+
+      const clickToLPV = linkClicks > 0 ? ((lpv / linkClicks) * 100).toFixed(1) : '—';
+      const lpvToATC = lpv > 0 ? ((atc / lpv) * 100).toFixed(1) : '—';
+      const atcToCheckout = atc > 0 ? ((checkout / atc) * 100).toFixed(1) : '—';
+      const checkoutToPurchase = checkout > 0 ? ((purchase / checkout) * 100).toFixed(1) : '—';
+
+      return `
+        <div class="card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full" style="background: ${c.color}"></span>
+              <h3 class="font-bold">${c.client}</h3>
+            </div>
+            <span class="text-[10px] mono text-zinc-500">${linkClicks} → ${purchase}</span>
+          </div>
+
+          <div class="space-y-3 mb-4">
+            ${rows}
+          </div>
+
+          <div class="pt-3 border-t border-zinc-800">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-500 mb-2">Taxas de conversão</div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="flex justify-between bg-black/30 rounded px-2 py-1.5">
+                <span class="text-zinc-500">Click → LPV</span>
+                <span class="mono font-bold">${clickToLPV}${clickToLPV !== '—' ? '%' : ''}</span>
+              </div>
+              <div class="flex justify-between bg-black/30 rounded px-2 py-1.5">
+                <span class="text-zinc-500">LPV → ATC</span>
+                <span class="mono font-bold">${lpvToATC}${lpvToATC !== '—' ? '%' : ''}</span>
+              </div>
+              <div class="flex justify-between bg-black/30 rounded px-2 py-1.5">
+                <span class="text-zinc-500">ATC → CKO</span>
+                <span class="mono font-bold">${atcToCheckout}${atcToCheckout !== '—' ? '%' : ''}</span>
+              </div>
+              <div class="flex justify-between bg-black/30 rounded px-2 py-1.5">
+                <span class="text-zinc-500">CKO → Purchase</span>
+                <span class="mono font-bold">${checkoutToPurchase}${checkoutToPurchase !== '—' ? '%' : ''}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateSummary(campaigns) {
+      const totals = campaigns.reduce((acc, c) => ({
+        spent: acc.spent + (c.spent || 0),
+        revenue: acc.revenue + (c.revenue || 0),
+        budget: acc.budget + (c.budget || 0),
+        impressions: acc.impressions + (c.impressions || 0),
+        reach: acc.reach + (c.reach || 0),
+        clicks: acc.clicks + (c.clicks || 0),
+        linkClicks: acc.linkClicks + (c.linkClicks || 0),
+        purchases: acc.purchases + (c.purchases || 0)
+      }), { spent: 0, revenue: 0, budget: 0, impressions: 0, reach: 0, clicks: 0, linkClicks: 0, purchases: 0 });
+
+      const avgRoas = totals.spent > 0 ? totals.revenue / totals.spent : 0;
+      const profit = totals.revenue - totals.spent;
+      const avgCpa = totals.purchases > 0 ? totals.spent / totals.purchases : 0;
+
+      document.getElementById('totalRevenue').textContent = formatBRL(totals.revenue);
+      document.getElementById('bannerSpent').textContent = formatBRL(totals.spent);
+      document.getElementById('bannerRoas').textContent = avgRoas.toFixed(2) + 'x';
+      document.getElementById('bannerPurchases').textContent = formatInt(totals.purchases);
+      document.getElementById('totalProfit').textContent = formatBRL(profit);
+
+      document.getElementById('totalSpent').textContent = formatBRL(totals.spent);
+      document.getElementById('campaignCount').textContent = campaigns.length;
+      document.getElementById('totalImpressions').textContent = formatInt(totals.impressions);
+      document.getElementById('totalReach').textContent = formatInt(totals.reach);
+      document.getElementById('totalPurchases').textContent = formatInt(totals.purchases);
+      document.getElementById('avgCpa').textContent = avgCpa > 0 ? formatBRL(avgCpa) : '—';
+    }
+
+    function renderCharts(campaigns) {
+      const labels = campaigns.map(c => c.clientShort);
+      const colors = campaigns.map(c => c.color);
+
+      // CTR Chart
+      const ctxCTR = document.getElementById('ctrChart').getContext('2d');
+      if (chartCTR) chartCTR.destroy();
+      chartCTR = new Chart(ctxCTR, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'CTR %',
+            data: campaigns.map(c => c.ctr),
+            backgroundColor: colors,
+            borderRadius: 8,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#000',
+              padding: 12,
+              callbacks: { label: ctx => ` CTR: ${ctx.parsed.y.toFixed(2)}%` }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#666', callback: v => v + '%' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            x: {
+              ticks: { color: '#999', font: { weight: 'bold' } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+
+      // Budget Chart
+      const ctxBudget = document.getElementById('budgetChart').getContext('2d');
+      if (chartBudget) chartBudget.destroy();
+      chartBudget = new Chart(ctxBudget, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Gasto',
+              data: campaigns.map(c => c.spent),
+              backgroundColor: colors,
+              borderRadius: 6
+            },
+            {
+              label: 'Budget',
+              data: campaigns.map(c => c.budget - c.spent),
+              backgroundColor: 'rgba(255,255,255,0.05)',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: { labels: { color: '#999' } },
+            tooltip: {
+              backgroundColor: '#000',
+              padding: 12,
+              callbacks: { label: ctx => ` ${ctx.dataset.label}: R$ ${ctx.parsed.x.toFixed(2)}` }
+            }
+          },
+          scales: {
+            x: { stacked: true, ticks: { color: '#666', callback: v => 'R$ ' + v }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { stacked: true, ticks: { color: '#999', font: { weight: 'bold' } }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function flashNumbers(oldData, newData) {
+      if (!oldData) return;
+      const oldSpent = oldData.campaigns.reduce((s, c) => s + c.spent, 0);
+      const newSpent = newData.campaigns.reduce((s, c) => s + c.spent, 0);
+      if (newSpent > oldSpent) {
+        document.getElementById('totalSpent').classList.add('number-flash');
+        setTimeout(() => document.getElementById('totalSpent').classList.remove('number-flash'), 600);
+      }
+    }
+
+    async function loadData() {
+      try {
+        const r = await fetch('./data/snapshot.json?ts=' + Date.now());
+        const data = await r.json();
+        flashNumbers(lastData, data);
+        lastData = data;
+
+        // Sort by spent (highest first)
+        data.campaigns.sort((a, b) => b.spent - a.spent);
+
+        document.getElementById('campaignGrid').innerHTML = data.campaigns.map(renderCampaignCard).join('');
+        document.getElementById('creativesGrid').innerHTML = data.campaigns.map(renderCreatives).join('');
+        document.getElementById('funnelGrid').innerHTML = data.campaigns.map(renderFunnel).join('');
+        updateSummary(data.campaigns);
+        renderCharts(data.campaigns);
+        document.getElementById('lastUpdate').textContent = data.lastUpdateFormatted || '—';
+      } catch (err) {
+        console.error('Erro ao carregar snapshot:', err);
+      }
+    }
+
+    function tick() {
+      const now = new Date();
+      const opts = { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('currentTime').textContent = new Intl.DateTimeFormat('pt-BR', opts).format(now);
+
+      // Countdown to 23:00 BRT (Feio campaign is the earliest)
+      const end = new Date('2026-05-28T23:00:00-03:00');
+      const diff = end - now;
+
+      if (diff <= 0) {
+        document.getElementById('countdown').textContent = 'ENCERRADO';
+        document.getElementById('countdown').classList.remove('text-emerald-400');
+        document.getElementById('countdown').classList.add('text-zinc-400');
+      } else {
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById('countdown').textContent =
+          `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+        if (diff < 1800000) {
+          document.getElementById('countdown').classList.remove('text-emerald-400');
+          document.getElementById('countdown').classList.add('text-red-400');
+        }
+      }
+    }
+
+    // Boot
+    loadData();
+    tick();
+    setInterval(tick, 1000);
+    setInterval(loadData, 30000);
+  </script>
+
+</body>
+</html>

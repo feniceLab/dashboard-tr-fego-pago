@@ -72,6 +72,7 @@ const CACHE_TTL_MS = 60_000;
 let cache = { data: null, ts: 0 };
 let renovacaoCache = { data: null, ts: 0 };
 let adminCache = { data: null, ts: 0 };
+let clientsCache = { data: null, ts: 0 };
 
 // ──────────────────────────────────────────────────────────────────────────────
 // BASIC AUTH (área admin)
@@ -470,10 +471,71 @@ async function fetchRenovacao() {
   return result;
 }
 
+// ──────────────────────────────────────────────────────────────────────────────
+// PÚBLICO — lista de clientes ativos sem dados financeiros (pra central pública)
+// ──────────────────────────────────────────────────────────────────────────────
+async function fetchPublicClients() {
+  const now = Date.now();
+  if (clientsCache.data && (now - clientsCache.ts) < CACHE_TTL_MS) return clientsCache.data;
+
+  let mapping = { clients: [] };
+  try {
+    const raw = await fs.readFile(path.join(__dirname, 'data', 'clients-mapping.json'), 'utf-8');
+    mapping = JSON.parse(raw);
+  } catch {
+    return { error: 'mapping_missing', clients: [], updated_at: new Date().toISOString() };
+  }
+
+  const token = await readToken();
+  const clients = await Promise.all(mapping.clients.map(async (c) => {
+    let igData = null;
+    if (token && c.ig_business_id) {
+      try {
+        const r = await fetch(`https://graph.facebook.com/v23.0/${c.ig_business_id}?fields=username,name,followers_count,media_count,profile_picture_url&access_token=${token}`);
+        const j = await r.json();
+        if (!j.error) {
+          igData = {
+            username: j.username || c.ig_username,
+            name: j.name,
+            followers: j.followers_count,
+            media_count: j.media_count,
+            avatar: j.profile_picture_url,
+          };
+        }
+      } catch {}
+    } else if (c.ig_username) {
+      igData = { username: c.ig_username };
+    }
+    return {
+      name: c.name,
+      slug: c.slug,
+      agencia: c.agencia,
+      validated: c.validated,
+      pending_status: c.validated === false ? (c.status || 'Em setup') : null,
+      instagram: igData,
+      // SEM gasto, sem ROAS, sem balance — apenas info pública
+    };
+  }));
+
+  const result = {
+    updated_at: new Date().toISOString(),
+    by_agencia: {
+      'Fenice Lab': clients.filter(c => c.agencia === 'Fenice Lab'),
+      'Starken': clients.filter(c => c.agencia === 'Starken'),
+      'Outros': clients.filter(c => c.agencia !== 'Fenice Lab' && c.agencia !== 'Starken'),
+    },
+    clients,
+  };
+  clientsCache = { data: result, ts: now };
+  return result;
+}
+
 function resolveFilePath(reqUrl) {
   let urlPath = decodeURIComponent(reqUrl.split('?')[0]);
   // Diretório raiz vira index.html
   if (urlPath === '/') urlPath = '/index.html';
+  // Alias: /dashboard e /dashboard/ → mesma central da raiz
+  if (urlPath === '/dashboard' || urlPath === '/dashboard/') urlPath = '/index.html';
   // Qualquer URL terminando em / também aponta pro index.html da pasta
   if (urlPath.endsWith('/')) urlPath = urlPath + 'index.html';
 
@@ -508,6 +570,19 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, {
         'Content-Type': 'application/json; charset=utf-8',
         'Cache-Control': 'no-cache',
+      });
+      res.end(JSON.stringify(data, null, 2));
+      return;
+    }
+
+    if (req.url === '/api/clients' || req.url.startsWith('/api/clients?')) {
+      const force = req.url.includes('force=1');
+      if (force) clientsCache = { data: null, ts: 0 };
+      const data = await fetchPublicClients();
+      res.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
       });
       res.end(JSON.stringify(data, null, 2));
       return;
@@ -565,10 +640,11 @@ server.listen(PORT, () => {
   console.log('━'.repeat(60));
   console.log('📊  Dashboard de Tráfego Pago — Ativo');
   console.log('━'.repeat(60));
-  console.log(`   📡  http://localhost:${PORT}`);
+  console.log(`   🏠  http://localhost:${PORT}/  (central de dashboards · pública)`);
   console.log(`   📅  http://localhost:${PORT}/agendamentos.html`);
   console.log(`   🔄  http://localhost:${PORT}/renovacao.html`);
   console.log(`   🛡️   http://localhost:${PORT}/admin/  ${ADMIN_USER ? '(Basic Auth ativo)' : '⚠ DESATIVADO — defina ADMIN_USER/ADMIN_PASS'}`);
+  console.log(`   🔌  http://localhost:${PORT}/api/clients (público)`);
   console.log(`   🔌  http://localhost:${PORT}/api/agendamentos`);
   console.log(`   🔌  http://localhost:${PORT}/api/renovacao`);
   console.log(`   🔌  http://localhost:${PORT}/api/admin/status`);
