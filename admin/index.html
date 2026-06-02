@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Tokens & Acessos · Fenice Lab</title>
+<style>
+  :root {
+    --bg-0: #0a0e1a;
+    --bg-1: #131b2e;
+    --bg-2: #1a2440;
+    --bg-3: #243154;
+    --text-0: #f8fafc;
+    --text-1: #cbd5e1;
+    --text-2: #94a3b8;
+    --text-3: #64748b;
+    --accent: #fbbf24;
+    --accent-dim: rgba(251, 191, 36, 0.15);
+    --ok: #4ade80;
+    --warn: #fbbf24;
+    --err: #f87171;
+    --info: #60a5fa;
+    --purple: #a78bfa;
+    --pink: #ec4899;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(251, 191, 36, 0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg-0); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    color: var(--text-0);
+    min-height: 100vh;
+    padding: 24px 32px 60px;
+  }
+  a { color: var(--info); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* TOPNAV */
+  .topnav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 22px;
+    background: rgba(19, 27, 46, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+  }
+  .brand {
+    font-weight: 800;
+    font-size: 18px;
+    background: linear-gradient(90deg, var(--accent), #f59e0b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+  }
+  .brand-sub { color: var(--text-3); font-size: 12px; font-weight: 500; margin-left: -8px; }
+  .nav-links { display: flex; gap: 6px; flex-wrap: wrap; margin-left: 6px; }
+  .nav-links a {
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: var(--text-1);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .nav-links a:hover { background: rgba(255,255,255,0.05); color: var(--text-0); }
+  .nav-links a.external::after { content: ' ↗'; opacity: 0.6; }
+  .topnav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  .pill {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .pill.ok { background: rgba(74, 222, 128, 0.12); border-color: rgba(74, 222, 128, 0.35); color: var(--ok); }
+  .pill.warn { background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.35); color: var(--warn); }
+  .pill.err { background: rgba(248, 113, 113, 0.12); border-color: rgba(248, 113, 113, 0.35); color: var(--err); }
+  .pill.info { background: rgba(96, 165, 250, 0.12); border-color: rgba(96, 165, 250, 0.35); color: var(--info); }
+  .pill .dot { width: 7px; height: 7px; border-radius: 999px; background: currentColor; box-shadow: 0 0 8px currentColor; }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-ghost { background: rgba(255,255,255,0.06); border: 1px solid var(--border); }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 22px;
+    padding: 4px;
+    background: var(--bg-1);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 9px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab:hover { color: var(--text-0); background: rgba(255,255,255,0.03); }
+  .tab.active { background: var(--accent-dim); color: var(--accent); }
+  .tab .count {
+    background: rgba(255,255,255,0.1);
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* KPI grid */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .kpi {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: border-color 0.15s;
+  }
+  .kpi:hover { border-color: var(--border-hover); }
+  .kpi-label { color: var(--text-2); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .kpi-value { font-size: 28px; font-weight: 800; margin-top: 6px; line-height: 1.1; }
+  .kpi-sub { color: var(--text-3); font-size: 11px; margin-top: 6px; }
+  .kpi.ok .kpi-value { color: var(--ok); }
+  .kpi.warn .kpi-value { color: var(--warn); }
+  .kpi.err .kpi-value { color: var(--err); }
+
+  /* ALERTS */
+  .alerts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+  .alert {
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    color: var(--err);
+    font-size: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .alert.warn { background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.3); color: var(--warn); }
+  .alert.info { background: rgba(96, 165, 250, 0.08); border-color: rgba(96, 165, 250, 0.3); color: var(--info); }
+  .alert b { display: block; margin-bottom: 4px; }
+
+  /* Section */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-1);
+    margin: 26px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .pill { font-size: 11px; padding: 3px 9px; }
+
+  /* CARDS GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--border-hover); }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--bg-2);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-2);
+  }
+  .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .card-name { font-weight: 700; font-size: 14px; line-height: 1.2; }
+  .card-meta { color: var(--text-3); font-size: 11px; margin-top: 3px; font-family: 'SF Mono', Menlo, monospace; }
+  .card-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+  .card-tag {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-2);
+  }
+  .card-tag.ok { background: rgba(74,222,128,0.12); color: var(--ok); }
+  .card-tag.ig { background: rgba(236, 72, 153, 0.12); color: var(--pink); }
+  .card-tag.fb { background: rgba(96, 165, 250, 0.12); color: var(--info); }
+  .card-tag.warn { background: rgba(251, 191, 36, 0.12); color: var(--warn); }
+  .card-tag.err { background: rgba(248, 113, 113, 0.12); color: var(--err); }
+  .card-rows { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+  .card-row { display: flex; justify-content: space-between; gap: 10px; }
+  .card-row b { color: var(--text-2); font-weight: 500; }
+  .card-row span { color: var(--text-0); font-family: 'SF Mono', Menlo, monospace; font-size: 11px; }
+  .ig-block {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(236, 72, 153, 0.06);
+    border: 1px solid rgba(236, 72, 153, 0.15);
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .ig-block img { width: 36px; height: 36px; border-radius: 999px; }
+  .ig-block .ig-name { font-weight: 700; font-size: 13px; }
+  .ig-block .ig-sub { color: var(--text-3); font-size: 11px; font-family: 'SF Mono', Menlo, monospace; }
+
+  /* TOKEN PANEL */
+  .token-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 800px) { .token-grid { grid-template-columns: 1fr; } }
+  .panel-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .panel-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    gap: 12px;
+  }
+  .data-row:last-child { border-bottom: none; }
+  .data-row b { color: var(--text-2); font-weight: 500; min-width: 130px; }
+  .data-row span { color: var(--text-0); font-family: 'SF Mono', Menlo, monospace; font-size: 12px; word-break: break-all; text-align: right; }
+  .scopes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .scope {
+    padding: 3px 9px;
+    background: rgba(96, 165, 250, 0.12);
+    color: var(--info);
+    border-radius: 6px;
+    font-size: 11px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-weight: 600;
+  }
+
+  /* USAGE BAR */
+  .usage-bar-wrap { margin-top: 16px; }
+  .usage-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+  .usage-label b { color: var(--text-2); font-weight: 500; }
+  .usage-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .usage-bar-fill {
+    height: 100%;
+    background: var(--ok);
+    border-radius: 999px;
+    transition: width 0.3s;
+  }
+  .usage-bar-fill.warn { background: var(--warn); }
+  .usage-bar-fill.err { background: var(--err); }
+
+  /* HEALTH HERO */
+  .health-hero {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 28px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .health-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: rgba(74,222,128,0.12);
+    color: var(--ok);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+  }
+  .health-hero.warn .health-icon { background: rgba(251,191,36,0.12); color: var(--warn); }
+  .health-hero.err .health-icon { background: rgba(248,113,113,0.12); color: var(--err); }
+  .health-info { flex: 1; min-width: 200px; }
+  .health-title { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .health-sub { color: var(--text-2); font-size: 13px; }
+  .health-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-3);
+    font-size: 14px;
+  }
+  .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-2);
+  }
+  .loading::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--accent);
+    border-top-color: transparent;
+    border-radius: 999px;
+    margin-left: 10px;
+    vertical-align: middle;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-bar input {
+    flex: 1;
+    min-width: 220px;
+    padding: 9px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-0);
+    font-size: 13px;
+  }
+  .filter-bar input:focus { outline: none; border-color: var(--accent); }
+  .filter-bar select {
+    padding: 9px 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-0);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 16px 16px 60px; }
+    .topnav { padding: 12px 16px; }
+    .health-title { font-size: 18px; }
+    .health-icon { width: 52px; height: 52px; font-size: 26px; }
+    .kpi-value { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div>
+    <span class="brand">🛡️ Fenice Admin</span>
+    <span class="brand-sub"> · Tokens & Acessos</span>
+  </div>
+  <div class="nav-links">
+    <a href="/agendamentos.html">📅 Agendamentos</a>
+    <a href="/renovacao.html">🔄 Renovação</a>
+    <a href="/" class="external">📊 Dashboard</a>
+  </div>
+  <div class="topnav-right">
+    <span class="pill" id="pill-updated">⏳ Carregando…</span>
+    <button class="btn btn-ghost" onclick="reload(true)">↻ Atualizar</button>
+  </div>
+</nav>
+
+<div id="root">
+  <div class="loading">Buscando status do token e contas…</div>
+</div>
+
+<script>
+const $ = (sel, root=document) => root.querySelector(sel);
+
+function pillHealth(health, nonExpiring) {
+  if (nonExpiring && health === 'ok') return ['ok', 'Token não expira (admin app)'];
+  const map = {
+    ok: ['ok', `Token saudável`],
+    warn: ['warn', `Token próximo de expirar`],
+    critical: ['err', `Token CRÍTICO (< 7 dias)`],
+    expired: ['err', `Token EXPIRADO`],
+    invalid: ['err', `Token INVÁLIDO`],
+    unknown: ['warn', `Sem dados de expiração`],
+  };
+  return map[health] || ['warn', health];
+}
+
+function fmtAge(unixSec) {
+  if (!unixSec) return '—';
+  const d = new Date(unixSec * 1000);
+  return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+}
+
+function fmtMoney(cents, currency='BRL') {
+  if (cents === null || cents === undefined) return '—';
+  return new Intl.NumberFormat('pt-BR', {style:'currency', currency}).format(cents/100);
+}
+
+const STATUS_MAP = {
+  1: ['ok', 'Ativo'],
+  2: ['err', 'Desativado'],
+  3: ['err', 'Não confirmado'],
+  7: ['err', 'Pendente revisão'],
+  8: ['err', 'Em manutenção'],
+  9: ['err', 'Pendente Closure'],
+  100: ['err', 'Fechada'],
+  101: ['err', 'Qualquer'],
+  201: ['warn', 'Risco'],
+  202: ['warn', 'Auditoria'],
+};
+
+function render(data) {
+  const root = $('#root');
+  if (data.error) {
+    root.innerHTML = `<div class="alert"><div><b>Erro: ${data.error}</b>${data.message ? data.message : ''}</div></div>`;
+    return;
+  }
+
+  const t = data.token;
+  const [healthClass, healthLabel] = pillHealth(t.health, t.non_expiring);
+  const updatedLabel = `Atualizado ${new Date(data.updated_at).toLocaleTimeString('pt-BR')}`;
+  $('#pill-updated').innerHTML = `<span class="dot"></span> ${updatedLabel}`;
+  $('#pill-updated').className = 'pill ok';
+
+  // Alertas
+  const alerts = [];
+  if (t.health === 'critical' || t.health === 'expired') {
+    alerts.push(`<div class="alert"><div><b>⚠️ Token Long-Lived ${t.health === 'expired' ? 'EXPIRADO' : 'expira em ' + t.days_left + ' dias'}</b>Renove urgente em <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener">Graph API Explorer</a> e atualize <code>Clientes/Tokens/Graph API Token.md</code>.</div></div>`);
+  } else if (t.health === 'warn') {
+    alerts.push(`<div class="alert warn"><div><b>🟡 Token expira em ${t.days_left} dias</b>Considere renovar antes do vencimento.</div></div>`);
+  }
+  if (data.app_usage) {
+    const u = data.app_usage;
+    const maxUsage = Math.max(u.call_count || 0, u.total_cputime || 0, u.total_time || 0);
+    if (maxUsage >= 90) alerts.push(`<div class="alert"><div><b>🔴 App usage em ${maxUsage}%</b>Operações via Graph API podem falhar. Aguarde reset ou use tokens MCP alternativos.</div></div>`);
+    else if (maxUsage >= 60) alerts.push(`<div class="alert warn"><div><b>🟡 App usage em ${maxUsage}%</b>Limite se aproximando. Reduza o ritmo de chamadas.</div></div>`);
+  }
+  if (data.pages_error) alerts.push(`<div class="alert warn"><div><b>Erro ao listar Páginas</b>${data.pages_error.message}</div></div>`);
+  if (data.ad_accounts_error) alerts.push(`<div class="alert warn"><div><b>Erro ao listar Ad Accounts</b>${data.ad_accounts_error.message}</div></div>`);
+
+  // KPIs
+  const daysLeftDisplay = t.non_expiring
+    ? (t.days_left_data_access !== null ? `${t.days_left_data_access}d` : '∞')
+    : (t.days_left === null ? '—' : t.days_left);
+  const daysLeftSub = t.non_expiring
+    ? (t.data_access_expires_at ? `Data access expira ${fmtAge(t.data_access_expires_at)}` : 'Token sem expiração')
+    : (t.expires_at ? `Expira em ${fmtAge(t.expires_at)}` : 'Sem expiração');
+  const daysRef = t.non_expiring ? t.days_left_data_access : t.days_left;
+  const daysCls = daysRef === null ? '' : (daysRef < 7 ? 'err' : (daysRef < 14 ? 'warn' : 'ok'));
+
+  const kpis = [
+    {label:'Token Health', value: t.non_expiring ? 'Saudável' : (healthLabel.split(' ')[1] || healthLabel), sub: t.user?.name || '—', cls: healthClass === 'ok' ? 'ok' : (healthClass === 'warn' ? 'warn' : 'err')},
+    {label:'Dias restantes', value: daysLeftDisplay, sub: daysLeftSub, cls: daysCls},
+    {label:'Páginas FB', value: data.pages_count || 0, sub: `${data.pages_with_ig || 0} com Instagram vinculado`, cls: ''},
+    {label:'Ad Accounts', value: data.ad_accounts_count || 0, sub: `${(data.businesses || []).length} Business Managers`, cls: ''},
+  ];
+
+  // App usage bars
+  let usageHtml = '';
+  if (data.app_usage) {
+    const u = data.app_usage;
+    const bar = (label, val) => {
+      const v = val || 0;
+      const cls = v >= 90 ? 'err' : (v >= 60 ? 'warn' : '');
+      return `<div class="usage-bar-wrap"><div class="usage-label"><b>${label}</b><span>${v}%</span></div><div class="usage-bar"><div class="usage-bar-fill ${cls}" style="width:${Math.min(v,100)}%"></div></div></div>`;
+    };
+    usageHtml = `
+      <div class="panel-card">
+        <h3>📡 App Usage (Graph API)</h3>
+        ${bar('Call count', u.call_count)}
+        ${bar('CPU time', u.total_cputime)}
+        ${bar('Total time', u.total_time)}
+        <div style="margin-top:14px; color:var(--text-3); font-size:11px;">App ID ${t.app_id || '—'} · headers x-app-usage</div>
+      </div>
+    `;
+  }
+
+  // Render principal
+  root.innerHTML = `
+    <div class="health-hero ${healthClass === 'ok' ? '' : healthClass}">
+      <div class="health-icon">${t.health === 'ok' ? '✓' : (t.health === 'expired' || t.health === 'invalid' ? '⚠' : '!')}</div>
+      <div class="health-info">
+        <div class="health-title">${t.user?.name || 'Token desconhecido'} <span class="pill ${healthClass}" style="font-size:12px; margin-left:6px;">${healthLabel}</span></div>
+        <div class="health-sub">${t.user?.id ? 'User ID ' + t.user.id : ''}${t.non_expiring ? (t.days_left_data_access !== null ? ' · Data access expira em ' + t.days_left_data_access + ' dias' : ' · Token permanente') : (t.days_left !== null ? ' · Expira em ' + t.days_left + ' dias' : '')}</div>
+      </div>
+      <div class="health-actions">
+        <a class="btn btn-ghost" href="https://developers.facebook.com/tools/debug/accesstoken/?access_token=${encodeURIComponent('OMIT')}" target="_blank" rel="noopener">Debug Token ↗</a>
+        <a class="btn btn-ghost" href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener">Graph Explorer ↗</a>
+      </div>
+    </div>
+
+    ${alerts.length ? `<div class="alerts">${alerts.join('')}</div>` : ''}
+
+    <div class="kpis">
+      ${kpis.map(k => `<div class="kpi ${k.cls}"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div><div class="kpi-sub">${k.sub}</div></div>`).join('')}
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-panel="paginas">📘 Páginas & Instagram <span class="count">${data.pages_count || 0}</span></button>
+      <button class="tab" data-panel="contas">💰 Ad Accounts <span class="count">${data.ad_accounts_count || 0}</span></button>
+      <button class="tab" data-panel="token">🔑 Detalhes do Token</button>
+      <button class="tab" data-panel="bm">🏢 Business Managers <span class="count">${(data.businesses || []).length}</span></button>
+    </div>
+
+    <div class="panel active" id="panel-paginas">
+      <div class="filter-bar">
+        <input type="text" id="filter-pages" placeholder="🔎 Filtrar páginas por nome…" oninput="filterCards('panel-paginas', this.value)">
+      </div>
+      <div class="grid">
+        ${(data.pages || []).map(p => renderPageCard(p)).join('') || '<div class="empty">Nenhuma página acessível</div>'}
+      </div>
+    </div>
+
+    <div class="panel" id="panel-contas">
+      <div class="filter-bar">
+        <input type="text" id="filter-aa" placeholder="🔎 Filtrar contas por nome ou ID…" oninput="filterCards('panel-contas', this.value)">
+        <select onchange="filterCardsByStatus('panel-contas', this.value)">
+          <option value="">Todos status</option>
+          <option value="1">Apenas Ativas</option>
+          <option value="2,3,7,8,9,100,101">Apenas com Problemas</option>
+        </select>
+      </div>
+      <div class="grid">
+        ${(data.ad_accounts || []).map(a => renderAdAccountCard(a)).join('') || '<div class="empty">Nenhuma conta de anúncio acessível</div>'}
+      </div>
+    </div>
+
+    <div class="panel" id="panel-token">
+      <div class="token-grid">
+        <div class="panel-card">
+          <h3>🔑 Token (debug_token)</h3>
+          <div class="data-row"><b>User</b><span>${t.user?.name || '—'}</span></div>
+          <div class="data-row"><b>User ID</b><span>${t.user?.id || '—'}</span></div>
+          <div class="data-row"><b>App ID</b><span>${t.app_id || '—'}</span></div>
+          <div class="data-row"><b>Tipo</b><span>${t.type || '—'}</span></div>
+          <div class="data-row"><b>Emitido</b><span>${fmtAge(t.issued_at)}</span></div>
+          <div class="data-row"><b>Expira</b><span>${t.non_expiring ? 'Não expira (admin app)' : fmtAge(t.expires_at)}</span></div>
+          <div class="data-row"><b>Dias restantes</b><span>${t.non_expiring ? '∞' : (t.days_left === null ? '—' : t.days_left + ' dias')}</span></div>
+          <div class="data-row"><b>Data access expira</b><span>${fmtAge(t.data_access_expires_at)} ${t.days_left_data_access !== null ? '(' + t.days_left_data_access + ' dias)' : ''}</span></div>
+          <h3 style="margin-top:18px;">Escopo (${(t.scopes || []).length})</h3>
+          <div class="scopes">${(t.scopes || []).map(s => `<span class="scope">${s}</span>`).join('') || '<span style="color:var(--text-3);font-size:12px;">—</span>'}</div>
+        </div>
+        ${usageHtml || '<div class="panel-card"><h3>📡 App Usage</h3><div class="empty">Sem dados de uso ainda. Faça uma chamada para popular.</div></div>'}
+      </div>
+    </div>
+
+    <div class="panel" id="panel-bm">
+      <div class="grid">
+        ${(data.businesses || []).map(b => `
+          <div class="card">
+            <div class="card-head">
+              <div class="card-avatar">🏢</div>
+              <div>
+                <div class="card-name">${b.name}</div>
+                <div class="card-meta">${b.id}</div>
+              </div>
+            </div>
+            <div class="card-rows">
+              <div class="card-row"><b>Verificação</b><span>${b.verification_status || '—'}</span></div>
+              <div class="card-row"><b>Criado</b><span>${b.created_time ? new Date(b.created_time).toLocaleDateString('pt-BR') : '—'}</span></div>
+            </div>
+          </div>
+        `).join('') || '<div class="empty">Nenhum BM acessível</div>'}
+      </div>
+    </div>
+  `;
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const id = 'panel-' + tab.dataset.panel;
+      const panel = document.getElementById(id);
+      if (panel) panel.classList.add('active');
+    });
+  });
+}
+
+function renderPageCard(p) {
+  const initial = (p.name || '?').trim().charAt(0).toUpperCase();
+  const ig = p.instagram;
+  return `
+    <div class="card" data-name="${p.name.toLowerCase()}" data-status="1">
+      <div class="card-head">
+        <div class="card-avatar">${initial}</div>
+        <div style="min-width:0;">
+          <div class="card-name">${p.name}</div>
+          <div class="card-meta">${p.id}</div>
+        </div>
+      </div>
+      <div class="card-tags">
+        <span class="card-tag fb">Facebook</span>
+        ${ig ? '<span class="card-tag ig">Instagram</span>' : ''}
+        ${p.has_page_token ? '<span class="card-tag ok">PAT ✓</span>' : '<span class="card-tag err">Sem PAT</span>'}
+        ${p.category ? `<span class="card-tag">${p.category}</span>` : ''}
+      </div>
+      ${ig ? `
+        <div class="ig-block">
+          ${ig.avatar ? `<img src="${ig.avatar}" alt="">` : '<div style="width:36px;height:36px;border-radius:999px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:14px;">📷</div>'}
+          <div style="min-width:0;flex:1;">
+            <div class="ig-name">@${ig.username || '—'}</div>
+            <div class="ig-sub">${ig.followers ? ig.followers.toLocaleString('pt-BR') + ' seguidores · ' : ''}${ig.id}</div>
+          </div>
+        </div>
+      ` : ''}
+      ${(p.tasks || []).length ? `<div style="margin-top:10px; color:var(--text-3); font-size:10px;">${p.tasks.join(' · ')}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderAdAccountCard(a) {
+  const [statusCls, statusLabel] = STATUS_MAP[a.status] || ['warn', `Status ${a.status}`];
+  const spent = fmtMoney(a.amount_spent_cents, a.currency || 'BRL');
+  const balance = fmtMoney(a.balance_cents, a.currency || 'BRL');
+  return `
+    <div class="card" data-name="${(a.name||'').toLowerCase()} ${a.account_id}" data-status="${a.status}">
+      <div class="card-head">
+        <div class="card-avatar">💰</div>
+        <div style="min-width:0;">
+          <div class="card-name">${a.name || '(sem nome)'}</div>
+          <div class="card-meta">act_${a.account_id}</div>
+        </div>
+      </div>
+      <div class="card-tags">
+        <span class="card-tag ${statusCls}">${statusLabel}</span>
+        ${a.currency ? `<span class="card-tag">${a.currency}</span>` : ''}
+        ${a.disable_reason ? `<span class="card-tag err">Disable: ${a.disable_reason}</span>` : ''}
+      </div>
+      <div class="card-rows">
+        <div class="card-row"><b>Gasto total</b><span>${spent}</span></div>
+        <div class="card-row"><b>Saldo</b><span>${balance}</span></div>
+        <div class="card-row"><b>Timezone</b><span>${a.timezone || '—'}</span></div>
+        ${a.business ? `<div class="card-row"><b>BM</b><span>${a.business.name}</span></div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function filterCards(panelId, query) {
+  const q = query.toLowerCase().trim();
+  document.querySelectorAll(`#${panelId} .card`).forEach(card => {
+    const name = card.dataset.name || '';
+    card.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+}
+
+function filterCardsByStatus(panelId, statuses) {
+  const allowed = statuses ? statuses.split(',') : null;
+  document.querySelectorAll(`#${panelId} .card`).forEach(card => {
+    const st = card.dataset.status || '';
+    card.style.display = (!allowed || allowed.includes(st)) ? '' : 'none';
+  });
+}
+
+async function reload(force = false) {
+  $('#pill-updated').textContent = '⏳ Atualizando…';
+  $('#pill-updated').className = 'pill warn';
+  try {
+    const r = await fetch('/api/admin/status' + (force ? '?force=1' : ''));
+    if (!r.ok) {
+      $('#root').innerHTML = `<div class="alert"><div><b>HTTP ${r.status}</b>${await r.text()}</div></div>`;
+      return;
+    }
+    const data = await r.json();
+    render(data);
+  } catch (e) {
+    $('#root').innerHTML = `<div class="alert"><div><b>Erro de rede</b>${e.message}</div></div>`;
+  }
+}
+
+reload();
+// Auto-refresh a cada 5 min
+setInterval(() => reload(true), 5 * 60_000);
+</script>
+
+</body>
+</html>

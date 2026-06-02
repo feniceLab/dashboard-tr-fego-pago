@@ -71,6 +71,193 @@ async function readToken() {
 const CACHE_TTL_MS = 60_000;
 let cache = { data: null, ts: 0 };
 let renovacaoCache = { data: null, ts: 0 };
+let adminCache = { data: null, ts: 0 };
+
+// ──────────────────────────────────────────────────────────────────────────────
+// BASIC AUTH (área admin)
+// ──────────────────────────────────────────────────────────────────────────────
+const ADMIN_USER = process.env.ADMIN_USER;
+const ADMIN_PASS = process.env.ADMIN_PASS;
+
+function requireAdminAuth(req, res) {
+  if (!ADMIN_USER || !ADMIN_PASS) {
+    res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Admin area desabilitada — defina ADMIN_USER e ADMIN_PASS no .env do servidor.');
+    return false;
+  }
+  const header = req.headers['authorization'] || '';
+  if (header.startsWith('Basic ')) {
+    try {
+      const decoded = Buffer.from(header.slice(6), 'base64').toString('utf-8');
+      const idx = decoded.indexOf(':');
+      if (idx > 0) {
+        const u = decoded.slice(0, idx);
+        const p = decoded.slice(idx + 1);
+        if (u === ADMIN_USER && p === ADMIN_PASS) return true;
+      }
+    } catch {}
+  }
+  res.writeHead(401, {
+    'WWW-Authenticate': 'Basic realm="Fenice Admin", charset="UTF-8"',
+    'Content-Type': 'text/plain; charset=utf-8',
+  });
+  res.end('Autenticação necessária');
+  return false;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// ADMIN — agregação de status de tokens, páginas e ad accounts
+// ──────────────────────────────────────────────────────────────────────────────
+async function fetchAdminStatus() {
+  const now = Date.now();
+  if (adminCache.data && (now - adminCache.ts) < CACHE_TTL_MS) return adminCache.data;
+
+  const token = await readToken();
+  if (!token) {
+    return {
+      updated_at: new Date().toISOString(),
+      error: 'token_not_found',
+      message: 'Token não encontrado. Configure META_GRAPH_TOKEN ou TOKEN_FILE.',
+    };
+  }
+
+  // 1. Validação do User Token + app usage (headers)
+  let user = null;
+  let appUsage = null;
+  let userErr = null;
+  try {
+    const r = await fetch(`https://graph.facebook.com/v23.0/me?fields=id,name,email&access_token=${token}`);
+    const usage = r.headers.get('x-app-usage');
+    if (usage) { try { appUsage = JSON.parse(usage); } catch {} }
+    const j = await r.json();
+    if (j.error) userErr = j.error;
+    else user = j;
+  } catch (e) { userErr = { message: e.message }; }
+
+  // 2. debug_token — escopo + expiração
+  let debug = null;
+  let debugErr = null;
+  try {
+    const r = await fetch(`https://graph.facebook.com/v23.0/debug_token?input_token=${token}&access_token=${token}`);
+    const j = await r.json();
+    if (j.error) debugErr = j.error;
+    else debug = j.data;
+  } catch (e) { debugErr = { message: e.message }; }
+
+  // 3. Páginas (Facebook + Instagram vinculado) — pega tudo de uma vez
+  let pages = [];
+  let pagesErr = null;
+  try {
+    const r = await fetch(`https://graph.facebook.com/v23.0/me/accounts?fields=id,name,access_token,category,tasks,instagram_business_account{id,username,name,followers_count,profile_picture_url}&limit=100&access_token=${token}`);
+    const j = await r.json();
+    if (j.error) pagesErr = j.error;
+    else pages = (j.data || []).map(p => ({
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      tasks: p.tasks || [],
+      has_page_token: !!p.access_token,
+      instagram: p.instagram_business_account ? {
+        id: p.instagram_business_account.id,
+        username: p.instagram_business_account.username,
+        name: p.instagram_business_account.name,
+        followers: p.instagram_business_account.followers_count,
+        avatar: p.instagram_business_account.profile_picture_url,
+      } : null,
+    }));
+  } catch (e) { pagesErr = { message: e.message }; }
+
+  // 4. Ad accounts
+  let adAccounts = [];
+  let adAccountsErr = null;
+  try {
+    const r = await fetch(`https://graph.facebook.com/v23.0/me/adaccounts?fields=id,account_id,name,account_status,disable_reason,currency,timezone_name,balance,amount_spent,spend_cap,business{id,name}&limit=200&access_token=${token}`);
+    const j = await r.json();
+    if (j.error) adAccountsErr = j.error;
+    else adAccounts = (j.data || []).map(a => ({
+      id: a.id,
+      account_id: a.account_id,
+      name: a.name,
+      status: a.account_status,
+      disable_reason: a.disable_reason,
+      currency: a.currency,
+      timezone: a.timezone_name,
+      balance_cents: a.balance ? parseInt(a.balance) : null,
+      amount_spent_cents: a.amount_spent ? parseInt(a.amount_spent) : null,
+      spend_cap_cents: a.spend_cap ? parseInt(a.spend_cap) : null,
+      business: a.business ? { id: a.business.id, name: a.business.name } : null,
+    }));
+  } catch (e) { adAccountsErr = { message: e.message }; }
+
+  // 5. Business managers acessíveis
+  let businesses = [];
+  let businessesErr = null;
+  try {
+    const r = await fetch(`https://graph.facebook.com/v23.0/me/businesses?fields=id,name,verification_status,created_time&limit=50&access_token=${token}`);
+    const j = await r.json();
+    if (j.error) businessesErr = j.error;
+    else businesses = j.data || [];
+  } catch (e) { businessesErr = { message: e.message }; }
+
+  // 6. Calcula dias até expirar (debug.expires_at é unix ts em seg; 0 = não expira)
+  const nowSec = Math.floor(Date.now() / 1000);
+  const expiresAt = debug?.expires_at && debug.expires_at > 0 ? debug.expires_at : null;
+  const dataAccessExp = debug?.data_access_expires_at && debug.data_access_expires_at > 0 ? debug.data_access_expires_at : null;
+  const daysLeft = expiresAt ? Math.floor((expiresAt - nowSec) / 86400) : null;
+  // Pra tokens que não expiram, usar data_access_expires_at (90 dias) como heads-up
+  const daysLeftDataAccess = dataAccessExp ? Math.floor((dataAccessExp - nowSec) / 86400) : null;
+
+  let tokenHealth = 'unknown';
+  let nonExpiring = false;
+  if (userErr) tokenHealth = 'invalid';
+  else if (debug?.expires_at === 0) {
+    // Token "permanente" (admin/dev/tester do app). Verificar só data access.
+    nonExpiring = true;
+    if (daysLeftDataAccess === null) tokenHealth = 'ok';
+    else if (daysLeftDataAccess <= 0) tokenHealth = 'expired';
+    else if (daysLeftDataAccess < 7) tokenHealth = 'critical';
+    else if (daysLeftDataAccess < 14) tokenHealth = 'warn';
+    else tokenHealth = 'ok';
+  }
+  else if (daysLeft === null) tokenHealth = 'unknown';
+  else if (daysLeft <= 0) tokenHealth = 'expired';
+  else if (daysLeft < 7) tokenHealth = 'critical';
+  else if (daysLeft < 14) tokenHealth = 'warn';
+  else tokenHealth = 'ok';
+
+  const result = {
+    updated_at: new Date().toISOString(),
+    token: {
+      health: tokenHealth,
+      valid: !userErr,
+      user,
+      user_error: userErr,
+      expires_at: expiresAt,
+      days_left: daysLeft,
+      data_access_expires_at: dataAccessExp,
+      days_left_data_access: daysLeftDataAccess,
+      non_expiring: nonExpiring,
+      scopes: debug?.scopes || [],
+      app_id: debug?.app_id || null,
+      type: debug?.type || null,
+      issued_at: debug?.issued_at || null,
+      debug_error: debugErr,
+    },
+    app_usage: appUsage,
+    pages,
+    pages_error: pagesErr,
+    pages_count: pages.length,
+    pages_with_ig: pages.filter(p => p.instagram).length,
+    ad_accounts: adAccounts,
+    ad_accounts_error: adAccountsErr,
+    ad_accounts_count: adAccounts.length,
+    businesses,
+    businesses_error: businessesErr,
+  };
+
+  adminCache = { data: result, ts: now };
+  return result;
+}
 
 async function fetchAgendamentos() {
   const now = Date.now();
@@ -258,6 +445,23 @@ function resolveFilePath(reqUrl) {
 
 const server = http.createServer(async (req, res) => {
   try {
+    // Área admin (Basic Auth) — protege HTML e JSON
+    if (req.url.startsWith('/admin') || req.url.startsWith('/api/admin')) {
+      if (!requireAdminAuth(req, res)) return;
+    }
+
+    if (req.url === '/api/admin/status' || req.url.startsWith('/api/admin/status?')) {
+      const force = req.url.includes('force=1');
+      if (force) adminCache = { data: null, ts: 0 };
+      const data = await fetchAdminStatus();
+      res.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-cache',
+      });
+      res.end(JSON.stringify(data, null, 2));
+      return;
+    }
+
     if (req.url === '/api/agendamentos' || req.url.startsWith('/api/agendamentos?')) {
       const force = req.url.includes('force=1');
       if (force) cache = { data: null, ts: 0 };
@@ -313,8 +517,10 @@ server.listen(PORT, () => {
   console.log(`   📡  http://localhost:${PORT}`);
   console.log(`   📅  http://localhost:${PORT}/agendamentos.html`);
   console.log(`   🔄  http://localhost:${PORT}/renovacao.html`);
+  console.log(`   🛡️   http://localhost:${PORT}/admin/  ${ADMIN_USER ? '(Basic Auth ativo)' : '⚠ DESATIVADO — defina ADMIN_USER/ADMIN_PASS'}`);
   console.log(`   🔌  http://localhost:${PORT}/api/agendamentos`);
   console.log(`   🔌  http://localhost:${PORT}/api/renovacao`);
+  console.log(`   🔌  http://localhost:${PORT}/api/admin/status`);
   console.log('');
   console.log(`   🔑  Token: ${process.env.META_GRAPH_TOKEN ? 'env var ✓' : `arquivo ${TOKEN_FILE}`}`);
   console.log(`   🗂️  Clients dir: ${CLIENTS_DIR}`);
