@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0A0A0A">
 <title>Arena Gourmet · Relatório Maio/2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --arena-bg: #0A0A0A;
@@ -38,11 +38,8 @@
   @media (min-width: 768px) { .container { padding: 32px; } }
 
   .header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding-bottom: 20px;
-    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 16px;
+    padding-bottom: 20px; margin-bottom: 28px;
     border-bottom: 1px solid var(--arena-dourado);
   }
   .header-logo { height: 56px; width: auto; }
@@ -53,6 +50,62 @@
   @media (min-width: 640px) { .header-title { font-size: 30px; } }
   .header-sub { font-size: 11px; color: var(--arena-cinza); margin-top: 4px; }
 
+  /* BANNER DO MÊS */
+  .month-banner {
+    margin-bottom: 28px;
+    padding: 28px 24px;
+    background:
+      radial-gradient(ellipse at top, rgba(212,175,55,.14) 0%, transparent 60%),
+      linear-gradient(135deg, #0a0a0a 0%, var(--arena-card) 100%);
+    border: 1px solid var(--arena-linha);
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .month-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--arena-roxo), var(--arena-dourado));
+    box-shadow: 0 0 24px rgba(212,175,55,.5);
+  }
+  .month-banner-label {
+    font-size: 10px; font-weight: 700; letter-spacing: .26em;
+    text-transform: uppercase; color: var(--arena-cinza-esc);
+    margin-bottom: 6px;
+  }
+  .month-banner-display { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .month-banner-month {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900; font-size: 56px; line-height: 0.95;
+    background: linear-gradient(180deg, #fff 0%, var(--arena-dourado) 130%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -.02em; text-transform: uppercase;
+  }
+  @media (min-width: 640px) { .month-banner-month { font-size: 72px; } }
+  .month-banner-year {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400; font-size: 36px;
+    color: var(--arena-cinza); letter-spacing: -.01em;
+  }
+  @media (min-width: 640px) { .month-banner-year { font-size: 44px; } }
+  .month-banner-meta { flex: 1; min-width: 220px; }
+  .month-banner-range { font-size: 12px; color: var(--arena-cinza); margin-top: 8px; font-family: ui-monospace, monospace; letter-spacing: .04em; }
+  .month-banner-side {
+    text-align: right; padding: 14px 18px;
+    background: rgba(212,175,55,.08);
+    border: 1px solid rgba(212,175,55,.3);
+    border-radius: 12px; min-width: 140px;
+  }
+  .month-banner-side-label { font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--arena-dourado); margin-bottom: 4px; }
+  .month-banner-side-value { font-weight: 800; font-size: 14px; color: var(--arena-branco); text-transform: uppercase; letter-spacing: .04em; }
+
   /* HERO */
   .hero {
     background:
@@ -60,77 +113,30 @@
       url('assets/photos/burger-hero.jpg') center/cover;
     border: 1px solid var(--arena-linha);
     border-radius: 24px;
-    padding: 32px 24px;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
+    padding: 32px 24px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
   }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--arena-roxo), var(--arena-dourado));
-  }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--arena-roxo), var(--arena-dourado)); }
   .hero-kicker { font-weight: 600; font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--arena-dourado); margin-bottom: 16px; }
-  .hero-amount {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 44px;
-    color: var(--arena-dourado);
-    line-height: 1;
-    letter-spacing: -.02em;
-    margin-bottom: 12px;
-  }
+  .hero-amount { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 44px; color: var(--arena-dourado); line-height: 1; letter-spacing: -.02em; margin-bottom: 12px; }
   @media (min-width: 480px) { .hero-amount { font-size: 56px; } }
   @media (min-width: 768px) { .hero-amount { font-size: 72px; } }
   .hero-meta { font-size: 13px; color: var(--arena-cinza); line-height: 1.6; }
   .hero-meta strong { color: var(--arena-dourado); font-weight: 700; }
-  .hero-net {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--arena-linha);
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .hero-net { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--arena-linha); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
   .hero-net-label { font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: var(--arena-cinza-esc); }
-  .hero-net-amount {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 24px;
-    color: var(--arena-ok);
-  }
+  .hero-net-amount { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; color: var(--arena-ok); }
 
   /* KPIs */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
+  .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
   @media (min-width: 640px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
   .kpi { background: var(--arena-card); border: 1px solid var(--arena-linha); border-radius: 16px; padding: 18px; }
   .kpi-label { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--arena-cinza); font-weight: 500; margin-bottom: 10px; }
-  .kpi-value {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 24px;
-    color: var(--arena-branco);
-    line-height: 1;
-    letter-spacing: -.01em;
-  }
+  .kpi-value { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; color: var(--arena-branco); line-height: 1; letter-spacing: -.01em; }
   .kpi-value.gold { color: var(--arena-dourado); }
 
   /* STATS */
-  .stats-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
+  .stats-row { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
   @media (min-width: 640px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
   .stat { background: var(--arena-card); border: 1px solid var(--arena-linha); border-radius: 16px; padding: 20px; }
   .stat-label { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--arena-cinza); font-weight: 500; margin-bottom: 10px; }
@@ -140,64 +146,32 @@
   /* SECTION */
   .section { margin-bottom: 36px; }
   .section-title {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 26px;
-    color: var(--arena-branco);
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: 26px; color: var(--arena-branco);
+    margin-bottom: 16px; padding-bottom: 12px;
     border-bottom: 1px solid var(--arena-linha);
-    position: relative;
-    letter-spacing: -.01em;
+    position: relative; letter-spacing: -.01em;
   }
-  .section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 50px;
-    height: 2px;
-    background: var(--arena-dourado);
-  }
+  .section-title::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 50px; height: 2px; background: var(--arena-dourado); }
 
-  /* FUNIL */
-  .funnel { display: flex; flex-direction: column; gap: 6px; }
-  .stage {
-    background: var(--arena-card);
-    border: 1px solid var(--arena-linha);
-    border-left: 3px solid var(--arena-dourado);
-    border-radius: 12px;
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all .18s;
-  }
-  .stage:hover { background: var(--arena-card-2); transform: translateX(4px); }
-  .stage-name { font-size: 13px; font-weight: 500; color: var(--arena-cinza); }
-  .stage-value { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 22px; color: var(--arena-branco); }
-  .stage-arrow { text-align: center; color: var(--arena-cinza-esc); font-size: 12px; padding: 4px 0; }
-  .stage-arrow .pct { font-weight: 600; color: var(--arena-ok); margin-left: 8px; font-variant-numeric: tabular-nums; }
-  .stage.final {
-    background: linear-gradient(135deg, rgba(124,58,237,.15), rgba(212,175,55,.05));
-    border: 1px solid var(--arena-dourado);
-    box-shadow: 0 0 0 1px rgba(212,175,55,.30), 0 10px 30px rgba(124,58,237,.18);
-  }
-  .stage.final .stage-name { color: var(--arena-branco); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
-  .stage.final .stage-value { color: var(--arena-dourado); font-size: 28px; }
+  /* FUNIL TRIANGULAR SVG */
+  .funnel-svg-wrap { background: var(--arena-card); border: 1px solid var(--arena-linha); border-radius: 16px; padding: 24px 12px; overflow-x: auto; }
+  .funnel-svg { width: 100%; max-width: 720px; margin: 0 auto; display: block; min-width: 320px; }
+  .funnel-svg .stage-shape { transition: opacity .18s ease; }
+  .funnel-svg .stage-shape:hover { opacity: 0.85; }
+  .funnel-svg .stage-label { fill: var(--arena-branco); font-size: 13px; font-weight: 600; text-anchor: end; dominant-baseline: middle; font-family: 'Inter', sans-serif; }
+  .funnel-svg .stage-value { fill: var(--arena-branco); font-size: 15px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; font-variant-numeric: tabular-nums; }
+  .funnel-svg .stage-drop { fill: var(--arena-cinza); font-size: 11px; font-weight: 600; text-anchor: start; dominant-baseline: middle; font-variant-numeric: tabular-nums; }
+  .funnel-svg .stage-drop.ok { fill: var(--arena-ok); }
+  .funnel-svg .stage-final-label { fill: #fff; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; text-anchor: end; dominant-baseline: middle; }
+  .funnel-svg .stage-final-value { fill: #fff; font-size: 24px; font-weight: 900; text-anchor: middle; dominant-baseline: middle; font-variant-numeric: tabular-nums; paint-order: stroke fill; stroke: rgba(0,0,0,.4); stroke-width: 0.6; }
 
   /* RANKING */
   .ranking { display: flex; flex-direction: column; gap: 12px; }
   .rank { background: var(--arena-card); border: 1px solid var(--arena-linha); border-radius: 16px; padding: 20px; }
   .rank.champion { border: 1px solid var(--arena-dourado); box-shadow: 0 0 0 1px rgba(212,175,55,.20); }
   .rank-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--arena-linha); }
-  .rank-pos {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 28px;
-    color: var(--arena-cinza-esc);
-    min-width: 32px;
-  }
+  .rank-pos { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 28px; color: var(--arena-cinza-esc); min-width: 32px; }
   .rank.champion .rank-pos { color: var(--arena-dourado); }
   .rank-name-wrap { flex: 1; min-width: 0; }
   .rank-name { font-weight: 700; font-size: 13px; color: var(--arena-branco); word-break: break-word; }
@@ -210,14 +184,36 @@
   .rank-stat-label { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--arena-cinza-esc); margin-bottom: 4px; }
   .rank-stat-value { font-weight: 700; font-size: 13px; color: var(--arena-branco); font-variant-numeric: tabular-nums; }
 
+  /* DETALHAMENTO */
+  .rank-detail { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--arena-linha); }
+  .adset-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .adset-kicker { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--arena-cinza-esc); font-weight: 700; }
+  .adset-name { font-size: 12px; font-weight: 600; color: var(--arena-branco); font-family: ui-monospace, monospace; }
+  .adset-budget { margin-left: auto; font-size: 10px; color: var(--arena-cinza); padding: 3px 8px; background: rgba(255,255,255,.04); border: 1px solid var(--arena-linha); border-radius: 999px; font-variant-numeric: tabular-nums; }
+  .adset-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: rgba(0,0,0,.4); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
+  @media (min-width: 480px) { .adset-metrics { grid-template-columns: repeat(6, 1fr); } }
+  .adset-metric { text-align: center; }
+  .adset-metric-label { font-size: 8.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--arena-cinza-esc); margin-bottom: 3px; }
+  .adset-metric-value { font-size: 12px; font-weight: 700; color: var(--arena-branco); font-variant-numeric: tabular-nums; }
+  .ads-table { display: flex; flex-direction: column; gap: 6px; }
+  .ads-table-header { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--arena-cinza-esc); font-weight: 700; margin-bottom: 4px; }
+  .ad-row { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; padding: 10px 12px; background: rgba(255,255,255,.025); border: 1px solid var(--arena-linha); border-radius: 10px; align-items: center; }
+  @media (min-width: 480px) { .ad-row { grid-template-columns: 30px 1fr repeat(4, auto); gap: 14px; } }
+  .ad-row-pos { font-weight: 800; font-size: 11px; color: var(--arena-cinza-esc); text-align: center; font-variant-numeric: tabular-nums; }
+  .ad-row-name { font-size: 12px; font-weight: 600; color: var(--arena-branco); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ad-row-status { display: inline-block; font-size: 8.5px; letter-spacing: .1em; padding: 2px 7px; border-radius: 999px; text-transform: uppercase; font-weight: 700; margin-right: 6px; }
+  .ad-row-status.active { background: rgba(74,222,128,.15); color: var(--arena-ok); }
+  .ad-row-status.paused { background: rgba(255,255,255,.06); color: var(--arena-cinza-esc); }
+  .ad-row-metric { font-size: 11px; color: var(--arena-cinza); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+  .ad-row-metric b { display: block; color: var(--arena-branco); font-weight: 700; font-size: 12px; }
+  .ad-row-roas { font-weight: 800; font-size: 14px; color: var(--arena-ok); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ad-row-roas.warn { color: var(--arena-aviso); }
+  .ad-row-roas.bad { color: var(--arena-cinza-esc); }
+
   .subtotal {
-    font-size: 11px;
-    color: var(--arena-cinza);
-    padding: 10px 14px;
-    background: rgba(0,0,0,.3);
-    border-radius: 8px;
-    margin-top: 12px;
-    font-family: 'Inter', sans-serif;
+    font-size: 11px; color: var(--arena-cinza);
+    padding: 10px 14px; background: rgba(0,0,0,.3);
+    border-radius: 8px; margin-top: 12px;
     font-weight: 500;
   }
 
@@ -226,23 +222,13 @@
     background: linear-gradient(135deg, rgba(124,58,237,.06), rgba(212,175,55,.04));
     border: 1px dashed rgba(212,175,55,.30);
     border-radius: 16px;
-    padding: 24px 20px;
-    margin-bottom: 36px;
+    padding: 24px 20px; margin-bottom: 36px;
   }
   .hamburger-section .section-title { color: var(--arena-dourado); }
   .hamburger-section .section-desc { font-size: 12px; color: var(--arena-cinza); line-height: 1.6; margin-bottom: 16px; }
 
   /* FOOTER */
-  .footer {
-    margin-top: 40px;
-    padding-top: 28px;
-    border-top: 1px solid var(--arena-dourado);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+  .footer { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--arena-dourado); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
   .footer-tagline { font-size: 12px; color: var(--arena-cinza-esc); line-height: 1.4; }
   .footer-tagline strong { color: var(--arena-dourado); font-weight: 700; }
   .footer-meta { text-align: right; font-size: 11px; color: var(--arena-cinza-esc); }
@@ -258,9 +244,25 @@
     <div class="header-meta">
       <div class="kicker">Fenice Lab</div>
       <div class="header-title">Performance</div>
-      <div class="header-sub">Maio/2026 · Mês Fechado</div>
+      <div class="header-sub">Relatório Mensal</div>
     </div>
   </header>
+
+  <!-- BANNER DO MÊS -->
+  <div class="month-banner">
+    <div class="month-banner-meta">
+      <div class="month-banner-label">Período do Relatório</div>
+      <div class="month-banner-display">
+        <span class="month-banner-month">Maio</span>
+        <span class="month-banner-year">2026</span>
+      </div>
+      <div class="month-banner-range">01.05.2026 — 31.05.2026 · 31 dias</div>
+    </div>
+    <div class="month-banner-side">
+      <div class="month-banner-side-label">Status</div>
+      <div class="month-banner-side-value">✓ Mês Fechado</div>
+    </div>
+  </div>
 
   <div class="hero">
     <div class="hero-kicker">💰 Valor de Conversão em Compra</div>
@@ -285,11 +287,12 @@
     <div class="stat">
       <div class="stat-label">Impressões</div>
       <div class="stat-value mono">188.388</div>
+      <div class="stat-sub">CPM R$ 6,04 · CTR 0,84%</div>
     </div>
     <div class="stat">
       <div class="stat-label">Alcance</div>
-      <div class="stat-value mono">96.630</div>
-      <div class="stat-sub">pessoas únicas</div>
+      <div class="stat-value mono">79.595</div>
+      <div class="stat-sub">pessoas únicas · freq 2,37</div>
     </div>
     <div class="stat">
       <div class="stat-label">Adições ao Carrinho</div>
@@ -298,24 +301,73 @@
     </div>
   </div>
 
+  <!-- FUNIL -->
   <section class="section">
     <h2 class="section-title">Funil de Conversão</h2>
-    <div class="funnel">
-      <div class="stage"><span class="stage-name">Impressões</span><span class="stage-value mono">188.388</span></div>
-      <div class="stage-arrow">↓<span class="pct">51,3%</span></div>
-      <div class="stage"><span class="stage-name">Alcance único</span><span class="stage-value mono">96.630</span></div>
-      <div class="stage-arrow">↓</div>
-      <div class="stage"><span class="stage-name">Adições ao Carrinho</span><span class="stage-value mono">386</span></div>
-      <div class="stage-arrow">↓<span class="pct">42,7%</span></div>
-      <div class="stage"><span class="stage-name">Iniciaram Compra</span><span class="stage-value mono">165</span></div>
-      <div class="stage-arrow">↓<span class="pct">50,9%</span></div>
-      <div class="stage final"><span class="stage-name">Compras Realizadas</span><span class="stage-value mono">84</span></div>
+    <div class="funnel-svg-wrap">
+      <svg class="funnel-svg" viewBox="0 0 720 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Funil de Conversão Maio/2026">
+        <defs>
+          <linearGradient id="funnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2a2a2a"/>
+            <stop offset="50%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#D4AF37"/>
+          </linearGradient>
+          <linearGradient id="funnelFinalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#3ec569"/>
+            <stop offset="100%" stop-color="#15692f"/>
+          </linearGradient>
+          <filter id="finalGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <polygon class="stage-shape" points="60,10 660,10 620,50 100,50" fill="url(#funnelGrad)" fill-opacity="0.35"/>
+        <text class="stage-label" x="50" y="30">Impressões</text>
+        <text class="stage-value" x="360" y="30">188.388</text>
+
+        <polygon class="stage-shape" points="100,55 620,55 580,95 140,95" fill="url(#funnelGrad)" fill-opacity="0.45"/>
+        <text class="stage-label" x="90" y="75">Alcance único</text>
+        <text class="stage-value" x="360" y="75">79.595</text>
+        <text class="stage-drop ok" x="630" y="75">↓ 57,7%</text>
+
+        <polygon class="stage-shape" points="140,100 580,100 555,140 165,140" fill="url(#funnelGrad)" fill-opacity="0.55"/>
+        <text class="stage-label" x="130" y="120">Cliques no Anúncio</text>
+        <text class="stage-value" x="360" y="120">1.582</text>
+        <text class="stage-drop" x="590" y="120">↓ 98,0%</text>
+
+        <polygon class="stage-shape" points="165,145 555,145 530,185 190,185" fill="url(#funnelGrad)" fill-opacity="0.65"/>
+        <text class="stage-label" x="155" y="165">Cliques no Link</text>
+        <text class="stage-value" x="360" y="165">888</text>
+        <text class="stage-drop ok" x="565" y="165">↓ 43,9%</text>
+
+        <polygon class="stage-shape" points="190,190 530,190 500,230 220,230" fill="url(#funnelGrad)" fill-opacity="0.75"/>
+        <text class="stage-label" x="180" y="210">Adições ao Carrinho</text>
+        <text class="stage-value" x="360" y="210">386</text>
+        <text class="stage-drop" x="540" y="210">↓ 56,5%</text>
+
+        <polygon class="stage-shape" points="220,235 500,235 470,275 250,275" fill="url(#funnelGrad)" fill-opacity="0.85"/>
+        <text class="stage-label" x="210" y="255">Iniciaram Compra</text>
+        <text class="stage-value" x="360" y="255">165</text>
+        <text class="stage-drop ok" x="510" y="255">↓ 57,3%</text>
+
+        <polygon class="stage-shape" points="250,280 470,280 440,345 280,345" fill="url(#funnelFinalGrad)" stroke="#3ec569" stroke-width="1.8" filter="url(#finalGlow)"/>
+        <text class="stage-final-label" x="245" y="313">Compras</text>
+        <text class="stage-final-value" x="360" y="313">84</text>
+        <text class="stage-drop ok" x="485" y="313">↓ 49,1%</text>
+      </svg>
+      <div style="text-align:center; margin-top:14px; font-size:11px; color: var(--arena-cinza); letter-spacing: .04em;">
+        Taxa global: <b style="color:var(--arena-branco);">9,46%</b> do clique no link à compra
+        &nbsp;·&nbsp; CR clique→ATC: <b style="color:var(--arena-dourado);">43,5%</b>
+        &nbsp;·&nbsp; Checkout→Compra: <b style="color:var(--arena-branco);">50,9%</b>
+      </div>
     </div>
   </section>
 
+  <!-- PERMANENTES -->
   <section class="section">
     <h2 class="section-title">Campanhas Permanentes</h2>
     <div class="ranking">
+
       <div class="rank champion">
         <div class="rank-header">
           <span class="rank-pos">1</span>
@@ -330,6 +382,52 @@
           <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">35</div></div>
           <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;92,10</div></div>
           <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;9,81</div></div>
+        </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">[WAR]</span>
+            <span class="adset-budget mono">OFFSITE_CONVERSIONS</span>
+          </div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">42.639</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">11.337</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">3,76</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">0,84%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 8,05</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 0,95</div></div>
+          </div>
+          <div class="ads-table">
+            <div class="ads-table-header">Top 3 anúncios · por gasto</div>
+            <div class="ad-row">
+              <span class="ad-row-pos">1</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 04 #</span>
+              <span class="ad-row-metric"><b>R$ 130,20</b>gasto</span>
+              <span class="ad-row-metric"><b>11</b>vendas</span>
+              <span class="ad-row-metric"><b>0,76%</b>CTR</span>
+              <span class="ad-row-roas mono">8,04×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">2</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 03 # ⭐</span>
+              <span class="ad-row-metric"><b>R$ 97,65</b>gasto</span>
+              <span class="ad-row-metric"><b>13</b>vendas</span>
+              <span class="ad-row-metric"><b>0,78%</b>CTR</span>
+              <span class="ad-row-roas mono">13,49×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">3</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 01 #</span>
+              <span class="ad-row-metric"><b>R$ 77,25</b>gasto</span>
+              <span class="ad-row-metric"><b>6</b>vendas</span>
+              <span class="ad-row-metric"><b>0,95%</b>CTR</span>
+              <span class="ad-row-roas mono">6,43×</span>
+            </div>
+          </div>
+          <p style="font-size:11px; color:var(--arena-cinza-esc); margin-top:10px; line-height:1.5;">
+            <em>Destaque:</em> AD 03 # com ROAS 13,49× é o melhor criativo da operação Arena em Maio. Candidato a virar template pra próximas campanhas.
+          </p>
         </div>
       </div>
 
@@ -348,6 +446,44 @@
           <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;90,75</div></div>
           <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;12,88</div></div>
         </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">MIX DE MORNO · 4km · IG &amp; FB · 18-45</span>
+            <span class="adset-budget mono">OFFSITE_CONVERSIONS</span>
+          </div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">44.322</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">9.771</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">4,54</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">0,57%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 7,84</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 1,37</div></div>
+          </div>
+          <div class="ads-table">
+            <div class="ads-table-header">Top anúncios</div>
+            <div class="ad-row">
+              <span class="ad-row-pos">1</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD — Impressão</span>
+              <span class="ad-row-metric"><b>R$ 338,65</b>gasto</span>
+              <span class="ad-row-metric"><b>27</b>vendas</span>
+              <span class="ad-row-metric"><b>0,57%</b>CTR</span>
+              <span class="ad-row-roas mono">7,24×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">2</span>
+              <span class="ad-row-name"><span class="ad-row-status paused">Pausado</span>Review Isabel Narrado</span>
+              <span class="ad-row-metric"><b>R$ 9,01</b>gasto</span>
+              <span class="ad-row-metric"><b>0</b>vendas</span>
+              <span class="ad-row-metric"><b>0,73%</b>CTR</span>
+              <span class="ad-row-roas bad mono">—</span>
+            </div>
+          </div>
+          <p style="font-size:11px; color:var(--arena-cinza-esc); margin-top:10px; line-height:1.5;">
+            <em>Observação:</em> Freq 4,54 mostra saturação do público (público pequeno e quente). Considerar ampliar o targeting ou rotacionar criativos.
+          </p>
+        </div>
       </div>
 
       <div class="rank">
@@ -365,24 +501,61 @@
           <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;101,93</div></div>
           <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;16,11</div></div>
         </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">Aberto · 5km · AMPLO · AUTO</span>
+            <span class="adset-budget mono">OFFSITE_CONVERSIONS</span>
+          </div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">37.713</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">15.178</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">2,48</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">1,82%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 7,69</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 0,42</div></div>
+          </div>
+          <div class="ads-table">
+            <div class="ads-table-header">Top anúncios</div>
+            <div class="ad-row">
+              <span class="ad-row-pos">1</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>Carrossel · Fotos + CTA</span>
+              <span class="ad-row-metric"><b>R$ 285,65</b>gasto</span>
+              <span class="ad-row-metric"><b>18</b>vendas</span>
+              <span class="ad-row-metric"><b>1,84%</b>CTR</span>
+              <span class="ad-row-roas mono">6,42×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">2</span>
+              <span class="ad-row-name"><span class="ad-row-status paused">Pausado</span>Foto Hambúrguer Detalhada</span>
+              <span class="ad-row-metric"><b>R$ 4,34</b>gasto</span>
+              <span class="ad-row-metric"><b>0</b>vendas</span>
+              <span class="ad-row-metric"><b>0,53%</b>CTR</span>
+              <span class="ad-row-roas bad mono">—</span>
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
-    <div class="subtotal">Subtotal Permanentes · R$ 980,86 invest · 80 vendas · faturamento R$ 7.508,44 · ROAS médio 7,65×</div>
+    <div class="subtotal">Subtotal Permanentes · R$ 980,86 invest · 80 vendas · faturamento R$ 7.508,44 · ROAS médio <b style="color:var(--arena-ok);">7,65×</b></div>
   </section>
 
+  <!-- HAMBURGER DAY 28/05 -->
   <section class="hamburger-section">
     <h2 class="section-title">Sazonais · Dia do Hambúrguer</h2>
     <p class="section-desc">
-      Campanhas pontuais ativadas exclusivamente no Dia Mundial do Hambúrguer (28/05).
-      Performance separada das permanentes pra análise justa do evento.
+      Campanhas pontuais ativadas exclusivamente no Dia Mundial do Hambúrguer (28/05). Performance separada das permanentes pra análise justa do evento.
     </p>
     <div class="ranking">
+
       <div class="rank warn">
         <div class="rank-header">
           <span class="rank-pos">1</span>
           <div class="rank-name-wrap">
             <div class="rank-name">[STARKEN][VENDAS][03] — Cópia</div>
-            <div class="rank-tag">Conversão</div>
+            <div class="rank-tag">Conversão · 3 dias do evento</div>
           </div>
           <span class="rank-roas mono">2,91×</span>
         </div>
@@ -393,30 +566,48 @@
           <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;32,93</div></div>
         </div>
       </div>
+
       <div class="rank bad">
         <div class="rank-header">
           <span class="rank-pos">2</span>
           <div class="rank-name-wrap">
             <div class="rank-name">[STARKEN][RECO][28/05]</div>
-            <div class="rank-tag">Awareness · não-vendas</div>
+            <div class="rank-tag">Awareness · objetivo é alcance, não vendas</div>
           </div>
           <span class="rank-roas mono">1,68×</span>
         </div>
         <div class="rank-stats">
           <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;90,38</div></div>
           <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">2</div></div>
-          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;75,75</div></div>
+          <div><div class="rank-stat-label">Alcance</div><div class="rank-stat-value mono">55.574</div></div>
           <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;45,19</div></div>
         </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">[CA][LINK][RECO][28/05]</span>
+            <span class="adset-budget mono">REACH</span>
+          </div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">58.183</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">55.574</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">1,05</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">0,19%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 1,55</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 0,80</div></div>
+          </div>
+        </div>
       </div>
+
     </div>
-    <div class="subtotal">Subtotal Sazonais · R$ 156,24 invest · 4 vendas · faturamento R$ 343,15 · ROAS médio 2,20×</div>
+    <div class="subtotal">Subtotal Sazonais · R$ 156,24 invest · 4 vendas · faturamento R$ 343,15 · ROAS médio <b style="color:var(--arena-aviso);">2,20×</b></div>
   </section>
 
   <footer class="footer">
     <div class="footer-tagline">
       Operação mantida por <strong>Fenice Lab</strong><br>
-      Marketing Digital & Performance · Blumenau/SC
+      Marketing Digital &amp; Performance · Blumenau/SC
     </div>
     <div class="footer-meta">
       <div class="footer-meta-label">Período</div>
