@@ -251,59 +251,67 @@
     background: var(--sup-vermelho);
   }
 
-  /* FUNIL */
-  .funnel { display: flex; flex-direction: column; gap: 6px; }
-  .stage {
+  /* FUNIL TRIANGULAR SVG */
+  .funnel-svg-wrap {
     background: var(--sup-grafite);
     border: 1px solid var(--sup-linha);
-    border-left: 3px solid var(--sup-vermelho);
-    border-radius: 12px;
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all .18s cubic-bezier(.2,.7,.3,1);
+    border-radius: 16px;
+    padding: 24px 12px;
+    overflow-x: auto;
   }
-  .stage:hover {
-    background: var(--sup-grafite-2);
-    transform: translateX(4px);
+  .funnel-svg {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    display: block;
+    min-width: 320px;
   }
-  .stage-name {
+  .funnel-svg .stage-shape {
+    transition: opacity .18s ease;
+    cursor: default;
+  }
+  .funnel-svg .stage-shape:hover { opacity: 0.85; }
+  .funnel-svg .stage-label {
+    fill: var(--sup-branco);
     font-size: 13px;
-    font-weight: 500;
-    color: var(--sup-cinza);
-  }
-  .stage-value {
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--sup-branco);
-  }
-  .stage-arrow {
-    text-align: center;
-    color: var(--sup-cinza-esc);
-    font-size: 12px;
-    padding: 4px 0;
-  }
-  .stage-arrow .pct {
     font-weight: 600;
-    color: var(--sup-ok);
-    margin-left: 8px;
+    text-anchor: end;
+    dominant-baseline: middle;
+  }
+  .funnel-svg .stage-value {
+    fill: var(--sup-branco);
+    font-size: 15px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: middle;
     font-variant-numeric: tabular-nums;
   }
-  .stage.final {
-    background: linear-gradient(135deg, rgba(214,40,40,.12), rgba(214,40,40,.04));
-    border: 1px solid var(--sup-vermelho);
-    border-left-width: 3px;
-    box-shadow: 0 0 0 1px rgba(214,40,40,.35), 0 10px 30px rgba(214,40,40,.18);
+  .funnel-svg .stage-drop {
+    fill: var(--sup-cinza);
+    font-size: 11px;
+    font-weight: 600;
+    text-anchor: start;
+    dominant-baseline: middle;
+    font-variant-numeric: tabular-nums;
   }
-  .stage.final .stage-name {
-    color: var(--sup-branco);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
+  .funnel-svg .stage-drop.ok { fill: var(--sup-ok); }
+  .funnel-svg .stage-final-label {
+    fill: var(--sup-vermelho);
     font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    text-anchor: end;
+    dominant-baseline: middle;
   }
-  .stage.final .stage-value { color: var(--sup-vermelho); font-size: 24px; }
+  .funnel-svg .stage-final-value {
+    fill: var(--sup-vermelho);
+    font-size: 18px;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-variant-numeric: tabular-nums;
+  }
 
   /* RANKING */
   .ranking { display: flex; flex-direction: column; gap: 12px; }
@@ -376,88 +384,144 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* ANÚNCIOS EM VEICULAÇÃO */
-  .ads-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+  /* DETALHAMENTO DA CAMPANHA (AdSet + Ads) */
+  .rank-detail {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--sup-linha);
   }
-  @media (min-width: 640px) { .ads-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1024px) { .ads-grid { grid-template-columns: repeat(3, 1fr); } }
-
-  .ad-card {
-    background: var(--sup-grafite);
-    border: 1px solid var(--sup-linha);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all .18s cubic-bezier(.2,.7,.3,1);
-    display: flex;
-    flex-direction: column;
-  }
-  .ad-card:hover {
-    border-color: var(--sup-vermelho);
-    transform: translateY(-2px);
-  }
-  .ad-thumb {
-    aspect-ratio: 9/16;
-    background: var(--sup-carvao);
-    border-bottom: 1px solid var(--sup-linha);
-    position: relative;
-    overflow: hidden;
-  }
-  .ad-thumb img,
-  .ad-thumb iframe,
-  .ad-thumb video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border: none;
-  }
-  .ad-thumb-placeholder {
-    width: 100%;
-    height: 100%;
+  .adset-bar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(214,40,40,.08), rgba(31,31,31,.4));
-    font-size: 64px;
-    color: rgba(255,255,255,.15);
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
   }
-  .ad-info { padding: 16px; }
-  .ad-kicker {
-    font-size: 10px;
+  .adset-kicker {
+    font-size: 9px;
     letter-spacing: .18em;
     text-transform: uppercase;
-    color: var(--sup-vermelho);
+    color: var(--sup-cinza-esc);
+    font-weight: 700;
+  }
+  .adset-name {
+    font-size: 12px;
     font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .ad-title {
-    font-weight: 700;
-    font-size: 14px;
     color: var(--sup-branco);
-    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
   }
-  .ad-stats {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 12px;
-    border-top: 1px solid var(--sup-linha);
-  }
-  .ad-stat {
-    font-size: 11px;
+  .adset-budget {
+    margin-left: auto;
+    font-size: 10px;
     color: var(--sup-cinza);
-    font-weight: 500;
-  }
-  .ad-stat-roas {
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--sup-ok);
+    padding: 3px 8px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--sup-linha);
+    border-radius: 999px;
     font-variant-numeric: tabular-nums;
   }
-  .ad-stat-roas.warn { color: var(--sup-aviso); }
+  .adset-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    background: rgba(0,0,0,.18);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+  @media (min-width: 480px) { .adset-metrics { grid-template-columns: repeat(6, 1fr); } }
+  .adset-metric { text-align: center; }
+  .adset-metric-label {
+    font-size: 8.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    margin-bottom: 3px;
+  }
+  .adset-metric-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sup-branco);
+    font-variant-numeric: tabular-nums;
+  }
+  .ads-table {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ads-table-header {
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--sup-cinza-esc);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ad-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 12px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid var(--sup-linha);
+    border-radius: 10px;
+    align-items: center;
+  }
+  @media (min-width: 480px) {
+    .ad-row {
+      grid-template-columns: 30px 1fr repeat(4, auto);
+      gap: 14px;
+    }
+  }
+  .ad-row-pos {
+    font-weight: 800;
+    font-size: 11px;
+    color: var(--sup-cinza-esc);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .ad-row-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sup-branco);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ad-row-status {
+    display: inline-block;
+    font-size: 8.5px;
+    letter-spacing: .1em;
+    padding: 2px 7px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .ad-row-status.active { background: rgba(45,168,77,.15); color: var(--sup-ok); }
+  .ad-row-status.paused { background: rgba(255,255,255,.06); color: var(--sup-cinza-esc); }
+  .ad-row-metric {
+    font-size: 11px;
+    color: var(--sup-cinza);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-align: right;
+  }
+  .ad-row-metric b {
+    display: block;
+    color: var(--sup-branco);
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .ad-row-roas {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--sup-ok);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .ad-row-roas.warn { color: var(--sup-aviso); }
+  .ad-row-roas.bad { color: var(--sup-cinza-esc); }
 
   /* FOOTER */
   .footer {
@@ -594,54 +658,82 @@
   <!-- FUNIL -->
   <section class="section">
     <h2 class="section-title">Funil de Conversão</h2>
-    <div class="funnel">
-      <div class="stage">
-        <span class="stage-name">Impressões</span>
-        <span class="stage-value mono">442.014</span>
-      </div>
-      <div class="stage-arrow">↓<span class="pct">23,5%</span></div>
-      <div class="stage">
-        <span class="stage-name">Alcance único</span>
-        <span class="stage-value mono">103.877</span>
-      </div>
-      <div class="stage-arrow">↓</div>
-      <div class="stage">
-        <span class="stage-name">Cliques no Anúncio</span>
-        <span class="stage-value mono">3.583</span>
-      </div>
-      <div class="stage-arrow">↓<span class="pct">84,5%</span></div>
-      <div class="stage">
-        <span class="stage-name">Cliques no Link</span>
-        <span class="stage-value mono">3.029</span>
-      </div>
-      <div class="stage-arrow">↓<span class="pct">32,3%</span></div>
-      <div class="stage">
-        <span class="stage-name">Views da Página</span>
-        <span class="stage-value mono">977</span>
-      </div>
-      <div class="stage-arrow">↓<span class="pct">56,8%</span></div>
-      <div class="stage">
-        <span class="stage-name">Adições ao Carrinho</span>
-        <span class="stage-value mono">555</span>
-      </div>
-      <div class="stage-arrow">↓<span class="pct">60,7%</span></div>
-      <div class="stage">
-        <span class="stage-name">Iniciaram Compra</span>
-        <span class="stage-value mono">337</span>
-      </div>
-      <div class="stage-arrow">↓<span class="pct">96,1%</span></div>
-      <div class="stage final">
-        <span class="stage-name">Compras Realizadas</span>
-        <span class="stage-value mono">324</span>
+    <div class="funnel-svg-wrap">
+      <svg class="funnel-svg" viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Funil de Conversão Maio/2026">
+        <defs>
+          <linearGradient id="funnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#3b3b3b"/>
+            <stop offset="60%" stop-color="#a02020"/>
+            <stop offset="100%" stop-color="#d62828"/>
+          </linearGradient>
+          <linearGradient id="funnelFinalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#d62828"/>
+            <stop offset="100%" stop-color="#8b0000"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Etapas (proporcionais com log-scale leve pra etapas pequenas aparecerem) -->
+        <!-- 7 estágios, viewBox 720x360, centro em x=360 -->
+        <!-- Larguras (proporcional ajustado): 100%, 80%, 38%, 35%, 22%, 18%, 15% -->
+
+        <!-- Stage 1: Impressões 442.014 -->
+        <polygon class="stage-shape" points="60,10 660,10 620,50 100,50" fill="url(#funnelGrad)" fill-opacity="0.35"/>
+        <text class="stage-label" x="50" y="30">Impressões</text>
+        <text class="stage-value" x="360" y="30">442.014</text>
+
+        <!-- Stage 2: Alcance 103.877 -->
+        <polygon class="stage-shape" points="100,55 620,55 580,95 140,95" fill="url(#funnelGrad)" fill-opacity="0.45"/>
+        <text class="stage-label" x="90" y="75">Alcance único</text>
+        <text class="stage-value" x="360" y="75">103.877</text>
+        <text class="stage-drop ok" x="630" y="75">↓ 23,5%</text>
+
+        <!-- Stage 3: Cliques 3.583 -->
+        <polygon class="stage-shape" points="140,100 580,100 555,140 165,140" fill="url(#funnelGrad)" fill-opacity="0.55"/>
+        <text class="stage-label" x="130" y="120">Cliques no Anúncio</text>
+        <text class="stage-value" x="360" y="120">3.583</text>
+        <text class="stage-drop" x="590" y="120">↓ 96,6%</text>
+
+        <!-- Stage 4: Link 3.029 -->
+        <polygon class="stage-shape" points="165,145 555,145 530,185 190,185" fill="url(#funnelGrad)" fill-opacity="0.65"/>
+        <text class="stage-label" x="155" y="165">Cliques no Link</text>
+        <text class="stage-value" x="360" y="165">3.029</text>
+        <text class="stage-drop ok" x="565" y="165">↓ 15,5%</text>
+
+        <!-- Stage 5: ATC 555 -->
+        <polygon class="stage-shape" points="190,190 530,190 500,230 220,230" fill="url(#funnelGrad)" fill-opacity="0.75"/>
+        <text class="stage-label" x="180" y="210">Adições ao Carrinho</text>
+        <text class="stage-value" x="360" y="210">555</text>
+        <text class="stage-drop" x="540" y="210">↓ 81,7%</text>
+
+        <!-- Stage 6: Init 337 -->
+        <polygon class="stage-shape" points="220,235 500,235 470,275 250,275" fill="url(#funnelGrad)" fill-opacity="0.85"/>
+        <text class="stage-label" x="210" y="255">Iniciaram Compra</text>
+        <text class="stage-value" x="360" y="255">337</text>
+        <text class="stage-drop ok" x="510" y="255">↓ 39,3%</text>
+
+        <!-- Stage 7: COMPRAS 324 (FINAL - vermelho cheio) -->
+        <polygon class="stage-shape" points="250,280 470,280 440,335 280,335" fill="url(#funnelFinalGrad)"/>
+        <text class="stage-final-label" x="240" y="307">Compras</text>
+        <text class="stage-final-value" x="360" y="307">324</text>
+        <text class="stage-drop ok" x="480" y="307">↓ 3,9%</text>
+      </svg>
+      <div style="text-align:center; margin-top:14px; font-size:11px; color: var(--sup-cinza); letter-spacing: .04em;">
+        Taxa global de conversão: <b style="color:var(--sup-branco);">9,04%</b> do clique no link à compra
+        &nbsp;·&nbsp; CR clique→compra: <b style="color:var(--sup-vermelho);">10,7%</b>
+        &nbsp;·&nbsp; Taxa de checkout: <b style="color:var(--sup-branco);">60,7%</b>
       </div>
     </div>
   </section>
 
-  <!-- RANKING -->
+  <!-- RANKING DETALHADO -->
   <section class="section">
     <h2 class="section-title">Ranking de Campanhas</h2>
+    <p style="color: var(--sup-cinza); font-size: 13px; margin-bottom: 18px; line-height: 1.6;">
+      Cada campanha com seu conjunto e os top anúncios por gasto. Dados consolidados de 01 a 31 de maio.
+    </p>
     <div class="ranking">
 
+      <!-- CAMPANHA 1 -->
       <div class="rank champion">
         <div class="rank-header">
           <span class="rank-pos">1</span>
@@ -652,25 +744,57 @@
           <span class="rank-roas mono">29,15×</span>
         </div>
         <div class="rank-stats">
-          <div>
-            <div class="rank-stat-label">Gasto</div>
-            <div class="rank-stat-value mono">R$&nbsp;593,93</div>
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;594,01</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">140</div></div>
+          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;123,65</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;4,24</div></div>
+        </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">CA - CARDAPIO - 8KM</span>
+            <span class="adset-budget mono">Lifetime R$&nbsp;1.500</span>
           </div>
-          <div>
-            <div class="rank-stat-label">Vendas</div>
-            <div class="rank-stat-value mono">140</div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">99.777</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">17.052</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">5,85</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">0,69%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 5,95</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 0,86</div></div>
           </div>
-          <div>
-            <div class="rank-stat-label">Ticket</div>
-            <div class="rank-stat-value mono">R$&nbsp;123,67</div>
-          </div>
-          <div>
-            <div class="rank-stat-label">CPA</div>
-            <div class="rank-stat-value mono">R$&nbsp;4,24</div>
+          <div class="ads-table">
+            <div class="ads-table-header">Top 3 anúncios · por gasto</div>
+            <div class="ad-row">
+              <span class="ad-row-pos">1</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 03 # — Cardápio</span>
+              <span class="ad-row-metric"><b>R$ 310,49</b>gasto</span>
+              <span class="ad-row-metric"><b>73</b>vendas</span>
+              <span class="ad-row-metric"><b>0,63%</b>CTR</span>
+              <span class="ad-row-roas mono">28,71×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">2</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 02 # — Cardápio</span>
+              <span class="ad-row-metric"><b>R$ 230,67</b>gasto</span>
+              <span class="ad-row-metric"><b>58</b>vendas</span>
+              <span class="ad-row-metric"><b>0,68%</b>CTR</span>
+              <span class="ad-row-roas mono">30,76×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">3</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 04 # — Cardápio</span>
+              <span class="ad-row-metric"><b>R$ 44,77</b>gasto</span>
+              <span class="ad-row-metric"><b>8</b>vendas</span>
+              <span class="ad-row-metric"><b>1,34%</b>CTR</span>
+              <span class="ad-row-roas mono">25,68×</span>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- CAMPANHA 2 -->
       <div class="rank">
         <div class="rank-header">
           <span class="rank-pos">2</span>
@@ -681,146 +805,169 @@
           <span class="rank-roas mono">16,34×</span>
         </div>
         <div class="rank-stats">
-          <div>
-            <div class="rank-stat-label">Gasto</div>
-            <div class="rank-stat-value mono">R$&nbsp;1.357,85</div>
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;1.357,86</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">181</div></div>
+          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;122,60</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;7,50</div></div>
+        </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">CA - CARDAPIO - 8KM</span>
+            <span class="adset-budget mono">Lifetime R$&nbsp;4.400</span>
           </div>
-          <div>
-            <div class="rank-stat-label">Vendas</div>
-            <div class="rank-stat-value mono">181</div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">259.803</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">54.266</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">4,79</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">0,49%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 5,23</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 1,07</div></div>
           </div>
-          <div>
-            <div class="rank-stat-label">Ticket</div>
-            <div class="rank-stat-value mono">R$&nbsp;122,57</div>
-          </div>
-          <div>
-            <div class="rank-stat-label">CPA</div>
-            <div class="rank-stat-value mono">R$&nbsp;7,50</div>
+          <div class="ads-table">
+            <div class="ads-table-header">Top 3 anúncios · por gasto</div>
+            <div class="ad-row">
+              <span class="ad-row-pos">1</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 01 # Cópia — Cardápio</span>
+              <span class="ad-row-metric"><b>R$ 989,25</b>gasto</span>
+              <span class="ad-row-metric"><b>115</b>vendas</span>
+              <span class="ad-row-metric"><b>0,39%</b>CTR</span>
+              <span class="ad-row-roas mono">13,85×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">2</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 02 # — Cardápio</span>
+              <span class="ad-row-metric"><b>R$ 272,57</b>gasto</span>
+              <span class="ad-row-metric"><b>52</b>vendas</span>
+              <span class="ad-row-metric"><b>0,83%</b>CTR</span>
+              <span class="ad-row-roas mono">25,51×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">3</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 03 # — Cardápio</span>
+              <span class="ad-row-metric"><b>R$ 96,04</b>gasto</span>
+              <span class="ad-row-metric"><b>13</b>vendas</span>
+              <span class="ad-row-metric"><b>0,46%</b>CTR</span>
+              <span class="ad-row-roas mono">14,57×</span>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- CAMPANHA 3 -->
       <div class="rank warn">
         <div class="rank-header">
           <span class="rank-pos">3</span>
           <div class="rank-name-wrap">
             <div class="rank-name">[STARKEN][PERFIL][SEGUIDORES]</div>
-            <div class="rank-tag">Tráfego perfil · não-vendas</div>
+            <div class="rank-tag">Tráfego perfil · objetivo é audiência, não vendas</div>
           </div>
           <span class="rank-roas mono">0,63×</span>
         </div>
         <div class="rank-stats">
-          <div>
-            <div class="rank-stat-label">Gasto</div>
-            <div class="rank-stat-value mono">R$&nbsp;313,41</div>
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;313,41</div></div>
+          <div><div class="rank-stat-label">Cliques link</div><div class="rank-stat-value mono">1.422</div></div>
+          <div><div class="rank-stat-label">CPC</div><div class="rank-stat-value mono">R$&nbsp;0,22</div></div>
+          <div><div class="rank-stat-label">Vendas residuais</div><div class="rank-stat-value mono">2</div></div>
+        </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">CA - PERFIL</span>
+            <span class="adset-budget mono">Daily R$&nbsp;10</span>
           </div>
-          <div>
-            <div class="rank-stat-label">Vendas</div>
-            <div class="rank-stat-value mono">2</div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">75.575</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">48.723</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">1,55</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">1,90%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 4,15</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 0,22</div></div>
           </div>
-          <div>
-            <div class="rank-stat-label">Ticket</div>
-            <div class="rank-stat-value mono">R$&nbsp;98,86</div>
+          <div class="ads-table">
+            <div class="ads-table-header">Anúncios ativos</div>
+            <div class="ad-row">
+              <span class="ad-row-pos">1</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 01 # — Perfil</span>
+              <span class="ad-row-metric"><b>R$ 311,53</b>gasto</span>
+              <span class="ad-row-metric"><b>1.420</b>cliques</span>
+              <span class="ad-row-metric"><b>1,89%</b>CTR</span>
+              <span class="ad-row-roas warn mono">0,64×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">2</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>AD 02 # — Perfil (teste)</span>
+              <span class="ad-row-metric"><b>R$ 1,88</b>gasto</span>
+              <span class="ad-row-metric"><b>11</b>cliques</span>
+              <span class="ad-row-metric"><b>5,05%</b>CTR</span>
+              <span class="ad-row-roas bad mono">—</span>
+            </div>
           </div>
-          <div>
-            <div class="rank-stat-label">CPA</div>
-            <div class="rank-stat-value mono">R$&nbsp;156,71</div>
-          </div>
+          <p style="font-size:11px; color:var(--sup-cinza-esc); margin-top:10px; line-height:1.5;">
+            <em>Observação:</em> esta campanha tem objetivo LINK_CLICKS (não vendas). As 2 vendas registradas são atribuição residual — o ROAS aqui não é métrica de sucesso.
+          </p>
         </div>
       </div>
 
+      <!-- CAMPANHA 4 -->
       <div class="rank bad">
         <div class="rank-header">
           <span class="rank-pos">4</span>
           <div class="rank-name-wrap">
-            <div class="rank-name">[FOOD PORN] SEX-DOM 29-31</div>
-            <div class="rank-tag">Campanha-teste gourmet</div>
+            <div class="rank-name">[SUPREMA PIZZA][VENDAS][FOOD PORN][SEX-DOM 29-31/05]</div>
+            <div class="rank-tag">Campanha-teste gourmet · ABO · 3 dias</div>
           </div>
           <span class="rank-roas mono">1,21×</span>
         </div>
         <div class="rank-stats">
-          <div>
-            <div class="rank-stat-label">Gasto</div>
-            <div class="rank-stat-value mono">R$&nbsp;85,65</div>
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;85,65</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">1</div></div>
+          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;103,66</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;85,65</div></div>
+        </div>
+
+        <div class="rank-detail">
+          <div class="adset-bar">
+            <span class="adset-kicker">Conjunto</span>
+            <span class="adset-name">CA - CARDAPIO DIGITAL - 8KM - FOOD PORN</span>
+            <span class="adset-budget mono">Lifetime R$&nbsp;90</span>
           </div>
-          <div>
-            <div class="rank-stat-label">Vendas</div>
-            <div class="rank-stat-value mono">1</div>
+          <div class="adset-metrics">
+            <div class="adset-metric"><div class="adset-metric-label">Imp</div><div class="adset-metric-value">6.863</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Alcance</div><div class="adset-metric-value">4.723</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">Freq</div><div class="adset-metric-value">1,45</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CTR</div><div class="adset-metric-value">2,58%</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPM</div><div class="adset-metric-value">R$ 12,48</div></div>
+            <div class="adset-metric"><div class="adset-metric-label">CPC</div><div class="adset-metric-value">R$ 0,48</div></div>
           </div>
-          <div>
-            <div class="rank-stat-label">Ticket</div>
-            <div class="rank-stat-value mono">R$&nbsp;103,64</div>
+          <div class="ads-table">
+            <div class="ads-table-header">Top anúncios</div>
+            <div class="ad-row">
+              <span class="ad-row-pos">1</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>Geleia de Pimenta + Brie</span>
+              <span class="ad-row-metric"><b>R$ 75,64</b>gasto</span>
+              <span class="ad-row-metric"><b>1</b>venda</span>
+              <span class="ad-row-metric"><b>2,34%</b>CTR</span>
+              <span class="ad-row-roas warn mono">1,37×</span>
+            </div>
+            <div class="ad-row">
+              <span class="ad-row-pos">2</span>
+              <span class="ad-row-name"><span class="ad-row-status active">Ativo</span>Nutella + Morango (Bossa Nova)</span>
+              <span class="ad-row-metric"><b>R$ 10,01</b>gasto</span>
+              <span class="ad-row-metric"><b>0</b>vendas</span>
+              <span class="ad-row-metric"><b>6,42%</b>CTR</span>
+              <span class="ad-row-roas bad mono">—</span>
+            </div>
           </div>
-          <div>
-            <div class="rank-stat-label">CPA</div>
-            <div class="rank-stat-value mono">R$&nbsp;85,65</div>
-          </div>
+          <p style="font-size:11px; color:var(--sup-cinza-esc); margin-top:10px; line-height:1.5;">
+            <em>Leitura:</em> teste-piloto com budget baixo (R$ 90 em 3 dias). CTR alto (2,58%) sinaliza interesse no produto gourmet, mas conversão exige aprofundamento — recomendamos novo ciclo de teste com budget escalado e ad set CBO.
+          </p>
         </div>
       </div>
 
     </div>
-  </section>
-
-  <!-- ANÚNCIOS EM VEICULAÇÃO -->
-  <section class="section">
-    <h2 class="section-title">Anúncios em Veiculação</h2>
-    <p style="color: var(--sup-cinza); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
-      Criativos que estão rodando atualmente nas campanhas ativas.
-    </p>
-    <div class="ads-grid">
-
-      <div class="ad-card">
-        <div class="ad-thumb">
-          <div class="ad-thumb-placeholder">
-            <span>🍕</span>
-          </div>
-        </div>
-        <div class="ad-info">
-          <div class="ad-kicker">VENDAS · MAIO 01</div>
-          <div class="ad-title">Cardápio Digital</div>
-          <div class="ad-stats">
-            <span class="ad-stat">140 compras</span>
-            <span class="ad-stat-roas">29,15×</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="ad-card">
-        <div class="ad-thumb">
-          <div class="ad-thumb-placeholder">
-            <span>🍕</span>
-          </div>
-        </div>
-        <div class="ad-info">
-          <div class="ad-kicker">VENDAS · FEV</div>
-          <div class="ad-title">Campanha Atemporal</div>
-          <div class="ad-stats">
-            <span class="ad-stat">181 compras</span>
-            <span class="ad-stat-roas">16,34×</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="ad-card">
-        <div class="ad-thumb">
-          <div class="ad-thumb-placeholder">
-            <span>🌶️</span>
-          </div>
-        </div>
-        <div class="ad-info">
-          <div class="ad-kicker">FOOD PORN · TESTE</div>
-          <div class="ad-title">Brie + Geleia de Pimenta</div>
-          <div class="ad-stats">
-            <span class="ad-stat">1 compra</span>
-            <span class="ad-stat-roas warn">1,21×</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <p style="color: var(--sup-cinza-esc); font-size: 12px; margin-top: 16px; line-height: 1.6;">
-      🔄 Os previews dos criativos são atualizados em tempo real conforme os anúncios rodam.
-    </p>
   </section>
 
   <!-- FOOTER -->
