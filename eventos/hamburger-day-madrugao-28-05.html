@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<title>Madrugão · Dia do Hambúrguer · 28/05/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --m-bg: #0A0A0A;
+    --m-card: #161616;
+    --m-card-2: #1F1F1F;
+    --m-laranja: #FF6B00;
+    --m-laranja-dk: #C75200;
+    --m-amarelo: #FFD60A;
+    --m-branco: #F5F5F5;
+    --m-cinza: #909090;
+    --m-cinza-esc: #5A5A5A;
+    --m-linha: rgba(255,107,0,.14);
+    --m-ok: #4ADE80;
+    --m-aviso: #FBBF24;
+    --m-erro: #F87171;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--m-bg); color: var(--m-branco); font-family: 'Inter', sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  .mono { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+  .container { width: 100%; max-width: 880px; margin: 0 auto; padding: 16px; }
+  @media (min-width: 768px) { .container { padding: 32px; } }
+
+  .header { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; margin-bottom: 28px; border-bottom: 2px solid var(--m-laranja); flex-wrap: wrap; }
+  .header-mark { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 0.9; letter-spacing: .04em; color: var(--m-laranja); }
+  @media (min-width: 640px) { .header-mark { font-size: 56px; } }
+  .header-mark .small { font-size: 60%; color: var(--m-branco); display: block; letter-spacing: .12em; margin-top: -4px; }
+  .header-meta { flex: 1; text-align: right; min-width: 220px; }
+  .kicker { font-weight: 700; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--m-laranja); margin-bottom: 4px; }
+  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .04em; line-height: 1; text-transform: uppercase; }
+  @media (min-width: 640px) { .header-title { font-size: 32px; } }
+  .header-sub { font-size: 11px; color: var(--m-cinza); margin-top: 4px; }
+
+  /* BANNER DO EVENTO */
+  .event-banner {
+    margin-bottom: 28px; padding: 36px 28px;
+    background: radial-gradient(ellipse at top, rgba(255,107,0,.25) 0%, transparent 60%), linear-gradient(135deg, #0a0a0a 0%, var(--m-card) 100%);
+    border: 1px solid var(--m-linha); border-radius: 20px; position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .event-banner::before { content: '🍔'; position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 64px; opacity: .12; }
+  .event-banner-label { font-size: 11px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: var(--m-laranja); margin-bottom: 10px; }
+  .event-banner-title {
+    font-family: 'Playfair Display', Georgia, serif; font-weight: 900;
+    font-size: 38px; line-height: 1.05;
+    background: linear-gradient(180deg, #fff 0%, var(--m-laranja) 130%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -.01em; margin-bottom: 8px;
+  }
+  @media (min-width: 640px) { .event-banner-title { font-size: 56px; } }
+  .event-banner-date { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--m-amarelo); letter-spacing: .08em; }
+  @media (min-width: 640px) { .event-banner-date { font-size: 32px; } }
+  .event-banner-sub { font-size: 12px; color: var(--m-cinza); margin-top: 12px; font-family: ui-monospace, monospace; letter-spacing: .04em; }
+
+  /* HERO CONSOLIDADO */
+  .hero { background: linear-gradient(135deg, rgba(22,22,22,.96), rgba(22,22,22,.99)); border: 1px solid var(--m-linha); border-radius: 24px; padding: 28px 24px; margin-bottom: 24px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--m-laranja), var(--m-amarelo)); }
+  .hero-kicker { font-weight: 700; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--m-laranja); margin-bottom: 14px; }
+  .hero-amount { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: var(--m-laranja); line-height: 1; letter-spacing: .02em; margin-bottom: 10px; }
+  @media (min-width: 480px) { .hero-amount { font-size: 72px; } }
+  @media (min-width: 768px) { .hero-amount { font-size: 88px; } }
+  .hero-meta { font-size: 13px; color: var(--m-cinza); line-height: 1.6; }
+  .hero-meta strong { color: var(--m-laranja); font-weight: 700; }
+  .hero-net { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--m-linha); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+  .hero-net-label { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--m-cinza-esc); }
+  .hero-net-amount { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: .02em; color: var(--m-ok); }
+
+  /* COMPARATIVO */
+  .compare-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 32px; }
+  @media (min-width: 640px) { .compare-grid { grid-template-columns: repeat(2, 1fr); } }
+  .compare-card { background: var(--m-card); border: 1px solid var(--m-linha); border-radius: 18px; padding: 22px; position: relative; overflow: hidden; }
+  .compare-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--m-laranja); }
+  .compare-card.centro::before { background: linear-gradient(90deg, var(--m-laranja), #FFC107); }
+  .compare-card.garcia::before { background: linear-gradient(90deg, var(--m-laranja), #FF3D00); }
+  .compare-store {
+    display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--m-linha);
+  }
+  .compare-store-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--m-branco); letter-spacing: .04em; }
+  .compare-store-tag { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--m-laranja); font-weight: 700; margin-left: auto; }
+  .compare-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .compare-metric-label { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--m-cinza-esc); margin-bottom: 3px; font-weight: 700; }
+  .compare-metric-value { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--m-branco); letter-spacing: .02em; line-height: 1; }
+  .compare-metric-value.ok { color: var(--m-ok); }
+  .compare-metric-value.laranja { color: var(--m-laranja); }
+  .compare-metric-value.warn { color: var(--m-aviso); }
+  .compare-metric-sub { font-size: 10px; color: var(--m-cinza-esc); margin-top: 3px; }
+
+  /* KPIs CONSOLIDADOS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+  @media (min-width: 640px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+  .kpi { background: var(--m-card); border: 1px solid var(--m-linha); border-radius: 16px; padding: 16px; }
+  .kpi-label { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--m-cinza); font-weight: 600; margin-bottom: 8px; }
+  .kpi-value { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--m-branco); letter-spacing: .02em; line-height: 1; }
+  .kpi-value.laranja { color: var(--m-laranja); }
+  .kpi-value.ok { color: var(--m-ok); }
+
+  .section { margin-bottom: 36px; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; text-transform: uppercase; letter-spacing: .04em; color: var(--m-branco); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--m-linha); position: relative; }
+  .section-title::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 50px; height: 2px; background: var(--m-laranja); }
+
+  /* RANKING */
+  .ranking { display: flex; flex-direction: column; gap: 12px; }
+  .rank { background: var(--m-card); border: 1px solid var(--m-linha); border-radius: 16px; padding: 18px; }
+  .rank.champion { border: 1px solid var(--m-laranja); box-shadow: 0 0 0 1px rgba(255,107,0,.20); }
+  .rank-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--m-linha); flex-wrap: wrap; }
+  .rank-pos { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--m-cinza-esc); min-width: 32px; letter-spacing: .02em; }
+  .rank.champion .rank-pos { color: var(--m-laranja); }
+  .rank-name-wrap { flex: 1; min-width: 0; }
+  .rank-name { font-weight: 700; font-size: 13px; color: var(--m-branco); word-break: break-word; }
+  .rank-tag { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--m-cinza-esc); margin-top: 4px; }
+  .rank-store {
+    padding: 3px 9px; border-radius: 999px; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em;
+    background: rgba(255,107,0,.15); color: var(--m-laranja);
+  }
+  .rank-roas { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--m-ok); letter-spacing: .02em; }
+  .rank.warn .rank-roas { color: var(--m-aviso); }
+  .rank.bad .rank-roas { color: var(--m-erro); }
+  .rank-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (min-width: 480px) { .rank-stats { grid-template-columns: repeat(4, 1fr); } }
+  .rank-stat-label { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--m-cinza-esc); margin-bottom: 4px; }
+  .rank-stat-value { font-weight: 700; font-size: 13px; color: var(--m-branco); font-variant-numeric: tabular-nums; }
+
+  .takeaways { background: linear-gradient(135deg, rgba(255,107,0,.06), rgba(255,214,10,.04)); border: 1px solid rgba(255,107,0,.30); border-radius: 16px; padding: 24px 22px; }
+  .takeaways h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--m-laranja); letter-spacing: .04em; margin-bottom: 14px; text-transform: uppercase; }
+  .takeaways ul { list-style: none; padding: 0; margin: 0; }
+  .takeaways li { padding: 10px 0; border-bottom: 1px solid var(--m-linha); color: var(--m-branco); font-size: 13px; line-height: 1.55; display: flex; gap: 10px; }
+  .takeaways li:last-child { border-bottom: none; }
+  .takeaways li::before { content: '→'; color: var(--m-laranja); font-weight: 700; flex-shrink: 0; }
+  .takeaways b { color: var(--m-laranja); font-weight: 700; }
+
+  /* FOOTER */
+  .footer { margin-top: 40px; padding-top: 28px; border-top: 2px solid var(--m-laranja); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .footer-tagline { font-size: 12px; color: var(--m-cinza-esc); letter-spacing: .08em; line-height: 1.4; }
+  .footer-tagline strong { color: var(--m-laranja); font-weight: 800; }
+  .footer-meta { text-align: right; font-size: 11px; color: var(--m-cinza-esc); }
+  .footer-meta-label { text-transform: uppercase; letter-spacing: .14em; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <div class="header-mark">
+      MADRUGÃO
+      <span class="small">— CENTRO + GARCIA —</span>
+    </div>
+    <div class="header-meta">
+      <div class="kicker">Starken Tecnologia</div>
+      <div class="header-title">Performance</div>
+      <div class="header-sub">Relatório de Evento</div>
+    </div>
+  </header>
+
+  <!-- BANNER DO EVENTO -->
+  <div class="event-banner">
+    <div class="event-banner-label">🍔 Evento Sazonal</div>
+    <h1 class="event-banner-title">Dia Mundial do Hambúrguer</h1>
+    <div class="event-banner-date">28 · 05 · 2026</div>
+    <div class="event-banner-sub">Quinta-feira · Consolidado das 2 lojas Madrugão</div>
+  </div>
+
+  <!-- HERO CONSOLIDADO -->
+  <div class="hero">
+    <div class="hero-kicker">💰 Faturamento Consolidado · 28/05</div>
+    <div class="hero-amount mono">R$&nbsp;1.347,53</div>
+    <div class="hero-meta">
+      Investido R$ 416,34 · <strong>ROAS 3,24×</strong> · 37 compras
+    </div>
+    <div class="hero-net">
+      <span class="hero-net-label">Retorno líquido do dia</span>
+      <span class="hero-net-amount mono">R$&nbsp;931,19</span>
+    </div>
+  </div>
+
+  <!-- KPIs CONSOLIDADOS -->
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Investimento</div><div class="kpi-value mono">R$&nbsp;416</div></div>
+    <div class="kpi"><div class="kpi-label">Compras</div><div class="kpi-value laranja mono">37</div></div>
+    <div class="kpi"><div class="kpi-label">Ticket Médio</div><div class="kpi-value mono">R$&nbsp;36,42</div></div>
+    <div class="kpi"><div class="kpi-label">ROAS</div><div class="kpi-value ok mono">3,24×</div></div>
+  </div>
+
+  <!-- COMPARATIVO POR LOJA -->
+  <section class="section">
+    <h2 class="section-title">Comparativo por Loja</h2>
+    <div class="compare-grid">
+
+      <div class="compare-card centro">
+        <div class="compare-store">
+          <span class="compare-store-name">Centro</span>
+          <span class="compare-store-tag">Loja 1</span>
+        </div>
+        <div class="compare-metrics">
+          <div>
+            <div class="compare-metric-label">Faturamento</div>
+            <div class="compare-metric-value laranja mono">R$ 916,15</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">Investimento</div>
+            <div class="compare-metric-value mono">R$ 283,28</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">Compras</div>
+            <div class="compare-metric-value mono">23</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">ROAS</div>
+            <div class="compare-metric-value ok mono">3,23×</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">Alcance</div>
+            <div class="compare-metric-value mono">46.225</div>
+            <div class="compare-metric-sub">53.619 impressões</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">CTR · CPM</div>
+            <div class="compare-metric-value mono">0,94%</div>
+            <div class="compare-metric-sub">CPM R$ 5,28</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-card garcia">
+        <div class="compare-store">
+          <span class="compare-store-name">Garcia</span>
+          <span class="compare-store-tag">Loja 2</span>
+        </div>
+        <div class="compare-metrics">
+          <div>
+            <div class="compare-metric-label">Faturamento</div>
+            <div class="compare-metric-value laranja mono">R$ 431,38</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">Investimento</div>
+            <div class="compare-metric-value mono">R$ 133,06</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">Compras</div>
+            <div class="compare-metric-value mono">14</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">ROAS</div>
+            <div class="compare-metric-value ok mono">3,24×</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">Alcance</div>
+            <div class="compare-metric-value mono">25.134</div>
+            <div class="compare-metric-sub">35.956 impressões</div>
+          </div>
+          <div>
+            <div class="compare-metric-label">CTR · CPM</div>
+            <div class="compare-metric-value mono">0,40%</div>
+            <div class="compare-metric-sub">CPM R$ 3,70</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TOP CAMPANHAS DO EVENTO -->
+  <section class="section">
+    <h2 class="section-title">Top Campanhas do Evento</h2>
+    <p style="color: var(--m-cinza); font-size: 13px; margin-bottom: 18px; line-height: 1.6;">
+      Ranking unificado das campanhas ativas em 28/05 com maior investimento. ROAS e CPA referentes apenas ao dia.
+    </p>
+    <div class="ranking">
+
+      <div class="rank">
+        <div class="rank-header">
+          <span class="rank-pos">1</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][VENDAS][HAMBURGER_DAY][28/05]</div>
+            <div class="rank-tag">Vendas direcionadas ao evento · maior gasto</div>
+          </div>
+          <span class="rank-store">Centro</span>
+          <span class="rank-roas mono">2,14×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;147,88</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">8</div></div>
+          <div><div class="rank-stat-label">Revenue</div><div class="rank-stat-value mono">R$&nbsp;315,99</div></div>
+          <div><div class="rank-stat-label">CTR</div><div class="rank-stat-value mono">2,07%</div></div>
+        </div>
+      </div>
+
+      <div class="rank warn">
+        <div class="rank-header">
+          <span class="rank-pos">2</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][RECO][28/05][03]</div>
+            <div class="rank-tag">Awareness · 34k pessoas alcançadas</div>
+          </div>
+          <span class="rank-store">Centro</span>
+          <span class="rank-roas mono">2,35×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;99,49</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">3</div></div>
+          <div><div class="rank-stat-label">Alcance</div><div class="rank-stat-value mono">34.829</div></div>
+          <div><div class="rank-stat-label">CPM</div><div class="rank-stat-value mono">R$&nbsp;2,67</div></div>
+        </div>
+      </div>
+
+      <div class="rank bad">
+        <div class="rank-header">
+          <span class="rank-pos">3</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][RECO][28/05][03]</div>
+            <div class="rank-tag">Awareness · sem conversão direta</div>
+          </div>
+          <span class="rank-store">Garcia</span>
+          <span class="rank-roas mono">—</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;49,96</div></div>
+          <div><div class="rank-stat-label">Imp</div><div class="rank-stat-value mono">16.480</div></div>
+          <div><div class="rank-stat-label">Alcance</div><div class="rank-stat-value mono">15.624</div></div>
+          <div><div class="rank-stat-label">CPM</div><div class="rank-stat-value mono">R$&nbsp;3,03</div></div>
+        </div>
+      </div>
+
+      <div class="rank bad">
+        <div class="rank-header">
+          <span class="rank-pos">4</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][VENDAS][HAMBURGER_DAY][28/05]</div>
+            <div class="rank-tag">Vendas direcionadas · performance fraca</div>
+          </div>
+          <span class="rank-store">Garcia</span>
+          <span class="rank-roas mono">0,93×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;49,14</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">1</div></div>
+          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;45,80</div></div>
+          <div><div class="rank-stat-label">CTR</div><div class="rank-stat-value mono">0,95%</div></div>
+        </div>
+      </div>
+
+      <div class="rank champion">
+        <div class="rank-header">
+          <span class="rank-pos">5</span>
+          <div class="rank-name-wrap">
+            <div class="rank-name">[STARKEN][CA][VENDA][AQUISICAO][35OFF][CBO]</div>
+            <div class="rank-tag">Cauda do remarketing · cupom 35% off</div>
+          </div>
+          <span class="rank-store">Centro</span>
+          <span class="rank-roas mono">4,61×</span>
+        </div>
+        <div class="rank-stats">
+          <div><div class="rank-stat-label">Gasto</div><div class="rank-stat-value mono">R$&nbsp;21,67</div></div>
+          <div><div class="rank-stat-label">Vendas</div><div class="rank-stat-value mono">4</div></div>
+          <div><div class="rank-stat-label">Ticket</div><div class="rank-stat-value mono">R$&nbsp;24,97</div></div>
+          <div><div class="rank-stat-label">CPA</div><div class="rank-stat-value mono">R$&nbsp;5,42</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TAKEAWAYS -->
+  <section class="takeaways">
+    <h3>📌 Conclusões do dia 28/05</h3>
+    <ul>
+      <li><b>Centro foi a loja de destaque</b> — concentrou 68% do faturamento (R$ 916,15 vs R$ 431,38) com proporção similar de investimento. ROAS praticamente idêntico nas duas lojas (3,23× vs 3,24×).</li>
+      <li><b>CTR forte em Centro (0,94%)</b> e fraco em Garcia (0,40%) — público alcançado por Garcia engajou menos. Próxima sazonalidade: revisar criativo específico da loja Garcia.</li>
+      <li><b>Vencedor isolado: cauda do remarketing</b> com cupom 35% off em Centro (R$ 21 → 4 vendas, ROAS 4,61×) — campanha pausada que rebobinou no dia. Vale reativar para próximos eventos.</li>
+      <li><b>Awareness fez seu papel</b> — RECO 28/05 alcançou 50k+ pessoas com CPM baixíssimo (R$ 2,67-3,03). 3 vendas residuais em Centro, 0 em Garcia.</li>
+      <li><b>Recomendação para próximas sazonalidades:</b> alocar mais budget na campanha de vendas direta da loja Centro (ROAS 2,14×) e refinar criativo específico de Garcia antes do próximo evento.</li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-tagline">
+      Operação mantida por <strong>Starken Tecnologia</strong><br>
+      Marketing Digital &amp; Performance · Blumenau/SC
+    </div>
+    <div class="footer-meta">
+      <div class="footer-meta-label">Evento</div>
+      <div class="mono">28/05/2026 · quinta-feira</div>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
