@@ -73,6 +73,7 @@ let cache = { data: null, ts: 0 };
 let renovacaoCache = { data: null, ts: 0 };
 let adminCache = { data: null, ts: 0 };
 let clientsCache = { data: null, ts: 0 };
+let saldoCache = { data: null, ts: 0 };
 
 // ──────────────────────────────────────────────────────────────────────────────
 // BASIC AUTH (área admin)
@@ -556,6 +557,60 @@ function resolveFilePath(reqUrl) {
   return null;
 }
 
+// ──────────────────────────────────────────────────────────────────────────────
+// PÚBLICO — saldo das contas de anúncios (balance) por cliente. Sem dados sensíveis
+// de campanha; só saldo/gasto/limite, pra alerta de saldo baixo na central.
+// ──────────────────────────────────────────────────────────────────────────────
+async function fetchSaldos() {
+  const now = Date.now();
+  if (saldoCache.data && (now - saldoCache.ts) < CACHE_TTL_MS) return saldoCache.data;
+
+  let mapping = { clients: [] };
+  try {
+    const raw = await fs.readFile(path.join(__dirname, 'data', 'clients-mapping.json'), 'utf-8');
+    mapping = JSON.parse(raw);
+  } catch {
+    return { updated_at: new Date().toISOString(), error: 'mapping_missing', clients: [] };
+  }
+
+  const token = await readToken();
+  let byAcct = {};
+  let erro = null;
+  if (token) {
+    try {
+      const r = await fetch(`https://graph.facebook.com/v23.0/me/adaccounts?fields=account_id,name,currency,account_status,balance,amount_spent,spend_cap&limit=500&access_token=${token}`);
+      const j = await r.json();
+      if (j.error) erro = j.error.message || 'graph_error';
+      else for (const a of (j.data || [])) byAcct[a.account_id] = a;
+    } catch (e) { erro = e.message; }
+  } else {
+    erro = 'sem_token';
+  }
+
+  const clients = mapping.clients
+    .filter((c) => c.ad_account_id)
+    .map((c) => {
+      const a = byAcct[c.ad_account_id];
+      const cents = (v) => (v != null && v !== '' ? parseInt(v) : null);
+      return {
+        slug: c.slug,
+        name: c.name,
+        agencia: c.agencia || null,
+        ad_account_id: c.ad_account_id,
+        currency: a?.currency || 'BRL',
+        account_status: a?.account_status ?? null,
+        balance_cents: a ? cents(a.balance) : null,
+        amount_spent_cents: a ? cents(a.amount_spent) : null,
+        spend_cap_cents: a ? cents(a.spend_cap) : null,
+        found: !!a,
+      };
+    });
+
+  const result = { updated_at: new Date().toISOString(), error: erro, clients };
+  saldoCache = { data: result, ts: now };
+  return result;
+}
+
 const server = http.createServer(async (req, res) => {
   try {
     // Área admin (Basic Auth) — protege HTML e JSON
@@ -603,6 +658,19 @@ const server = http.createServer(async (req, res) => {
 
     if (req.url === '/api/renovacao' || req.url.startsWith('/api/renovacao?')) {
       const data = await fetchRenovacao();
+      res.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
+      });
+      res.end(JSON.stringify(data, null, 2));
+      return;
+    }
+
+    if (req.url === '/api/saldo' || req.url.startsWith('/api/saldo?')) {
+      const force = req.url.includes('force=1');
+      if (force) saldoCache = { data: null, ts: 0 };
+      const data = await fetchSaldos();
       res.writeHead(200, {
         'Content-Type': 'application/json; charset=utf-8',
         'Cache-Control': 'no-cache',
