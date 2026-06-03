@@ -578,7 +578,7 @@ async function fetchSaldos() {
   let erro = null;
   if (token) {
     try {
-      const r = await fetch(`https://graph.facebook.com/v23.0/me/adaccounts?fields=account_id,name,currency,account_status,balance,amount_spent,spend_cap&limit=500&access_token=${token}`);
+      const r = await fetch(`https://graph.facebook.com/v23.0/me/adaccounts?fields=account_id,name,currency,account_status,balance,amount_spent,spend_cap,funding_source,funding_source_details&limit=500&access_token=${token}`);
       const j = await r.json();
       if (j.error) erro = j.error.message || 'graph_error';
       else for (const a of (j.data || [])) byAcct[a.account_id] = a;
@@ -602,6 +602,8 @@ async function fetchSaldos() {
         balance_cents: a ? cents(a.balance) : null,
         amount_spent_cents: a ? cents(a.amount_spent) : null,
         spend_cap_cents: a ? cents(a.spend_cap) : null,
+        funding_source: a?.funding_source ?? null,
+        funding_source_details: a?.funding_source_details ?? null,
         found: !!a,
       };
     });
