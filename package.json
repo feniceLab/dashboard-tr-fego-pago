@@ -8,5 +8,8 @@
     "dev": "node server.mjs"
   },
   "author": "Fenice Lab",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.107.0"
+  }
 }

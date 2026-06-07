@@ -53,3 +53,13 @@ out/
 # Arquivos pessoais do desenvolvedor
 .scratch/
 playground/
+
+# segredos: nunca versionar backups de .env
+.env.bak
+.env.bk-*
+*.bk-*
+data/audit-log.jsonl
+data/*-state.json
+*.bak
+*.bak-*
+*.bak.*
